@@ -7,11 +7,108 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyModel;
 using ModCore.Abstraction.Plugins;
 using System.Runtime.Loader;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace ModCore.Core.Plugins
 {
     public class PluginAssemblyManager : IAssemblyManager
     {
+        internal static HashSet<string> ReferenceAssembliesStartsWith { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "ModCore"
+        };
+
+        private List<Assembly> _coreApplicationAssemblies;
+        private List<Dependency> _dependencies;
+
+        public IEnumerable<Assembly> CoreApplicationAssemblies
+        {
+            get
+            {
+                if (_coreApplicationAssemblies == null)
+                {
+                    _coreApplicationAssemblies = new List<Assembly>();
+
+                    foreach (var assemblyStart in ReferenceAssembliesStartsWith)
+                    {
+                        _coreApplicationAssemblies.AddRange(GetReferencingAssemblies(assemblyStart));
+                    }
+                }
+
+                return _coreApplicationAssemblies;
+            }
+        }
+
+        public IEnumerable<Dependency> ApplicationDependencies
+        {
+            get
+            {
+                if (_dependencies == null)
+                {
+                    _dependencies = new List<Dependency>();
+
+                    foreach (var assemblyStart in ReferenceAssembliesStartsWith)
+                    {
+                        _dependencies.AddRange(GetDependencies(assemblyStart));
+                    }
+                }
+
+                return _dependencies;
+            }
+        }
+
+        public PluginAssemblyManager()
+        {
+
+        }
+
+        public IEnumerable<Assembly> GetReferencingAssemblies(string assemblyNameStartsWith)
+        {
+            var assemblies = new List<Assembly>();
+            var dependencies = DependencyContext.Default.RuntimeLibraries;
+            foreach (var library in dependencies)
+            {
+                if (IsCandidateLibrary(library, assemblyNameStartsWith))
+                {
+                    var assembly = Assembly.Load(new AssemblyName(library.Name));
+                    assemblies.Add(assembly);
+
+                }
+            }
+            return assemblies;
+        }
+
+        private IEnumerable<Dependency> GetDependencies(string assemblyStartsWith)
+        {
+            var dependencies = new HashSet<Dependency>();
+
+            var depcontext = DependencyContext.Default.RuntimeLibraries;
+            foreach (var library in depcontext)
+            {
+                if (IsCandidateLibrary(library, assemblyStartsWith))
+                {
+                    foreach(var dep in library.Dependencies)
+                    {
+                        dependencies.Add(dep);
+                    }
+                }
+            }
+
+            return dependencies;
+        }
+
+        private bool IsCandidateLibrary(RuntimeLibrary library, string assemblyName)
+        {
+            return library.Name.StartsWith(assemblyName)
+                || library.Dependencies.Any(d => d.Name.StartsWith(assemblyName));
+        }
+
+        private bool AlreadyLoaded(AssemblyName assemblyName)
+        {
+            return CoreApplicationAssemblies.Any(a => a.GetName().Name == assemblyName.Name)
+                || ApplicationDependencies.Any(a=>a.Name == assemblyName.Name);
+        }
+
         public IEnumerable<Assembly> GetAssemblies(string path)
         {
 
@@ -25,67 +122,58 @@ namespace ModCore.Core.Plugins
 
             foreach (var folder in Directory.EnumerateDirectories(path))
             {
-                var foundValidPluginDLL = false;
-
-                foreach (string dllPath in Directory.EnumerateFiles(folder, "*.Plugin.dll"))
-                {
-                    //AssemblyName assemblyName = AssemblyLoadContext.GetAssemblyName(dllPath);
-
-                    Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(dllPath);
-
-                    //Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyName(assemblyName);
-
-                    foreach (Type type in assembly.GetTypes())
-                        if (typeof(IPlugin).GetTypeInfo().IsAssignableFrom(type) 
-                            && typeof(BasePlugin).GetTypeInfo().IsAssignableFrom(type)
-                            && type.GetTypeInfo().IsClass)
-                        {
-                            foundValidPluginDLL = true;
-                            break;
-                        }
-                }
-
-                if (!foundValidPluginDLL)
-                    break;
-
                 var dllsToAdd = Directory.EnumerateFiles(folder, "*.dll");
                 foreach (string dllPath in dllsToAdd)
                 {
-                    //AssemblyName assemblyName = AssemblyLoadContext.GetAssemblyName(dllPath);
-                   // Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyName(assemblyName);
+                    var assemblyName = FromPath(dllPath);
 
-                    Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(dllPath);
-
-                    if (IsCandidateAssembly(assembly))
+                    if (!AlreadyLoaded(assemblyName))
+                    {
+                        Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(dllPath);
                         assemblies.Add(assembly);
+                    }
                 }
             }
-
-
-            foreach (CompilationLibrary compilationLibrary in DependencyContext.Default.CompileLibraries)
-                if (IsCandidateCompilationLibrary(compilationLibrary))
-                    assemblies.Add(Assembly.Load(new AssemblyName(compilationLibrary.Name)));
 
             return assemblies;
         }
 
-        private static bool IsCandidateAssembly(Assembly assembly)
+        private AssemblyName FromPath(string dllPath)
         {
-            if (assembly.FullName.ToLower().Contains("modcore"))
-                return false;
-
-            return true;
+            var pieces = dllPath.Split('\\').ToArray();
+            var dllName = pieces[pieces.Length - 1];
+            var assemblyName = dllName.Substring(0, dllName.Length-4);
+            return new AssemblyName(assemblyName);
         }
 
-        private static bool IsCandidateCompilationLibrary(CompilationLibrary compilationLibrary)
+        public IList<Assembly> GetAssembliesWithPlugin(string path)
         {
-            if (compilationLibrary.Name.ToLower().StartsWith("modcore"))
-                return false;
-
-            if (!compilationLibrary.Dependencies.Any(d => d.Name.ToLower().Contains("modcore")))
-                return false;
-
-            return true;
+            return this.GetAssemblies(path)
+                    .Where(a => a.GetTypes().Any(type =>
+                         typeof(IPlugin).GetTypeInfo().IsAssignableFrom(type)
+                     && typeof(BasePlugin).GetTypeInfo().IsAssignableFrom(type)
+                     && type.GetTypeInfo().IsClass
+                    ))
+                    .ToList();
         }
+
+        //private static bool IsCandidateAssembly(Assembly assembly)
+        //{
+        //    if (assembly.FullName.ToLower().Contains("modcore"))
+        //        return false;
+
+        //    return true;
+        //}
+
+        //private static bool IsCandidateCompilationLibrary(CompilationLibrary compilationLibrary)
+        //{
+        //    if (compilationLibrary.Name.ToLower().Contains("modcore"))
+        //        return false;
+
+        //    if (!compilationLibrary.Dependencies.Any(d => d.Name.ToLower().Contains("modcore")))
+        //        return false;
+
+        //    return true;
+        //}
     }
 }

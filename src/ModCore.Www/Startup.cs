@@ -42,7 +42,7 @@ namespace ModCore.Www
             Configuration = builder.Build();
 
             _hostingEnvironment = env;
-            _pluginManager = new PluginManager(new PluginAssemblyManager());
+            _pluginManager = PluginManager.Instance;
         }
 
 

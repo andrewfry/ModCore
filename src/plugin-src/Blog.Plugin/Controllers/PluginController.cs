@@ -2,6 +2,7 @@
 using ModCore.Abstraction.Plugins;
 using ModCore.Abstraction.Site;
 using ModCore.Core.Controllers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,8 @@ namespace Blog.Plugin.Controllers
 
         public IActionResult Test()
         {
+            var obj = JsonConverter.Equals(new { }, new { });
+
             return Content("hi");
         }
 
