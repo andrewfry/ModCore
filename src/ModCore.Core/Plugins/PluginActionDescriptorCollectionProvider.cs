@@ -55,8 +55,10 @@ namespace ModCore.Core.Plugins
                 providers[i].OnProvidersExecuted(context);
             }
 
+            var websiteHash = _pluginManager.ActivePluginHash;
+
             return new ActionDescriptorCollection(
-                new ReadOnlyCollection<ActionDescriptor>(context.Results), 0);
+                new ReadOnlyCollection<ActionDescriptor>(context.Results), websiteHash);
         }
     }
 }

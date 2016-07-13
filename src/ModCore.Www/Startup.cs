@@ -63,27 +63,37 @@ namespace ModCore.Www
 
             services.AddTransient<IDataRepository<InstalledPlugin>, InMemoryRepository<InstalledPlugin>>();
 
+            RunTestData(services);
+
             services.AddSingleton<IPluginManager, PluginManager>(srcProvider =>
             {
+                var assbly = srcProvider.GetService<IAssemblyManager>();
                 var repos = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
-                repos.Insert(new InstalledPlugin
-                {
-                    Active = true,
-                    DateInstalled = DateTime.UtcNow,
-                    Id = "1",
-                    Installed = true,
-                    PluginAssemblyName = "Blog.Plugin",
-                    PluginName = "Blog",
-                    PluginVersion = "1.0"
-                });
 
-
-                return new PluginManager(srcProvider.GetService<IAssemblyManager>(), Configuration, _hostingEnvironment, repos);
+                return new PluginManager(assbly, Configuration, _hostingEnvironment, repos);
             });
 
             ConfigurePlugins(services, mvcBuilder);
         }
 
+
+        public void RunTestData(IServiceCollection services)
+        {
+            var srcProvider = services.BuildServiceProvider();
+
+            var repos = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
+
+            repos.Insert(new InstalledPlugin
+            {
+                Active = true,
+                DateInstalled = DateTime.UtcNow,
+                Id = "1",
+                Installed = true,
+                PluginAssemblyName = "Blog.Plugin",
+                PluginName = "Blog",
+                PluginVersion = "1.0"
+            });
+        }
 
         public void ConfigurePlugins(IServiceCollection services, IMvcBuilder mvcBuilder)
         {

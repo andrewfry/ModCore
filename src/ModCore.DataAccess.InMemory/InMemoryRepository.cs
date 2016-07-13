@@ -9,11 +9,10 @@ namespace ModCore.DataAccess.InMemory
 {
     public class InMemoryRepository<T> : IDataRepository<T> where T : BaseEntity
     {
-        private List<T> _dataStore;
+        private static List<T> _dataStore = new List<T>();
 
         public InMemoryRepository()
         {
-            _dataStore = new List<T>();
         }
 
         public void Insert(T entity)
