@@ -20,7 +20,7 @@ namespace ModCore.Core
             app.UseMvc(routeBuilder =>
             {
                 var pluginRouteCollection = new PluginRouteCollection(routeBuilder);
-                foreach (var plugin in pluginManager.GetActivePlugins())
+                foreach (var plugin in pluginManager.ActivePlugins)
                 {
                     foreach (var routeReg in plugin.Routes.Values)
                     {

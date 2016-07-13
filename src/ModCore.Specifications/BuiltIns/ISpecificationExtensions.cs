@@ -15,12 +15,12 @@ namespace ModCore.Specifications.BuiltIns
 
         public static ISpecification<T> And<T>(this ISpecification<T> left, ISpecification<T> right)
         {
-            return Specification.And(left, right);
+            return SpecificationExtensions.And(left, right);
         }
 
         public static ISpecification<T> Or<T>(this ISpecification<T> left, ISpecification<T> right)
         {
-            return Specification.Or(left, right);
+            return SpecificationExtensions.Or(left, right);
         }
     }
 }

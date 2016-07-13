@@ -6,9 +6,11 @@
     "Microsoft.AspNet.Routing": "1.0.0-rc1-final",
     "Microsoft.AspNetCore.Mvc.Razor": "1.0.0",
     "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
+    "Microsoft.Extensions.Configuration.Binder": "1.0.0",
     "Microsoft.Extensions.DependencyModel": "1.0.0",
     "ModCore.Abstraction": "1.0.0-*",
     "ModCore.Models": "1.0.0-*",
+    "ModCore.Specifications": "1.0.0-*",
     "NETStandard.Library": "1.6.0",
     "System.Runtime.Loader": "4.0.0"
   },

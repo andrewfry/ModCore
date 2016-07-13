@@ -2,25 +2,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace ModCore.Specifications.BuiltIns
 {
-    public static class Specification
+    public abstract class Specification<T> : ISpecification<T>
     {
-        public static ISpecification<T> And<T>(ISpecification<T> left, ISpecification<T> right)
+        public abstract Expression<Func<T, bool>> IsSatisifiedBy();
+       
+        public Func<T, bool> Predicate()
         {
-            return new AndSpecification<T>(left, right);
+            Func<T, bool> func = IsSatisifiedBy().Compile();
+            //Predicate<T> pred = t => func(t);
+            return func;
         }
 
-        public static ISpecification<T> Or<T>(ISpecification<T> left, ISpecification<T> right)
-        {
-            return new OrSpecification<T>(left, right);
-        }
 
-        public static ISpecification<T> Not<T>(ISpecification<T> specification)
-        {
-            return new NotSpecification<T>(specification);
-        }
     }
 }

@@ -9,12 +9,17 @@ namespace ModCore.Abstraction.Plugins
 {
     public interface IAssemblyManager
     {
-        IEnumerable<Assembly> GetAssemblies(string path);
 
         IEnumerable<Assembly> CoreApplicationAssemblies { get; }
 
         IEnumerable<Dependency> ApplicationDependencies { get; }
 
         IEnumerable<Assembly> GetReferencingAssemblies(string assemblyNameStartsWith);
+
+        IEnumerable<Assembly> GetAssemblies(string path);
+
+        IList<Tuple<IPlugin, IList<Assembly>>> GetPluginAndAssemblies(string path);
+
+
     }
 }

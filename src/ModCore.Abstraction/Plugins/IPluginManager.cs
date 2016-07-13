@@ -8,20 +8,20 @@ namespace ModCore.Abstraction.Plugins
 {
     public interface IPluginManager
     {
-        IList<IPlugin> GetAvailablePlugins();
+        int ActivePluginHash { get; }
 
-        IList<IPlugin> GetInstalledPlugins();
+        IList<IPlugin> AvailablePlugins { get; }
 
-        IList<IPlugin> GetActivePlugins();
+        IList<IPlugin> InstalledPlugins { get; }
 
-        void SetPluginDirPath(string pluginDir);
+        IList<IPlugin> ActivePlugins { get; }
 
-        IList<Assembly> GetAvailablePluginAssemblies();
+        IList<Tuple<IPlugin, IList<Assembly>>> AvailablePluginAssemblies { get; }
 
-        IList<Assembly> GetInstalledPluginAssemblies();
+        IList<Tuple<IPlugin, IList<Assembly>>> InstalledPluginAssemblies { get; }
 
-        IList<Assembly> GetActivePluginAssemblies();
+        IList<Tuple<IPlugin, IList<Assembly>>> ActivePluginAssemblies { get; }
 
-
+        IList<Assembly> ActiveAssemblies { get; }
     }
 }

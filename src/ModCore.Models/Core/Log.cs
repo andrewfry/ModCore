@@ -1,4 +1,5 @@
-﻿using ModCore.Models.Enum;
+﻿using ModCore.Models.BaseEntities;
+using ModCore.Models.Enum;
 using ModCore.Models.Sessions;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ModCore.Models.Core
 {
-    public class Log
+    public class Log : BaseEntity
     {
         public string ClassName { get; set; }
 

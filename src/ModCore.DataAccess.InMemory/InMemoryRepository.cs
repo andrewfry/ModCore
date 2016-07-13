@@ -1,4 +1,5 @@
 ﻿using ModCore.Abstraction.DataAccess;
+using ModCore.Models.BaseEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,50 +7,65 @@ using System.Threading.Tasks;
 
 namespace ModCore.DataAccess.InMemory
 {
-    public class InMemoryRepository<T> : IDataRepository<T> where T : class
+    public class InMemoryRepository<T> : IDataRepository<T> where T : BaseEntity
     {
+        private List<T> _dataStore;
+
         public InMemoryRepository()
         {
+            _dataStore = new List<T>();
         }
 
         public void Insert(T entity)
         {
-            throw new NotImplementedException();
+            _dataStore.Add(entity);
         }
 
         public void Insert(ICollection<T> entities)
         {
-            throw new NotImplementedException();
+            _dataStore.AddRange(entities);
         }
 
         public void Update(T entity)
         {
-            throw new NotImplementedException();
+            _dataStore.Remove(entity);
+            _dataStore.Add(entity);
         }
 
         public void Update(ICollection<T> entities)
         {
-            throw new NotImplementedException();
+            foreach (var entity in entities)
+            {
+                _dataStore.Remove(entity);
+            }
+            _dataStore.AddRange(entities);
         }
 
-        public ICollection<T> DeleteAll(ISpecification<T> specification)
+        public void DeleteAll(ISpecification<T> specification)
         {
-            throw new NotImplementedException();
+            foreach (var entity in _dataStore.Where(specification.Predicate()))
+            {
+                _dataStore.Remove(entity);
+            }
         }
 
         public void Delete(ISpecification<T> specification)
         {
-            throw new NotImplementedException();
+            var entity = _dataStore.FirstOrDefault(specification.Predicate());
+            if(entity != null)
+            {
+                _dataStore.Remove(entity);
+            }
         }
 
         public ICollection<T> FindAll(ISpecification<T> specification)
         {
-            throw new NotImplementedException();
+            return _dataStore.Where(specification.Predicate()).ToList();
         }
 
         public T Find(ISpecification<T> specification)
         {
-            throw new NotImplementedException();
+            return _dataStore.FirstOrDefault(specification.Predicate());
         }
 
     }

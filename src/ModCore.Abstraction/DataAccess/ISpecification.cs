@@ -6,5 +6,7 @@ namespace ModCore.Abstraction.DataAccess
     public interface ISpecification<T>
     {
         Expression<Func<T, bool>> IsSatisifiedBy();
+
+        Func<T, bool> Predicate();
     }
 }

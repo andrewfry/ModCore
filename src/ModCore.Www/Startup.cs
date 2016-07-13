@@ -21,6 +21,8 @@ using System.IO;
 using System.Linq;
 using ModCore.Core;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using ModCore.Models.Plugins;
 
 namespace ModCore.Www
 {
@@ -42,50 +44,61 @@ namespace ModCore.Www
             Configuration = builder.Build();
 
             _hostingEnvironment = env;
-            _pluginManager = PluginManager.Instance;
         }
 
 
 
         public void ConfigureServices(IServiceCollection services)
         {
-            IMvcBuilder mvcBuilder = services.AddMvc();
-
-            ConfigurePlugins(services, mvcBuilder);
-            
-            this._hostingEnvironment.WebRootFileProvider = this.CreateCompositeFileProvider();
-
-
-            services.AddMvc();
+            var mvcBuilder = services.AddMvc();
             services.AddTransient<IControllerActivator, ValidateControllerActivator>();
-
             services.AddTransient<IPluginLog, PluginLogger>();
             services.AddTransient<ILog, SiteLogger>();
             services.AddTransient<ISessionManager, SessionManager>();
             services.AddTransient<IPluginSettingsManager, PluginSettingsManager>();
             services.AddTransient<ISiteSettingsManager, SiteSettingsManager>();
-
             services.AddTransient<IDataRepository<Log>, InMemoryRepository<Log>>();
+            services.AddTransient<IAssemblyManager, PluginAssemblyManager>();
+            services.AddTransient<IActionDescriptorCollectionProvider, PluginActionDescriptorCollectionProvider>();
+
+            services.AddTransient<IDataRepository<InstalledPlugin>, InMemoryRepository<InstalledPlugin>>();
+
+            services.AddSingleton<IPluginManager, PluginManager>(srcProvider =>
+            {
+                var repos = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
+                repos.Insert(new InstalledPlugin
+                {
+                    Active = true,
+                    DateInstalled = DateTime.UtcNow,
+                    Id = "1",
+                    Installed = true,
+                    PluginAssemblyName = "Blog.Plugin",
+                    PluginName = "Blog",
+                    PluginVersion = "1.0"
+                });
+
+
+                return new PluginManager(srcProvider.GetService<IAssemblyManager>(), Configuration, _hostingEnvironment, repos);
+            });
+
+            ConfigurePlugins(services, mvcBuilder);
         }
 
 
         public void ConfigurePlugins(IServiceCollection services, IMvcBuilder mvcBuilder)
         {
-            var pluginDir = Configuration.GetValue<string>("PluginDir");
-            var fullPluginDir = Path.Combine(_hostingEnvironment.ContentRootPath, pluginDir);
-
-            _pluginManager.SetPluginDirPath(fullPluginDir);
-            _pluginManager.GetActivePluginAssemblies();
+            var sp = services.BuildServiceProvider();
+            _pluginManager = sp.GetService<IPluginManager>();
 
             mvcBuilder.AddRazorOptions(a => a.ViewLocationExpanders.Add(new PluginViewLocationExpander()));
 
-            foreach (var assembly in _pluginManager.GetActivePluginAssemblies())
+            foreach (var assembly in _pluginManager.ActiveAssemblies)
             {
                 mvcBuilder.AddApplicationPart(assembly);
                 mvcBuilder.AddRazorOptions(a => a.FileProviders.Add(new EmbeddedFileProvider(assembly, assembly.GetName().Name)));
             }
 
-            foreach (var plugin in _pluginManager.GetActivePlugins())
+            foreach (var plugin in _pluginManager.ActivePlugins)
             {
                 foreach (var plugService in plugin.Services)
                 {
@@ -98,6 +111,8 @@ namespace ModCore.Www
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+
+            this._hostingEnvironment.WebRootFileProvider = this.CreateCompositeFileProvider();
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -129,36 +144,16 @@ namespace ModCore.Www
             app.UseRoutesFromPlugins(_pluginManager);
         }
 
-        //private IDictionary<int, List<Action<IRouteBuilder>>> GetRouteByPriority()
-        //{
-        //    var routePriorities = new Dictionary<int, List<Action<IRouteBuilder>>>();
-
-        //    foreach (var plugin in _pluginManager.GetActivePlugins())
-        //    {
-        //        if (plugin.Routes != null)
-        //        {
-        //            foreach (var routeRegistrarByPriority in plugin.Routes)
-        //            {
-        //                if (!routePriorities.ContainsKey(routeRegistrarByPriority.Key))
-        //                    routePriorities.Add(routeRegistrarByPriority.Key, new List<Action<IRouteBuilder>>());
-
-        //                routePriorities[routeRegistrarByPriority.Key].Add(routeRegistrarByPriority.Value);
-        //            }
-        //        }
-        //    }
-
-        //    return routePriorities.OrderBy(routeRegistrarSetByPriority => routeRegistrarSetByPriority.Key).ToDictionary(a => a.Key, a => a.Value);
-        //}
-
         private IFileProvider CreateCompositeFileProvider()
         {
-            IFileProvider[] fileProviders = new IFileProvider[] {
+            IFileProvider[] fileProviders = new IFileProvider[]
+                        {
                         this._hostingEnvironment.WebRootFileProvider
                       };
 
             return new CompositeFileProvider(
               fileProviders.Concat(
-                _pluginManager.GetActivePluginAssemblies().Select(a => new EmbeddedFileProvider(a, a.GetName().Name))
+                _pluginManager.ActiveAssemblies.Select(a => new EmbeddedFileProvider(a, a.GetName().Name))
               )
             );
         }

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using ModCore.Models.BaseEntities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ModCore.Abstraction.DataAccess
 {
-   public  interface IDataRepository<T> where T : class
+   public  interface IDataRepository<T> where T : BaseEntity
     {
 
         void Insert(T entity);
@@ -16,7 +17,7 @@ namespace ModCore.Abstraction.DataAccess
 
         void Update(ICollection<T> entities);
 
-        ICollection<T> DeleteAll(ISpecification<T> specification);
+        void DeleteAll(ISpecification<T> specification);
 
         void Delete(ISpecification<T> specification);
 

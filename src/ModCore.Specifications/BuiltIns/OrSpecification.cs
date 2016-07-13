@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ModCore.Specifications.BuiltIns
 {
-    internal class OrSpecification<T> : ISpecification<T>
+    internal class OrSpecification<T> : Specification<T>
     {
         private readonly ISpecification<T> left;
         private readonly ISpecification<T> right;
@@ -18,7 +18,7 @@ namespace ModCore.Specifications.BuiltIns
             this.right = right;
         }
 
-        public Expression<Func<T, bool>> IsSatisifiedBy()
+        public override Expression<Func<T, bool>> IsSatisifiedBy()
         {
             var leftExpression = left.IsSatisifiedBy();
             var rightExpression = right.IsSatisifiedBy();

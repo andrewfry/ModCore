@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ModCore.Specifications.BuiltIns
 {
-    internal class NotSpecification<T> : ISpecification<T>
+    internal class NotSpecification<T> : Specification<T>
     {
         private readonly ISpecification<T> specification;
 
@@ -16,7 +16,7 @@ namespace ModCore.Specifications.BuiltIns
             this.specification = specification;
         }
 
-        public Expression<Func<T, bool>> IsSatisifiedBy()
+        public override Expression<Func<T, bool>> IsSatisifiedBy()
         {
             var expression = specification.IsSatisifiedBy();
 
