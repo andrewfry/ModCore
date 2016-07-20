@@ -54,34 +54,19 @@ namespace ModCore.Www
         public void ConfigureServices(IServiceCollection services)
         {
             var mvcBuilder = services.AddMvc();
-            services.AddTransient<IControllerActivator, ValidateControllerActivator>();
-            services.AddTransient<IPluginLog, PluginLogger>();
             services.AddTransient<ILog, SiteLogger>();
             services.AddTransient<ISessionManager, SessionManager>();
-            services.AddTransient<IPluginSettingsManager, PluginSettingsManager>();
             services.AddTransient<ISiteSettingsManager, SiteSettingsManager>();
-            services.AddTransient<IDataRepository<Log>, InMemoryRepository<Log>>();
-            services.AddTransient<IAssemblyManager, PluginAssemblyManager>();
-            services.AddTransient<IRouteBuilder, PluginRouteBuilder>();
-            services.AddSingleton<IActionDescriptorCollectionProvider, PluginActionDescriptorCollectionProvider>();
 
+            //Persistent Data Repositories
+            services.AddTransient<IDataRepository<Log>, InMemoryRepository<Log>>();
             services.AddTransient<IDataRepository<InstalledPlugin>, InMemoryRepository<InstalledPlugin>>();
 
-            RunTestData(services);
-
-            services.AddSingleton<IPluginManager, PluginManager>(srcProvider =>
-            {
-                var assbly = srcProvider.GetService<IAssemblyManager>();
-                var repos = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
-                var appMgr = srcProvider.GetService<ApplicationPartManager>();
-
-                return new PluginManager(assbly, Configuration, _hostingEnvironment, repos, appMgr);
-            });
-
+            //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
-
-
-            //  ConfigurePlugins(services, mvcBuilder);
+            services.AddPluginManager(Configuration, _hostingEnvironment);
+            
+            RunTestData(services);
         }
 
 
@@ -102,30 +87,6 @@ namespace ModCore.Www
                 PluginVersion = "1.0"
             });
         }
-
-        //public void ConfigurePlugins(IServiceCollection services, IMvcBuilder mvcBuilder)
-        //{
-        //    var sp = services.BuildServiceProvider();
-        //    _pluginManager = sp.GetService<IPluginManager>();
-
-        //    mvcBuilder.AddRazorOptions(a => a.ViewLocationExpanders.Add(new PluginViewLocationExpander()));
-
-        //    foreach (var assembly in _pluginManager.ActiveAssemblies)
-        //    {
-        //        mvcBuilder.AddApplicationPart(assembly);
-        //        mvcBuilder.AddRazorOptions(a => a.FileProviders.Add(new EmbeddedFileProvider(assembly, assembly.GetName().Name)));
-        //    }
-
-        //    foreach (var plugin in _pluginManager.ActivePlugins)
-        //    {
-        //        foreach (var plugService in plugin.Services)
-        //        {
-        //            services.Add(plugService);
-        //        }
-
-        //        plugin.Install(); //TODO complete
-        //    }
-        //}
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
@@ -162,18 +123,18 @@ namespace ModCore.Www
 
         }
 
-        private IFileProvider CreateCompositeFileProvider()
-        {
-            IFileProvider[] fileProviders = new IFileProvider[]
-                        {
-                        this._hostingEnvironment.WebRootFileProvider
-                      };
+        //private IFileProvider CreateCompositeFileProvider()
+        //{
+        //    IFileProvider[] fileProviders = new IFileProvider[]
+        //                {
+        //                this._hostingEnvironment.WebRootFileProvider
+        //              };
 
-            return new CompositeFileProvider(
-              fileProviders.Concat(
-                _pluginManager.ActiveAssemblies.Select(a => new EmbeddedFileProvider(a, a.GetName().Name))
-              )
-            );
-        }
+        //    return new CompositeFileProvider(
+        //      fileProviders.Concat(
+        //        _pluginManager.ActiveAssemblies.Select(a => new EmbeddedFileProvider(a, a.GetName().Name))
+        //      )
+        //    );
+        //}
     }
 }

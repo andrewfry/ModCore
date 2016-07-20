@@ -1,9 +1,17 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
+using ModCore.Core.Controllers;
 using ModCore.Core.Plugins;
+using ModCore.Models.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,6 +72,12 @@ namespace ModCore.Core.HelperExtensions
                 throw new ArgumentNullException(nameof(services));
             }
 
+            services.AddTransient<IControllerActivator, ValidateControllerActivator>();
+            services.AddTransient<IPluginLog, PluginLogger>();
+            services.AddTransient<IPluginSettingsManager, PluginSettingsManager>();
+            services.AddTransient<IAssemblyManager, PluginAssemblyManager>();
+            services.AddTransient<IRouteBuilder, PluginRouteBuilder>();
+            services.AddSingleton<IActionDescriptorCollectionProvider, PluginActionDescriptorCollectionProvider>();
 
 
             mvcBuilder.AddRazorOptions(a => a.ViewLocationExpanders.Add(new PluginViewLocationExpander()));
@@ -71,5 +85,27 @@ namespace ModCore.Core.HelperExtensions
 
             return services;
         }
+
+        public static IServiceCollection AddPluginManager(this IServiceCollection services, IConfigurationRoot configRoot,IHostingEnvironment env)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+
+            services.AddSingleton<IPluginManager, PluginManager>(srcProvider =>
+            {
+                var assbly = srcProvider.GetRequiredService<IAssemblyManager>();
+                var repos = srcProvider.GetRequiredService<IDataRepository<InstalledPlugin>>();
+                var appMgr = srcProvider.GetRequiredService<ApplicationPartManager>();
+
+                return new PluginManager(assbly, configRoot, env, repos, appMgr);
+            });
+
+            return services;
+        }
+
+
     }
 }
