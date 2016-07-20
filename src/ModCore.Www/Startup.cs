@@ -74,13 +74,14 @@ namespace ModCore.Www
                 var assbly = srcProvider.GetService<IAssemblyManager>();
                 var repos = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
                 var appMgr = srcProvider.GetService<ApplicationPartManager>();
-               //var routeHndlr = srcProvider.GetService<MvcRouteHandler>();
-               // var inlineConstrainerResolve = srcProvider.GetService<IInlineConstraintResolver>();
 
                 return new PluginManager(assbly, Configuration, _hostingEnvironment, repos, appMgr);
             });
 
-          //  ConfigurePlugins(services, mvcBuilder);
+            services.AddPlugins(mvcBuilder);
+
+
+            //  ConfigurePlugins(services, mvcBuilder);
         }
 
 
@@ -102,29 +103,29 @@ namespace ModCore.Www
             });
         }
 
-        public void ConfigurePlugins(IServiceCollection services, IMvcBuilder mvcBuilder)
-        {
-            var sp = services.BuildServiceProvider();
-            _pluginManager = sp.GetService<IPluginManager>();
+        //public void ConfigurePlugins(IServiceCollection services, IMvcBuilder mvcBuilder)
+        //{
+        //    var sp = services.BuildServiceProvider();
+        //    _pluginManager = sp.GetService<IPluginManager>();
 
-            mvcBuilder.AddRazorOptions(a => a.ViewLocationExpanders.Add(new PluginViewLocationExpander()));
+        //    mvcBuilder.AddRazorOptions(a => a.ViewLocationExpanders.Add(new PluginViewLocationExpander()));
 
-            foreach (var assembly in _pluginManager.ActiveAssemblies)
-            {
-                mvcBuilder.AddApplicationPart(assembly);
-                mvcBuilder.AddRazorOptions(a => a.FileProviders.Add(new EmbeddedFileProvider(assembly, assembly.GetName().Name)));
-            }
+        //    foreach (var assembly in _pluginManager.ActiveAssemblies)
+        //    {
+        //        mvcBuilder.AddApplicationPart(assembly);
+        //        mvcBuilder.AddRazorOptions(a => a.FileProviders.Add(new EmbeddedFileProvider(assembly, assembly.GetName().Name)));
+        //    }
 
-            foreach (var plugin in _pluginManager.ActivePlugins)
-            {
-                foreach (var plugService in plugin.Services)
-                {
-                    services.Add(plugService);
-                }
+        //    foreach (var plugin in _pluginManager.ActivePlugins)
+        //    {
+        //        foreach (var plugService in plugin.Services)
+        //        {
+        //            services.Add(plugService);
+        //        }
 
-                plugin.Install(); //TODO complete
-            }
-        }
+        //        plugin.Install(); //TODO complete
+        //    }
+        //}
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
@@ -158,7 +159,7 @@ namespace ModCore.Www
                     new { Namespace = this.GetType().GetTypeInfo().Assembly.GetName().Name });
             });
 
-           // app.UseRoutesFromPlugins(_pluginManager);
+
         }
 
         private IFileProvider CreateCompositeFileProvider()

@@ -55,5 +55,21 @@ namespace ModCore.Core.HelperExtensions
 
             return app.UseRouter(routes.Build());
         }
+
+
+        public static IServiceCollection AddPlugins(this IServiceCollection services, IMvcBuilder mvcBuilder)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+
+
+            mvcBuilder.AddRazorOptions(a => a.ViewLocationExpanders.Add(new PluginViewLocationExpander()));
+
+
+            return services;
+        }
     }
 }
