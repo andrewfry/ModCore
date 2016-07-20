@@ -14,8 +14,9 @@ namespace ModCore.Www.Controllers
     {
         private IPluginManager _pluginManager;
 
-        public PluginController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager, IPluginManager pluginManager)
-            : base(log,sessionManager,siteSettingsManager)
+        public PluginController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager, 
+            IPluginManager pluginManager, IBaseViewModelProvider baseModeProvider)
+            : base(log,sessionManager,siteSettingsManager, baseModeProvider)
         {
             _pluginManager = pluginManager;
         }

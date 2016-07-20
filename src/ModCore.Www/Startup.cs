@@ -1,31 +1,19 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
 using ModCore.Abstraction.Site;
 using ModCore.DataAccess.InMemory;
 using ModCore.Models.Core;
-using ModCore.Core.Controllers;
-using ModCore.Core.Plugins;
 using ModCore.Core.Site;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using ModCore.Core;
 using System.Reflection;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using ModCore.Models.Plugins;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using ModCore.Core.HelperExtensions;
-using Microsoft.AspNetCore.Mvc.Internal;
 
 namespace ModCore.Www
 {
@@ -54,9 +42,11 @@ namespace ModCore.Www
         public void ConfigureServices(IServiceCollection services)
         {
             var mvcBuilder = services.AddMvc();
+
             services.AddTransient<ILog, SiteLogger>();
             services.AddTransient<ISessionManager, SessionManager>();
             services.AddTransient<ISiteSettingsManager, SiteSettingsManager>();
+            services.AddTransient<IBaseViewModelProvider, DefaultBaseViewModelProvider>();
 
             //Persistent Data Repositories
             services.AddTransient<IDataRepository<Log>, InMemoryRepository<Log>>();

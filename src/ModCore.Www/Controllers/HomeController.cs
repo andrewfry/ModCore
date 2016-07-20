@@ -6,20 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using ModCore.Core.Controllers;
 using ModCore.Abstraction.Site;
 using Microsoft.Extensions.Logging;
+using ModCore.ViewModels.Base;
 
 namespace ModCore.Www.Controllers
 {
     public class HomeController : BaseController
     {
-        public HomeController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager)
-            : base(log,sessionManager,siteSettingsManager)
+        public HomeController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
+            IBaseViewModelProvider baseModeProvider)
+            : base(log,sessionManager,siteSettingsManager, baseModeProvider)
         {
 
         }
 
         public IActionResult Index()
         {
-            return View();
+            var m = new BaseViewModel();
+
+
+            return View(m);
         }
 
         public IActionResult About()

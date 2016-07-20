@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ModCore.ViewModels.Base
 {
-    public class BaseModel
+    public class BaseViewModel
     {
         public string Token { get; set; }
 

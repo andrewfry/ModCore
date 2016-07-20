@@ -64,7 +64,6 @@ namespace ModCore.Core.HelperExtensions
             return app.UseRouter(routes.Build());
         }
 
-
         public static IServiceCollection AddPlugins(this IServiceCollection services, IMvcBuilder mvcBuilder)
         {
             if (services == null)
@@ -92,7 +91,6 @@ namespace ModCore.Core.HelperExtensions
             {
                 throw new ArgumentNullException(nameof(services));
             }
-
 
             services.AddSingleton<IPluginManager, PluginManager>(srcProvider =>
             {
