@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Routing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,5 +24,11 @@ namespace ModCore.Abstraction.Plugins
         IList<Tuple<IPlugin, IList<Assembly>>> ActivePluginAssemblies { get; }
 
         IList<Assembly> ActiveAssemblies { get; }
+
+        void ActivatePlugin(IPlugin plugin);
+
+        void DeactivatePlugin(IPlugin plugin);
+
+        ICollection<IRouter> GetActiveRoutesForPlugins(IRouter defaultHandler, IInlineConstraintResolver inlineConstraintResolver);
     }
 }

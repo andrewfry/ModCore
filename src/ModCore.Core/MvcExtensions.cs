@@ -13,23 +13,23 @@ namespace ModCore.Core
 {
     public static class MvcOptionsExtensions
     {
-        public static void UseRoutesFromPlugins(this IApplicationBuilder app, IPluginManager pluginManager)
-        {
+        //public static void UseRoutesFromPlugins(this IApplicationBuilder app, IPluginManager pluginManager)
+        //{
 
 
-            app.UseMvc(routeBuilder =>
-            {
-                var pluginRouteCollection = new PluginRouteCollection(routeBuilder);
-                foreach (var plugin in pluginManager.ActivePlugins)
-                {
-                    foreach (var routeReg in plugin.Routes.Values)
-                    {
-                        routeReg(pluginRouteCollection);
-                    }
+        //    app.UseMvc(routeBuilder =>
+        //    {
+        //        var pluginRouteCollection = new PluginRoutes(routeBuilder);
+        //        foreach (var plugin in pluginManager.ActivePlugins)
+        //        {
+        //            foreach (var routeReg in plugin.Routes.Values)
+        //            {
+        //                routeReg(pluginRouteCollection);
+        //            }
 
-                }
-              });
+        //        }
+        //      });
 
-        }
+        //}
     }
 }

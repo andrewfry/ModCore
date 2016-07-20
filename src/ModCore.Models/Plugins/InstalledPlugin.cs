@@ -20,5 +20,9 @@ namespace ModCore.Models.Plugins
 
         public DateTime DateInstalled { get; set; }
 
+        public DateTime DateActivated { get; set; }
+
+        public DateTime DateDeactivated { get; set; }
+
     }
 }

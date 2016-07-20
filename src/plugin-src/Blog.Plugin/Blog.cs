@@ -30,20 +30,37 @@ namespace Blog.Plugin
             }
         }
 
-        public IDictionary<int, Action<IPluginRouteCollection>>  Routes
+        //public IDictionary<int, Action<IPluginRoutes>>  Routes
+        //{
+        //    get
+        //    {
+        //        var dict = new Dictionary<int, Action<IPluginRoutes>>();
+        //        dict.Add(10, a => a.MapPluginRoute(
+        //            name: "blogDefault",
+        //            template: "Blog/{controller=Home}/{action=Index}/{id?}",
+        //            plugin : new Blog()));
+
+        //        return dict;
+
+        //    }
+        //}
+
+        public ICollection<IPluginRoute> Routes
         {
             get
             {
-                var dict = new Dictionary<int, Action<IPluginRouteCollection>>();
-                dict.Add(10, a => a.MapPluginRoute(
-                    name: "blogDefault",
+                var routes = new List<IPluginRoute>();
+                routes.MapPluginRoute(
+                   name: "blogDefault",
                     template: "Blog/{controller=Home}/{action=Index}/{id?}",
-                    plugin : new Blog()));
+                    plugin: new Blog());
 
-                return dict;
 
+                return routes;
             }
         }
+
+
 
         public ICollection<ServiceDescriptor> Services
         {

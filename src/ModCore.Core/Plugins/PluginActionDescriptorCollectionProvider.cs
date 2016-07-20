@@ -15,11 +15,13 @@ namespace ModCore.Core.Plugins
         private readonly IServiceProvider _serviceProvider;
         private ActionDescriptorCollection _collection;
         private IPluginManager _pluginManager;
+        private int _activePluginHash;
 
         public PluginActionDescriptorCollectionProvider(IServiceProvider serviceProvider, IPluginManager pluginManager)
         {
             _serviceProvider = serviceProvider;
             _pluginManager = pluginManager;
+            _activePluginHash = -1;
 
         }
 
@@ -27,7 +29,7 @@ namespace ModCore.Core.Plugins
         {
             get
             {
-                if (_collection == null)
+                if (_collection == null || _activePluginHash != _pluginManager.ActivePluginHash)
                 {
                     _collection = GetCollection();
                 }
@@ -55,10 +57,10 @@ namespace ModCore.Core.Plugins
                 providers[i].OnProvidersExecuted(context);
             }
 
-            var websiteHash = _pluginManager.ActivePluginHash;
+            _activePluginHash = _pluginManager.ActivePluginHash;
 
             return new ActionDescriptorCollection(
-                new ReadOnlyCollection<ActionDescriptor>(context.Results), websiteHash);
+                new ReadOnlyCollection<ActionDescriptor>(context.Results), _activePluginHash);
         }
     }
 }

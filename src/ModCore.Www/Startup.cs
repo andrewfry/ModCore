@@ -23,6 +23,9 @@ using ModCore.Core;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using ModCore.Models.Plugins;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using ModCore.Core.HelperExtensions;
+using Microsoft.AspNetCore.Mvc.Internal;
 
 namespace ModCore.Www
 {
@@ -59,7 +62,8 @@ namespace ModCore.Www
             services.AddTransient<ISiteSettingsManager, SiteSettingsManager>();
             services.AddTransient<IDataRepository<Log>, InMemoryRepository<Log>>();
             services.AddTransient<IAssemblyManager, PluginAssemblyManager>();
-            services.AddTransient<IActionDescriptorCollectionProvider, PluginActionDescriptorCollectionProvider>();
+            services.AddTransient<IRouteBuilder, PluginRouteBuilder>();
+            services.AddSingleton<IActionDescriptorCollectionProvider, PluginActionDescriptorCollectionProvider>();
 
             services.AddTransient<IDataRepository<InstalledPlugin>, InMemoryRepository<InstalledPlugin>>();
 
@@ -69,11 +73,14 @@ namespace ModCore.Www
             {
                 var assbly = srcProvider.GetService<IAssemblyManager>();
                 var repos = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
+                var appMgr = srcProvider.GetService<ApplicationPartManager>();
+               //var routeHndlr = srcProvider.GetService<MvcRouteHandler>();
+               // var inlineConstrainerResolve = srcProvider.GetService<IInlineConstraintResolver>();
 
-                return new PluginManager(assbly, Configuration, _hostingEnvironment, repos);
+                return new PluginManager(assbly, Configuration, _hostingEnvironment, repos, appMgr);
             });
 
-            ConfigurePlugins(services, mvcBuilder);
+          //  ConfigurePlugins(services, mvcBuilder);
         }
 
 
@@ -85,7 +92,7 @@ namespace ModCore.Www
 
             repos.Insert(new InstalledPlugin
             {
-                Active = true,
+                Active = false,
                 DateInstalled = DateTime.UtcNow,
                 Id = "1",
                 Installed = true,
@@ -122,7 +129,7 @@ namespace ModCore.Www
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
 
-            this._hostingEnvironment.WebRootFileProvider = this.CreateCompositeFileProvider();
+          //  this._hostingEnvironment.WebRootFileProvider = this.CreateCompositeFileProvider();
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -141,7 +148,7 @@ namespace ModCore.Www
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
 
-            app.UseMvc(routes =>
+            app.UseMvcWithPlugin(routes =>
             {
                 routes.MapRoute(
                      "default",
@@ -151,7 +158,7 @@ namespace ModCore.Www
                     new { Namespace = this.GetType().GetTypeInfo().Assembly.GetName().Name });
             });
 
-            app.UseRoutesFromPlugins(_pluginManager);
+           // app.UseRoutesFromPlugins(_pluginManager);
         }
 
         private IFileProvider CreateCompositeFileProvider()

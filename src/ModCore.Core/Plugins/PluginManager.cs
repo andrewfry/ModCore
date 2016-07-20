@@ -1,7 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Internal;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
+using ModCore.Core.Plugins;
 using ModCore.Models.Plugins;
 using ModCore.Specifications.Plugins;
 using System;
@@ -20,6 +25,7 @@ namespace ModCore.Core.Plugins
         private IConfigurationRoot _configurationRoot;
         private IHostingEnvironment _hostingEnvironment;
         private IDataRepository<InstalledPlugin> _repository;
+        private ApplicationPartManager _appPartManager;
 
         private IList<IPlugin> _availablePlugins;
         private IList<IPlugin> _installedPlugins;
@@ -34,7 +40,7 @@ namespace ModCore.Core.Plugins
         {
             get
             {
-               return ActivePlugins.GetHashCode();
+                return ActivePlugins.GetHashCode();
             }
         }
 
@@ -156,11 +162,14 @@ namespace ModCore.Core.Plugins
         }
 
         public PluginManager(IAssemblyManager assemblyManager, IConfigurationRoot configurationRoot,
-            IHostingEnvironment hostingEnvironment, IDataRepository<InstalledPlugin> repository)
+            IHostingEnvironment hostingEnvironment, IDataRepository<InstalledPlugin> repository,
+            ApplicationPartManager appPartManager)
+
         {
             _assemblyManager = assemblyManager;
             _configurationRoot = configurationRoot;
             _hostingEnvironment = hostingEnvironment;
+            _appPartManager = appPartManager;
 
             _repository = repository;
 
@@ -173,31 +182,97 @@ namespace ModCore.Core.Plugins
             }
         }
 
+        public void ActivatePlugin(IPlugin plugin)
+        {
+            var installedPlugin = _repository.Find(new InstalledPluginForPlugin(plugin));
+            if (installedPlugin == null)
+                throw new NullReferenceException($"Can not find installed plugin for {plugin.Name}");
+
+            installedPlugin.Active = true;
+            installedPlugin.DateActivated = DateTime.UtcNow;
+            _repository.Update(installedPlugin);
+
+            RegisterAssemblyInPartManager(plugin);
+
+            Refresh();
+        }
+
+        public void DeactivatePlugin(IPlugin plugin)
+        {
+            var installedPlugin = _repository.Find(new InstalledPluginForPlugin(plugin));
+            if (installedPlugin == null)
+                throw new NullReferenceException($"Can not find installed plugin for {plugin.Name}");
+
+            installedPlugin.Active = false;
+            installedPlugin.DateDeactivated = DateTime.UtcNow;
+            _repository.Update(installedPlugin);
+
+            RemoveFromAssemblyInPartManager(plugin);
+
+            Refresh();
+        }
 
 
-        //private IDictionary<IPlugin, Assembly> GetPluginAssemblyFromDir()
-        //{
-        //    if (_plugins == null)
-        //    {
-        //        _plugins = new Dictionary<IPlugin, Assembly>();
+        public ICollection<IRouter> GetActiveRoutesForPlugins(IRouter defaultHandler, IInlineConstraintResolver inlineConstraintResolver)
+        {
+            var routes = new List<IRouter>();
 
-        //        foreach (var dll in GetAllAssembliesFromDir().Where(a => a.FullName.ToLower().Contains(".plugin")))
-        //        {
-        //            var plugin = dll.GetTypes().SingleOrDefault(t => typeof(IPlugin).IsAssignableFrom(t) &&
-        //                    typeof(BasePlugin).IsAssignableFrom(t));
+            foreach (var actPlugin in this.ActivePlugins)
+            {
 
-        //            if (plugin != null)
-        //            {
-        //                IPlugin addIn = (IPlugin)Activator.CreateInstance(plugin);
-        //                _plugins.Add(addIn, dll);
-        //            }
-        //        }
+                
 
-        //    }
+                foreach (var r in actPlugin.Routes)
+                {
+                    //var dataTokens = new RouteValueDictionary(new { Namespace = actPlugin.AssemblyName });
+                    //foreach (var d in r.DataTokens)
+                    //    dataTokens.Add(d.Key, d.Value);
 
-        //    return _plugins;
-        //}
 
+                    routes.Add(new Route(
+                   defaultHandler,
+                    r.RouteName,
+                    r.RouteTemplate,
+                    r.Defaults,
+                    r.Constraints,
+                    r.DataTokens,
+                    inlineConstraintResolver
+                    ));
+                }
+            }
+
+            return routes;
+        }
+
+        private void RegisterAssemblyInPartManager(IPlugin plugin)
+        {
+            var pluginAssemblies = AvailablePluginAssemblies.FirstOrDefault(a => a.Item1.AssemblyName == plugin.AssemblyName)?.Item2;
+            if (pluginAssemblies == null)
+                throw new KeyNotFoundException($"Can not find assembles for plugin: {plugin.Name}");
+
+            foreach (var assembly in pluginAssemblies)
+            {
+                _appPartManager.ApplicationParts.Add(new AssemblyPart(assembly));
+            }
+        }
+
+        private void RemoveFromAssemblyInPartManager(IPlugin plugin)
+        {
+            var pluginAssemblies = AvailablePluginAssemblies.FirstOrDefault(a => a.Item1.AssemblyName == plugin.AssemblyName)?.Item2;
+            if (pluginAssemblies == null)
+                throw new KeyNotFoundException($"Can not find assembles for plugin: {plugin.Name}");
+
+            foreach (var assembly in pluginAssemblies)
+            {
+                var assemblyPart = new AssemblyPart(assembly);
+                var assmblyPartFromMgr = _appPartManager.ApplicationParts.FirstOrDefault(a => a.Name == assemblyPart.Name);
+
+                if (assmblyPartFromMgr == null)
+                    throw new NullReferenceException($"Can not find the assembly {assembly.FullName} in ApplicationPartManager");
+
+                _appPartManager.ApplicationParts.Remove(assmblyPartFromMgr);
+            }
+        }
 
 
     }

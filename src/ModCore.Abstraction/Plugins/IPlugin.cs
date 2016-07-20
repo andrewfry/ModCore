@@ -18,7 +18,9 @@ namespace ModCore.Abstraction.Plugins
 
         //IDictionary<int, Action<IRouteBuilder>> Routes { get; }
 
-        IDictionary<int, Action<IPluginRouteCollection>> Routes { get; }
+        //IDictionary<int, Action<IPluginRoutes>> Routes { get; }
+
+        ICollection<IPluginRoute> Routes { get; }
 
         ICollection<ServiceDescriptor> Services { get; }
 

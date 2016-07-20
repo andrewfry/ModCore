@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ModCore.Abstraction.Plugins
 {
-   public interface IPluginRouteCollection
+   public interface IPluginRoutes
     {
         IRouteBuilder RouteBuider { get; }
     }
