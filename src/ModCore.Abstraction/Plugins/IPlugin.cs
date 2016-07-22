@@ -16,6 +16,8 @@ namespace ModCore.Abstraction.Plugins
 
         string AssemblyName { get; }
 
+        string Description { get; }
+
         //IDictionary<int, Action<IRouteBuilder>> Routes { get; }
 
         //IDictionary<int, Action<IPluginRoutes>> Routes { get; }

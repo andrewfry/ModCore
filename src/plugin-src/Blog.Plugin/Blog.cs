@@ -30,6 +30,14 @@ namespace Blog.Plugin
             }
         }
 
+        public string Description
+        {
+            get
+            {
+                return "This plugin is used to post blogs and read them.";
+            }
+        }
+
         //public IDictionary<int, Action<IPluginRoutes>>  Routes
         //{
         //    get

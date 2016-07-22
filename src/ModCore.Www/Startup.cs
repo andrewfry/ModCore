@@ -55,7 +55,7 @@ namespace ModCore.Www
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
             services.AddPluginManager(Configuration, _hostingEnvironment);
-            
+
             RunTestData(services);
         }
 
@@ -81,7 +81,7 @@ namespace ModCore.Www
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
 
-          //  this._hostingEnvironment.WebRootFileProvider = this.CreateCompositeFileProvider();
+            //  this._hostingEnvironment.WebRootFileProvider = this.CreateCompositeFileProvider();
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -103,7 +103,14 @@ namespace ModCore.Www
             app.UseMvcWithPlugin(routes =>
             {
                 routes.MapRoute(
-                     "default",
+                   "areaRoute",
+                   "{area:exists}/{controller=Home}/{action=Index}",
+                    null,
+                    null,
+                    new { Namespace = this.GetType().GetTypeInfo().Assembly.GetName().Name });
+
+                routes.MapRoute(
+                    "default",
                     "{controller=Home}/{action=Index}/{id?}",
                     null,
                     null,

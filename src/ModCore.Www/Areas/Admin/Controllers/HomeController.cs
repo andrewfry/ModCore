@@ -8,11 +8,12 @@ using ModCore.Abstraction.Site;
 using Microsoft.Extensions.Logging;
 using ModCore.ViewModels.Base;
 
-namespace ModCore.Www.Controllers
+namespace ModCore.Www.Areas.Admin.Controllers
 {
-    public class AdminController : BaseController
+    [Area("Admin")]
+    public class HomeController : BaseController
     {
-        public AdminController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
+        public HomeController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
             IBaseViewModelProvider baseModeProvider)
             : base(log,sessionManager,siteSettingsManager, baseModeProvider)
         {

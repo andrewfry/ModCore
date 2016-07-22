@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ModCore Admin</title>
+
+    <environment names="Development">
+        <link rel="stylesheet" href="~/css/bootstrap.admin.theme.css" />
+        <link rel="stylesheet" href="~/css/admin.css" />
+    </environment>
+    <environment names="Staging,Production">
+
+    </environment>
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse">
+                <a class="navbar-brand" href="#">ModCore Admin</a>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    @RenderBody()
+    <hr />
+    <footer>
+        <p>&copy; 2016 - ModCore.Www</p>
+    </footer>
+
+    <environment names="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/admin.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+
+    </environment>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

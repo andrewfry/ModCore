@@ -21,8 +21,9 @@ namespace Blog.Plugin.Controllers
             }
         }
 
-        public PluginController(IPluginLog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager, IPluginSettingsManager pluginSettingsManager) :
-            base(log, sessionManager, siteSettingsManager, pluginSettingsManager)
+        public PluginController(IPluginLog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager, IPluginSettingsManager pluginSettingsManager,
+            IBaseViewModelProvider baseViewModelProvider) :
+            base(log, sessionManager, siteSettingsManager, pluginSettingsManager, baseViewModelProvider)
         {
 
         }
