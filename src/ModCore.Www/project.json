@@ -1,9 +1,10 @@
 {
   "dependencies": {
     "Microsoft.NETCore.App": {
-      "version": "1.0.0",
-      "type": "platform"
+      "type": "platform",
+      "version": "1.0.0"
     },
+
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.Razor.Tools": {
@@ -24,7 +25,12 @@
     "Microsoft.Extensions.FileProviders.Embedded": "1.0.0",
     "ModCore.DataAccess.InMemory": "1.0.0-*",
     "ModCore.Core": "1.0.0-*",
-    "ModCore.ViewModels": "1.0.0-*"
+    "ModCore.ViewModels": "1.0.0-*",
+    "Microsoft.AspNetCore.Authentication": "1.0.0",
+    "Microsoft.AspNetCore.Session": "1.0.0",
+    "Microsoft.AspNetCore.Identity.MongoDB": "1.0.2",
+    "Microsoft.AspNetCore.DataProtection.Extensions": "1.0.0",
+    "ModCore.Services.MongoDb": "1.0.0-*"
   },
 
   "tools": {

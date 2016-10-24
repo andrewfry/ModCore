@@ -1,6 +1,6 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="js/admin.min.js" />
-/// <reference path="js/site - copy.js" />
+/// <reference path="js/bootstrap.js" />
 /// <reference path="js/site.js" />
 /// <reference path="lib/bootstrap/dist/js/bootstrap.js" />
 /// <reference path="lib/jquery/dist/jquery.js" />

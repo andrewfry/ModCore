@@ -7,6 +7,8 @@ using ModCore.Core.Controllers;
 using ModCore.Abstraction.Site;
 using Microsoft.Extensions.Logging;
 using ModCore.ViewModels.Base;
+using ModCore.Models.Sessions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ModCore.Www.Controllers
 {
@@ -22,7 +24,11 @@ namespace ModCore.Www.Controllers
         public IActionResult Index()
         {
             var m = new BaseViewModel();
+            
+            this.CurrentSession.IsLoggedIn = true;
+            this.CommitSession();
 
+            var test = this.CurrentSession.IsLoggedIn;
 
             return View(m);
         }

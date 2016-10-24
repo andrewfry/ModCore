@@ -10,12 +10,9 @@ namespace ModCore.Abstraction.Site
 {
     public interface IBaseController
     {
-        SessionData CurrentSession { get; }
-
-        ISessionManager SessionManager { get; }
+        SessionData CurrentSession { get;  }
 
         ISiteSettingsManager SiteSettingsManager { get; }
-
 
         HttpContext HttpContext { get; }
 
