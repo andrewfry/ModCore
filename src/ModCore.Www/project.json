@@ -4,7 +4,6 @@
       "type": "platform",
       "version": "1.0.0"
     },
-
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.Razor.Tools": {
@@ -30,7 +29,8 @@
     "Microsoft.AspNetCore.Session": "1.0.0",
     "Microsoft.AspNetCore.Identity.MongoDB": "1.0.2",
     "Microsoft.AspNetCore.DataProtection.Extensions": "1.0.0",
-    "ModCore.Services.MongoDb": "1.0.0-*"
+    "ModCore.Services.MongoDb": "1.0.0-*",
+    "ModCore.DataAccess.MongoDb": "1.0.0-*"
   },
 
   "tools": {

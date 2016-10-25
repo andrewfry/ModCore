@@ -8,5 +8,7 @@ namespace ModCore.Abstraction.DataAccess
         Expression<Func<T, bool>> IsSatisifiedBy();
 
         Func<T, bool> Predicate();
+
+        Expression<Func<T, bool>> GetExpression();
     }
 }

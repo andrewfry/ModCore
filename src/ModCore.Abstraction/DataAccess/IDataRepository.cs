@@ -13,7 +13,7 @@ namespace ModCore.Abstraction.DataAccess
 
         void Insert(ICollection<T> entities);
 
-        void Update(T entity);
+        T Update(T entity);
 
         void Update(ICollection<T> entities);
 

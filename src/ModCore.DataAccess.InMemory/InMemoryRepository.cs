@@ -25,10 +25,12 @@ namespace ModCore.DataAccess.InMemory
             _dataStore.AddRange(entities);
         }
 
-        public void Update(T entity)
+        public T Update(T entity)
         {
             _dataStore.Remove(entity);
             _dataStore.Add(entity);
+
+            return entity;
         }
 
         public void Update(ICollection<T> entities)

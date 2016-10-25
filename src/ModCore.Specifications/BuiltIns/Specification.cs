@@ -19,5 +19,13 @@ namespace ModCore.Specifications.BuiltIns
         }
 
 
+        public Expression<Func<T, bool>> GetExpression()
+        {
+            Func<T, bool> func = IsSatisifiedBy().Compile();
+            Expression<Func<T, bool>> expr = mc => func(mc);
+
+            return expr;
+        }
+
     }
 }

@@ -21,7 +21,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity.MongoDB;
 using Microsoft.AspNetCore.Http;
 using MongoDB.Driver;
-using ModCore.Services.MongoDb;
+using ModCore.DataAccess.MongoDb;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ModCore.Core.Middleware;
 
