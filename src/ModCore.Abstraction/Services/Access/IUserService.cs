@@ -8,16 +8,14 @@ using ModeCore.ViewModels.Access;
 
 namespace ModCore.Abstraction.Services.Access
 {
-    public interface IUserService : IService<User>
+    public interface IUserService : IServiceAsync<User>
     {
         bool ValidateLastChanged(ClaimsPrincipal userPrincipal, DateTime lastChanged);
 
-        Task ValidatePassword(User user, string password);
+        Task<bool> ValidatePassword(string userId, string password);
 
-        Task ResetPassword(User user, string password);
+        Task ResetPassword(string userId, string password);
 
         Task<User> CreateNewUser(RegisterViewModel registerModel);
-
-        Task<User> GetUser(string userId);
     }
 }

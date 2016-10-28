@@ -5,10 +5,8 @@ using System.Collections.Generic;
 
 namespace ModCore.Abstraction.Services
 {
-    public interface IService<TEntity>
+    public interface IServiceAsync<T>
     {
-
-        TEntity GetById(string id);
-
+        Task<T> GetByIdAsync(string id);
     }
 }

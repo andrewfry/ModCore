@@ -1,11 +1,12 @@
-﻿using System;
+﻿using ModCore.Models.BaseEntities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ModCore.Models.Access
 {
-    public class User
+    public class User : BaseEntity
     {
 
         public string FirstName { get; set; }
@@ -20,7 +21,9 @@ namespace ModCore.Models.Access
 
         public DateTime LastLogin { get; set; }
 
-        public bool FailedLoginAttempts { get; set; }
+        public DateTime DateCreated { get; set; }
+
+        public int FailedLoginAttempts { get; set; }
 
     }
 }
