@@ -14,5 +14,13 @@ namespace ModCore.Models.Access
 
         public string EmailAddress { get; set; }
 
+        public string PasswordHash { get; set; }
+
+        public string PasswordSalt { get; set; }
+
+        public DateTime LastLogin { get; set; }
+
+        public bool FailedLoginAttempts { get; set; }
+
     }
 }
