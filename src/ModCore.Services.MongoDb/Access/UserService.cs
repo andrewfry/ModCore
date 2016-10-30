@@ -24,9 +24,17 @@ namespace ModCore.Services.MongoDb.Access
         {
         }
 
-        public bool ValidateLastChanged(ClaimsPrincipal userPrincipal, DateTime lastChanged)
+        public async Task<bool> ValidateLastChanged(ClaimsPrincipal userPrincipal, DateTime lastChanged)
         {
-            throw new NotImplementedException();
+            var userId = userPrincipal.Identity.Name;
+            var user = await this.GetByIdAsync(userId);
+
+            if(lastChanged < user.LastUpdateDate)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<bool> ValidatePassword(string userId, string password)
@@ -39,7 +47,16 @@ namespace ModCore.Services.MongoDb.Access
 
         public async Task ResetPassword(string userId, string password)
         {
-            throw new NotImplementedException();
+            var user = await GetByIdAsync(userId);
+
+            user.PasswordSalt = SecurityUtil.GetSalt();
+            user.PasswordHash = SecurityUtil.GetHash(password + user.PasswordSalt);
+            user.FailedLoginAttempts = 0;
+            user.LastPasswordReset = DateTime.UtcNow;
+
+            await _repository.UpdateAsync(user);
+
+            //Send Password Reset Email
         }
 
         public async Task<User> CreateNewUser(RegisterViewModel registerModel)
@@ -50,6 +67,13 @@ namespace ModCore.Services.MongoDb.Access
             user.PasswordHash = SecurityUtil.GetHash(registerModel.Password + user.PasswordSalt);
             user.FailedLoginAttempts = 0;
             user.DateCreated = DateTime.UtcNow;
+
+            var randomBytes = SecurityUtil.GetRandomBytes(16);
+            var guid = Guid.NewGuid().ToString();
+            var emailHash = SecurityUtil.GetHash(randomBytes + guid);
+
+            user.EmailHashVerification = emailHash;
+            user.EmailVerified = false;
 
             await _repository.InsertAsync(user);
 

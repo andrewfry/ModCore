@@ -10,7 +10,7 @@ namespace ModCore.Abstraction.Services.Access
 {
     public interface IUserService : IServiceAsync<User>
     {
-        bool ValidateLastChanged(ClaimsPrincipal userPrincipal, DateTime lastChanged);
+        Task<bool> ValidateLastChanged(ClaimsPrincipal userPrincipal, DateTime lastChanged);
 
         Task<bool> ValidatePassword(string userId, string password);
 

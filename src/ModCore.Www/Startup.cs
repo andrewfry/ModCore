@@ -45,16 +45,12 @@ namespace ModCore.Www
             Configuration = builder.Build();
 
             _hostingEnvironment = env;
-
         }
-
-
 
         public void ConfigureServices(IServiceCollection services)
         {
             //Configure Settings
             services.Configure<MongoDbSettings>(options => Configuration.GetSection("MongoDbSettings").Bind(options));
-
 
             var mvcBuilder = services.AddMvc();
 
@@ -64,17 +60,12 @@ namespace ModCore.Www
             services.AddTransient<IBaseViewModelProvider, DefaultBaseViewModelProvider>();
 
             //Persistent Data Repositories
-            //services.AddTransient<IDataRepository<Log>, InMemoryRepository<Log>>();
-            //services.AddTransient<IDataRepository<InstalledPlugin>, InMemoryRepository<InstalledPlugin>>();
-
             services.AddTransient<IDataRepository<Log>, MongoDbRepository<Log>>();
             services.AddTransient<IDataRepository<InstalledPlugin>, MongoDbRepository<InstalledPlugin>>();
-
 
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
             services.AddPluginManager(Configuration, _hostingEnvironment);
-
 
             var sessionGuid = "TEMP"; //TODO - Get the sessionGuid from the DB
 
@@ -86,7 +77,6 @@ namespace ModCore.Www
                 options.CookieName = ".Modcore-" + sessionGuid;
             });
 
-        
             //TEST
             RunTestData(services);
         }
@@ -95,7 +85,6 @@ namespace ModCore.Www
         public void RunTestData(IServiceCollection services)
         {
             var srcProvider = services.BuildServiceProvider();
-
             var repos = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
 
             repos.Insert(new InstalledPlugin
@@ -112,7 +101,6 @@ namespace ModCore.Www
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-
             //  this._hostingEnvironment.WebRootFileProvider = this.CreateCompositeFileProvider();
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));

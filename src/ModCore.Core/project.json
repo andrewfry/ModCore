@@ -2,6 +2,7 @@
   "version": "1.0.0-*",
 
   "dependencies": {
+    "Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
     "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
     "Microsoft.AspNetCore.Mvc.Razor": "1.0.0",
@@ -14,6 +15,7 @@
     "ModCore.Specifications": "1.0.0-*",
     "NETStandard.Library": "1.6.0",
     "Newtonsoft.Json": "9.0.1",
+    "System.Diagnostics.StackTrace": "4.0.1",
     "System.Runtime.Loader": "4.0.0"
   },
 

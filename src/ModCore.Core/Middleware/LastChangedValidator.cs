@@ -23,9 +23,9 @@ namespace ModCore.Core.Middleware
                            select c.Value).FirstOrDefault();
 
             DateTime lastChangedDate = DateTime.Parse(lastChanged);
+            var lastChange = await userService.ValidateLastChanged(userPrincipal, lastChangedDate);
 
-            if (string.IsNullOrEmpty(lastChanged) ||
-                !userService.ValidateLastChanged(userPrincipal, lastChangedDate))
+            if (string.IsNullOrEmpty(lastChanged) || !lastChange)
             {
                 context.RejectPrincipal();
                 await context.HttpContext.Authentication.SignOutAsync("ModCoreBasicCookieAuth");

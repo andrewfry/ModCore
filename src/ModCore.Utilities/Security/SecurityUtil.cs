@@ -10,14 +10,19 @@ namespace ModCore.Utilities.Security
     public static class SecurityUtil
     {
 
-        public static string GetSalt()
+        public static string GetRandomBytes(int byteSize)
         {
-            byte[] bytes = new byte[128 / 8];
+            byte[] bytes = new byte[byteSize];
             using (var keyGenerator = RandomNumberGenerator.Create())
             {
                 keyGenerator.GetBytes(bytes);
                 return BitConverter.ToString(bytes).Replace("-", "").ToLower();
             }
+        }
+
+        public static string GetSalt()
+        {
+            return GetRandomBytes(128 / 8);
         }
 
         public static string GetHash(string text)

@@ -9,6 +9,7 @@
     "ModCore.Models": "1.0.0-*",
     "ModCore.Utilities": "1.0.0-*",
     "ModCore.ViewModels": "1.0.0-*",
+    "NETCore.MailKit": "1.0.0",
     "NETStandard.Library": "1.6.0"
   },
 
