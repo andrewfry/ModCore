@@ -1,13 +1,13 @@
-﻿a { outline:none !important}
+﻿a { outline: none !important; }
 .navbar { width: 100%; min-height: 40px; /*float: left;*/ margin: 0px; border: none; position: relative; }
 .navbar .navbar-logo { background-color: #00BFF3; /*border: 1px solid #00BFF3;*/ border-bottom: none; height: 40px; }
 .navbar .navbar-content { background-color: #FFF; border-bottom: 1px solid #d8e3e7; }
 
 .user-nav { overflow: hidden; position: absolute; top: 0px; margin-top: 40px; z-index: 999; height: 0px; float: left; -webkit-transition: height 0.5s ease; -moz-transition: height 0.5s ease; -o-transition: height 0.5s ease; transition: height 0.5s ease; }
-.user-nav.extended { display: block; height: 200px; }
+.user-nav.extended { display: block; height: 200px; width:100%; }
 .body-container { position: absolute; height: 100%; width: 100%; }
-.body-main { width: 100%; padding: 12px; height: 100%; float:left }
-.page-tree { width: 100%; background-color: #fff; float: left; padding: 20px; }
+.body-main { width: 100%; padding: 12px; height: calc(100% - 60px); float: left; }
+.page-tree { width: 100%; background-color: #fff; float: left; padding: 20px;height:60px }
 .page-tree h2.title { font-size: 24px; color: #313b3d; margin: 0px; }
 .body-content { width: 100%; height: calc(100% - 40px); padding: 0px; }
 /* height = total height minus the height of the navbar+margin */
@@ -19,20 +19,20 @@ footer p { margin: 0px; padding: 4px; font-weight: bold; }
 
 /* Sidebar Styles */
 .admin-sidebar-nav { position: absolute; top: 0; width: 100%; margin: 0; padding: 0; list-style: none; }
-.admin-sidebar-nav li { cursor:pointer; text-indent: 20px; line-height: 28px; padding: 6px 0px 6px 60px; float: left; width: 60px; -webkit-transition: all 0.5s ease; -moz-transition: all 0.5s ease; -o-transition: all 0.5s ease; transition: all 0.5s ease; }
-.admin-sidebar-nav li a { text-decoration: none; color: #999999; /*display: none;*/ outline:none;}
-.sidebar-main.extended .admin-sidebar-nav li { width: 100%; padding-left:40px }
+.admin-sidebar-nav li { cursor: pointer; text-indent: 20px; line-height: 28px; padding: 6px 0px 6px 60px; float: left; width: 60px; -webkit-transition: all 0.5s ease; -moz-transition: all 0.5s ease; -o-transition: all 0.5s ease; transition: all 0.5s ease; }
+.admin-sidebar-nav li a { text-decoration: none; color: #999999; /*display: none;*/ outline: none; }
+.sidebar-main.extended .admin-sidebar-nav li { width: 100%; padding-left: 40px; }
 .sidebar-main.extended .admin-sidebar-nav li a { display: block; }
 .admin-sidebar-nav li a:hover { text-decoration: none; color: #fff; background: rgba(255,255,255,0.2); }
 .admin-sidebar-nav li a:active,
 .admin-sidebar-nav li a:focus { text-decoration: none; }
-.admin-sidebar-nav li.dashboard { background-size: 22px;background-image: url('../images/icon-dashboard.png'); background-repeat:no-repeat;background-position:20px center }
-.admin-sidebar-nav li.dashboard:hover { background-image: url('../images/icon-dashboard-hover.png');}
-.admin-sidebar-nav li.pages { background-size: 22px;background-image: url('../images/icon-edit.png'); background-repeat:no-repeat;background-position:20px center }
-.admin-sidebar-nav li.pages:hover { background-image: url('../images/icon-edit-hover.png');}
-.admin-sidebar-nav li.plugins { background-size: 18px;background-image: url('../images/icon-plugin.png'); background-repeat:no-repeat;background-position:20px center }
-.admin-sidebar-nav li.plugins:hover,.admin-sidebar-nav li.plugins.active  { background-image: url('../images/icon-plugin-hover.png'); color:#fff}
-.admin-sidebar-nav li.icon-listitem { padding:6px}
+.admin-sidebar-nav li.dashboard { background-size: 22px; background-image: url('../images/icon-dashboard.png'); background-repeat: no-repeat; background-position: 20px center; }
+.admin-sidebar-nav li.dashboard:hover { background-image: url('../images/icon-dashboard-hover.png'); }
+.admin-sidebar-nav li.pages { background-size: 22px; background-image: url('../images/icon-edit.png'); background-repeat: no-repeat; background-position: 20px center; }
+.admin-sidebar-nav li.pages:hover { background-image: url('../images/icon-edit-hover.png'); }
+.admin-sidebar-nav li.plugins { background-size: 18px; background-image: url('../images/icon-plugin.png'); background-repeat: no-repeat; background-position: 20px center; }
+.admin-sidebar-nav li.plugins:hover, .admin-sidebar-nav li.plugins.active { background-image: url('../images/icon-plugin-hover.png'); color: #fff; }
+.admin-sidebar-nav li.icon-listitem { padding: 6px; }
 
 /* Menu Transitions */
 .sidebar-main.extended { width: 220px; }
@@ -42,7 +42,7 @@ footer p { margin: 0px; padding: 4px; font-weight: bold; }
 .sidebar-main.extended .menu-extend-icon { -webkit-transform: rotate(180deg); -moz-transform: rotate(180deg); -ms-transform: rotate(180deg); -o-transform: rotate(180deg); transform: rotate(180deg); display: inline-block; }
 
 /*User Menu*/
-.icon-user-nav { outline:none;background-image: url('../images/icon-menu-nav.png'); background-position: 50% center; height: 40px; width: 40px; display: block; float: right; background-repeat: no-repeat; -webkit-transition: all 0.5s ease; -moz-transition: all 0.5s ease; -o-transition: all 0.5s ease; transition: all 0.5s ease; }
+.icon-user-nav { outline: none; background-image: url('../images/icon-menu-nav.png'); background-position: 50% center; height: 40px; width: 40px; display: block; float: right; background-repeat: no-repeat; -webkit-transition: all 0.5s ease; -moz-transition: all 0.5s ease; -o-transition: all 0.5s ease; transition: all 0.5s ease; }
 .icon-user-nav.extended { -webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg); }
 .search-container { text-align: center; width: 100%; float: right; margin: 12px 1.5% 12px; }
 .search-input { background: url('../images/icon-search.png') #f2f6f7 no-repeat; background-position: 95% center; border-radius: 14px; border: none; padding: 2px 6px 2px 10px; color: #9e9f9f; font-size: 20px; outline: none; box-shadow: inset 0px 4px 6px -7px hsl(0, 0%, 2%); width: 90%; margin: 0 auto; }
