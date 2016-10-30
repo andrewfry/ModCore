@@ -1,15 +1,16 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ModCore Admin</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+    <title>@ViewData["Title"] - ModCore</title>
 
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/boostrap.overrides.css" />
         <link rel="stylesheet" href="~/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="~/css/admin-site.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment names="Staging,Production">
 
@@ -22,7 +23,7 @@
                 <div class="navbar-logo">
                     ModCore Admin
                     <a href="#" class="icon-user-nav" id="btnUserNavMenu">
-
+                       
                     </a>
                 </div>
                 <div class="navbar-content user-nav">
@@ -38,18 +39,18 @@
         </div>
         <div class="container body-content">
             <div class="sidebar-main">
-                <ul class="admin-sidebar-nav">
+                <ul class="sidebar-nav">
                     <li class="icon-listitem">
                         <a class="menu-extend-icon" href="#"></a>
                     </li>
                     <li class="dashboard">
-                        <a href="/admin">Dashboard</a>
+                        <a href="#">Dashboard</a>
                     </li>
                     <li class="pages">
                         <a href="#">Pages</a>
                     </li>
                     <li class="plugins">
-                        <a href="/admin/plugin">Plugins</a>
+                        <a href="#">Plugins</a>
                     </li>
                     <li>
                         <a href="#">About</a>
@@ -76,7 +77,7 @@
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/admin.js" asp-append-version="true"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
 
@@ -84,5 +85,4 @@
 
     @RenderSection("scripts", required: false)
 </body>
-
 </html>

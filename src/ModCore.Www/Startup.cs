@@ -13,6 +13,7 @@ using ModCore.Core.Site;
 using System;
 using System.Reflection;
 using ModCore.Models.Plugins;
+using ModCore.Models.Themes;
 using ModCore.Core.HelperExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -24,6 +25,7 @@ using MongoDB.Driver;
 using ModCore.DataAccess.MongoDb;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ModCore.Core.Middleware;
+using ModCore.Abstraction.Themes;
 
 namespace ModCore.Www
 {
@@ -32,6 +34,7 @@ namespace ModCore.Www
         public IConfigurationRoot Configuration { get; }
 
         private IPluginManager _pluginManager;
+        private IThemeManager _themeManager;
         private IHostingEnvironment _hostingEnvironment;
         private string CurrentNameSpace { get { return this.GetType().GetTypeInfo().Assembly.GetName().Name; } }
 
@@ -64,12 +67,11 @@ namespace ModCore.Www
             //Persistent Data Repositories
             services.AddTransient<IDataRepository<Log>, InMemoryRepository<Log>>();
             services.AddTransient<IDataRepository<InstalledPlugin>, InMemoryRepository<InstalledPlugin>>();
-
+            services.AddTransient<IDataRepository<ActiveTheme>, InMemoryRepository<ActiveTheme>>();
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
             services.AddPluginManager(Configuration, _hostingEnvironment);
-
-
+            services.AddThemeManager(Configuration, _hostingEnvironment);
             var sessionGuid = "TEMP"; //TODO - Get the sessionGuid from the DB
 
             //setting up the sesssion
@@ -80,7 +82,7 @@ namespace ModCore.Www
                 options.CookieName = ".Modcore-" + sessionGuid;
             });
 
-        
+
             //TEST
             RunTestData(services);
         }
@@ -101,6 +103,18 @@ namespace ModCore.Www
                 PluginAssemblyName = "Blog.Plugin",
                 PluginName = "Blog",
                 PluginVersion = "1.0"
+            });
+
+            var themes = srcProvider.GetService<IDataRepository<ActiveTheme>>();
+
+            themes.Insert(new ActiveTheme
+            {
+                Id = "1",
+                Description = "Sample Theme for test purposes.",
+                DisplayName = "Sample Theme",
+                ThemeName = "Sample",
+                ThemeVersion = "1.0"
+
             });
         }
 
@@ -143,7 +157,7 @@ namespace ModCore.Www
                     OnValidatePrincipal = LastChangedValidator.ValidateAsync,
                 }
 
-        });
+            });
 
             app.UseMvcWithPlugin(routes =>
             {

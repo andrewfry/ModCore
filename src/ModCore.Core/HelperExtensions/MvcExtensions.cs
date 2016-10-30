@@ -9,9 +9,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
+using ModCore.Abstraction.Themes;
 using ModCore.Core.Controllers;
 using ModCore.Core.Plugins;
+using ModCore.Core.Themes;
 using ModCore.Models.Plugins;
+using ModCore.Models.Themes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,6 +107,22 @@ namespace ModCore.Core.HelperExtensions
             return services;
         }
 
+        public static IServiceCollection AddThemeManager(this IServiceCollection services, IConfigurationRoot configRoot, IHostingEnvironment env)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            services.AddSingleton<IThemeManager, ThemeManager>(srcProvider =>
+            {                
+                var repos = srcProvider.GetRequiredService<IDataRepository<ActiveTheme>>();
+
+                return new ThemeManager(configRoot, env, repos);
+            });
+
+            return services;
+        }
 
     }
 }
