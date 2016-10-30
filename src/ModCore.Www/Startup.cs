@@ -18,7 +18,6 @@ using ModCore.Core.Middleware;
 using ModCore.Models.Themes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Framework.Configuration;
 
 namespace ModCore.Www
 {
