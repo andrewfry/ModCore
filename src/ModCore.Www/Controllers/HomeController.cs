@@ -27,7 +27,6 @@ namespace ModCore.Www.Controllers
             
             this.CurrentSession.IsLoggedIn = true;
             this.CommitSession();
-
             var test = this.CurrentSession.IsLoggedIn;
 
             return View(m);

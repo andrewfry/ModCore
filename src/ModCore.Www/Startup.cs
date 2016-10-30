@@ -24,6 +24,7 @@ using MongoDB.Driver;
 using ModCore.DataAccess.MongoDb;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ModCore.Core.Middleware;
+using ModCore.Models.Themes;
 
 namespace ModCore.Www
 {
@@ -62,11 +63,12 @@ namespace ModCore.Www
             //Persistent Data Repositories
             services.AddTransient<IDataRepository<Log>, MongoDbRepository<Log>>();
             services.AddTransient<IDataRepository<InstalledPlugin>, MongoDbRepository<InstalledPlugin>>();
+            services.AddTransient<IDataRepository<ActiveTheme>, MongoDbRepository<ActiveTheme>>();
 
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
             services.AddPluginManager(Configuration, _hostingEnvironment);
-
+            services.AddThemeManager(Configuration, _hostingEnvironment);
             var sessionGuid = "TEMP"; //TODO - Get the sessionGuid from the DB
 
             //setting up the sesssion
@@ -87,15 +89,27 @@ namespace ModCore.Www
             var srcProvider = services.BuildServiceProvider();
             var repos = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
 
-            repos.Insert(new InstalledPlugin
+            //repos.Insert(new InstalledPlugin
+            //{
+            //    Active = false,
+            //    DateInstalled = DateTime.UtcNow,
+            //    Id = "1",
+            //    Installed = true,
+            //    PluginAssemblyName = "Blog.Plugin",
+            //    PluginName = "Blog",
+            //    PluginVersion = "1.0"
+            //});
+
+            var themes = srcProvider.GetService<IDataRepository<ActiveTheme>>();
+
+            themes.Insert(new ActiveTheme
             {
-                Active = false,
-                DateInstalled = DateTime.UtcNow,
                 Id = "1",
-                Installed = true,
-                PluginAssemblyName = "Blog.Plugin",
-                PluginName = "Blog",
-                PluginVersion = "1.0"
+                Description = "Sample Theme for test purposes.",
+                DisplayName = "Sample Theme",
+                ThemeName = "Sample",
+                ThemeVersion = "1.0"
+
             });
         }
 

@@ -1,0 +1,15 @@
+﻿@model ModCore.ViewModels.Admin.Themes.vThemeList
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="list-group">
+    @foreach (var theme in Model.ThemeList)
+    {
+        <a href="#" class="list-group-item" style="margin:12px">
+            <h4 class="list-group-item-heading">@theme.DisplayName</h4>
+            <p class="list-group-item-text">@theme.Description</p>
+        </a>
+    }
+</div>
