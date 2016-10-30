@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Models.BaseEntities;
+using ModCore.Specifications.Base;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
@@ -51,12 +52,12 @@ namespace ModCore.DataAccess.MongoDb
 
         public virtual void Insert(T entity)
         {
-            this.collection.InsertOneAsync(entity);
+            this.collection.InsertOne(entity);
         }
 
         public virtual void Insert(ICollection<T> entities)
         {
-            this.collection.InsertManyAsync(entities);
+            this.collection.InsertMany(entities);
         }
 
         public virtual T Update(T entity)
@@ -73,25 +74,24 @@ namespace ModCore.DataAccess.MongoDb
 
             foreach (var entity in entities)
             {
-                this.collection.ReplaceOneAsync(GetIDFilter(entity.Id), entity, new UpdateOptions { IsUpsert = true });
+                this.collection.ReplaceOne(GetIDFilter(entity.Id), entity, new UpdateOptions { IsUpsert = true });
             }
         }
 
         public virtual void DeleteAll(ISpecification<T> specification)
         {
-            this.collection.DeleteManyAsync<T>(specification.GetExpression());
+            this.collection.DeleteMany<T>(specification.GetExpression());
         }
 
         public virtual void Delete(ISpecification<T> specification)
         {
-            this.collection.AsQueryable<T>().Where<T>(specification.Predicate()).ToList();
 
+            this.collection.DeleteOne(specification.GetExpression());
+        }
 
-            var entity = Find(specification);
-            if (entity != null)
-            {
-                this.collection.DeleteOneAsync(specification.GetExpression());
-            }
+        public virtual void DeleteById(string id)
+        {
+            Delete(new GetById<T>(id));
         }
 
         public virtual ICollection<T> FindAll(ISpecification<T> specification)
@@ -104,6 +104,73 @@ namespace ModCore.DataAccess.MongoDb
             return this.collection.AsQueryable<T>().Where<T>(specification.Predicate()).SingleOrDefault();
         }
 
+        public virtual T FindById(string id)
+        {
+            return Find(new GetById<T>(id));
+        }
+
+        //Async Methods
+
+        public virtual async Task InsertAsync(T entity)
+        {
+            await this.collection.InsertOneAsync(entity);
+        }
+
+        public virtual async Task InsertAsync(ICollection<T> entities)
+        {
+            await this.collection.InsertManyAsync(entities);
+        }
+
+        public virtual async Task<T> UpdateAsync(T entity)
+        {
+            if (entity.Id == null)
+                await this.InsertAsync(entity);
+            else
+                await this.collection.ReplaceOneAsync(GetIDFilter(entity.Id), entity, new UpdateOptions { IsUpsert = true });
+            return entity;
+        }
+
+        public virtual async Task UpdateAsync(ICollection<T> entities)
+        {
+
+            foreach (var entity in entities)
+            {
+                await this.collection.ReplaceOneAsync(GetIDFilter(entity.Id), entity, new UpdateOptions { IsUpsert = true });
+            }
+        }
+
+        public virtual async Task DeleteAllAsync(ISpecification<T> specification)
+        {
+            await this.collection.DeleteManyAsync<T>(specification.GetExpression());
+        }
+
+        public virtual async Task DeleteAsync(ISpecification<T> specification)
+        {
+            await this.collection.DeleteOneAsync(specification.GetExpression());
+        }
+
+        public virtual async Task DeleteByIdAsync(string id)
+        {
+             await DeleteAsync(new GetById<T>(id));
+        }
+
+        public virtual async Task<ICollection<T>> FindAllAsync(ISpecification<T> specification)
+        {
+            //return await this.collection.AsQueryable<T>().Where<T>(specification.Predicate()).ToListAsync();
+            return await Task.Run<ICollection<T>>(() => this.collection.AsQueryable<T>().Where<T>(specification.Predicate()).ToList());
+
+        }
+
+        public virtual async Task<T> FindAsync(ISpecification<T> specification)
+        {
+            //TODO: No SingleOrDefaultAsync() in .net core?
+            return await Task.Run<T>(() => this.collection.AsQueryable<T>().Where<T>(specification.Predicate()).SingleOrDefault());
+        }
+
+        public virtual async Task<T> FindByIdAsync(string id)
+        {
+            return await FindAsync(new GetById<T>(id));
+        }
 
         private static FilterDefinition<T> GetIDFilter(ObjectId id)
         {

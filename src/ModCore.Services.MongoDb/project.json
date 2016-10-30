@@ -1,7 +1,14 @@
-﻿{
+{
   "version": "1.0.0-*",
 
   "dependencies": {
+    "AutoMapper": "5.1.1",
+    "Microsoft.AspNetCore.Identity": "1.0.0",
+    "ModCore.Abstraction": "1.0.0-*",
+    "ModCore.DataAccess.MongoDb": "1.0.0-*",
+    "ModCore.Models": "1.0.0-*",
+    "ModCore.Utilities": "1.0.0-*",
+    "ModCore.ViewModels": "1.0.0-*",
     "NETStandard.Library": "1.6.0"
   },
 

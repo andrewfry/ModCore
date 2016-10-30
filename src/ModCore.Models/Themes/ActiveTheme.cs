@@ -12,9 +12,7 @@ namespace ModCore.Models.Themes
         public string ThemeName { get; set; }
 
         public string ThemeVersion { get; set; }
-
-        //public bool Active { get; set; }
-
+        
         public string Description { get; set; }
 
         public string DisplayName { get; set; }

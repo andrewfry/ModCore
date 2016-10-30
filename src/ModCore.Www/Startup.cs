@@ -13,7 +13,6 @@ using ModCore.Core.Site;
 using System;
 using System.Reflection;
 using ModCore.Models.Plugins;
-using ModCore.Models.Themes;
 using ModCore.Core.HelperExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -25,7 +24,7 @@ using MongoDB.Driver;
 using ModCore.DataAccess.MongoDb;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ModCore.Core.Middleware;
-using ModCore.Abstraction.Themes;
+using ModCore.Models.Themes;
 
 namespace ModCore.Www
 {
@@ -34,7 +33,6 @@ namespace ModCore.Www
         public IConfigurationRoot Configuration { get; }
 
         private IPluginManager _pluginManager;
-        private IThemeManager _themeManager;
         private IHostingEnvironment _hostingEnvironment;
         private string CurrentNameSpace { get { return this.GetType().GetTypeInfo().Assembly.GetName().Name; } }
 
@@ -55,6 +53,8 @@ namespace ModCore.Www
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //Configure Settings
+            services.Configure<MongoDbSettings>(options => Configuration.GetSection("MongoDbSettings").Bind(options));
 
 
             var mvcBuilder = services.AddMvc();
@@ -65,9 +65,13 @@ namespace ModCore.Www
             services.AddTransient<IBaseViewModelProvider, DefaultBaseViewModelProvider>();
 
             //Persistent Data Repositories
-            services.AddTransient<IDataRepository<Log>, InMemoryRepository<Log>>();
-            services.AddTransient<IDataRepository<InstalledPlugin>, InMemoryRepository<InstalledPlugin>>();
-            services.AddTransient<IDataRepository<ActiveTheme>, InMemoryRepository<ActiveTheme>>();
+            //services.AddTransient<IDataRepository<Log>, InMemoryRepository<Log>>();
+            //services.AddTransient<IDataRepository<InstalledPlugin>, InMemoryRepository<InstalledPlugin>>();
+
+            services.AddTransient<IDataRepository<Log>, MongoDbRepository<Log>>();
+            services.AddTransient<IDataRepository<InstalledPlugin>, MongoDbRepository<InstalledPlugin>>();
+            services.AddTransient<IDataRepository<ActiveTheme>, MongoDbRepository<ActiveTheme>>();
+
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
             services.AddPluginManager(Configuration, _hostingEnvironment);
@@ -82,7 +86,7 @@ namespace ModCore.Www
                 options.CookieName = ".Modcore-" + sessionGuid;
             });
 
-
+        
             //TEST
             RunTestData(services);
         }
@@ -94,16 +98,16 @@ namespace ModCore.Www
 
             var repos = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
 
-            repos.Insert(new InstalledPlugin
-            {
-                Active = false,
-                DateInstalled = DateTime.UtcNow,
-                Id = "1",
-                Installed = true,
-                PluginAssemblyName = "Blog.Plugin",
-                PluginName = "Blog",
-                PluginVersion = "1.0"
-            });
+            //repos.Insert(new InstalledPlugin
+            //{
+            //    Active = false,
+            //    DateInstalled = DateTime.UtcNow,
+            //    Id = "1",
+            //    Installed = true,
+            //    PluginAssemblyName = "Blog.Plugin",
+            //    PluginName = "Blog",
+            //    PluginVersion = "1.0"
+            //});
 
             var themes = srcProvider.GetService<IDataRepository<ActiveTheme>>();
 
@@ -157,7 +161,7 @@ namespace ModCore.Www
                     OnValidatePrincipal = LastChangedValidator.ValidateAsync,
                 }
 
-            });
+        });
 
             app.UseMvcWithPlugin(routes =>
             {
