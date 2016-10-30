@@ -1,5 +1,4 @@
 ﻿using ModCore.Models.BaseEntities;
-using ModCore.Models.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace ModCore.Models.Communication
 {
-    public class SentEmail : BaseEntity
+    public class EmailMessage
     {
         public string Name { get; set; }
+
+        public string DisplayName { get; set; }
 
         public EmailContact From { get; set; }
 
@@ -23,8 +24,5 @@ namespace ModCore.Models.Communication
 
         public string Body { get; set; }
 
-        public DateTime DateSent { get; set; }
-
-        public EmailSentStatus Status { get; set; }
     }
 }

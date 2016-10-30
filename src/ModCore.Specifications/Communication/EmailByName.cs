@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace ModCore.Specifications.Communication
 {
 
-    public class EmailByName : Specification<Email> 
+    public class EmailByName : Specification<EmailTemplate> 
     {
         private readonly string _name;
 
@@ -18,7 +18,7 @@ namespace ModCore.Specifications.Communication
             this._name = name;
         }
 
-        public override Expression<Func<Email, bool>> IsSatisifiedBy()
+        public override Expression<Func<EmailTemplate, bool>> IsSatisifiedBy()
         {
             return a => a.Name.ToLower() == _name.ToLower();
         }

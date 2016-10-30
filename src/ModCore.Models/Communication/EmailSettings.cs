@@ -20,6 +20,9 @@ namespace ModCore.Models.Communication
 
         public bool TestMode { get; set; }
 
+        public string TestEmailAddress { get; set; }
+
+        public string LocalDomain { get; set; }
 
     }
 }

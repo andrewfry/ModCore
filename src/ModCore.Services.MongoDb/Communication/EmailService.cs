@@ -1,6 +1,15 @@
-﻿using Microsoft.Extensions.Options;
+﻿using AutoMapper;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.Extensions.Options;
+using MimeKit;
+using MimeKit.Text;
 using ModCore.Abstraction.DataAccess;
+using ModCore.Abstraction.Site;
 using ModCore.Models.Communication;
+using ModCore.Models.Enum;
+using ModCore.Services.MongoDb.Base;
+using ModCore.Specifications.Base;
 using ModCore.Specifications.Communication;
 using System;
 using System.Collections.Generic;
@@ -12,23 +21,27 @@ using System.Threading.Tasks;
 
 namespace ModCore.Services.MongoDb.Communication
 {
-    public class EmailService
+    public class EmailService : BaseServiceAsync<EmailTemplate>
     {
-        private IDataRepository<Email> _repository;
+        private IDataRepositoryAsync<EmailLayout> _emailLayoutRepository;
+        private IDataRepositoryAsync<SentEmail> _sentEmailRepository;
+
         private IOptions<EmailSettings> _settings;
 
 
 
-        public EmailService(IDataRepository<Email> repository, IOptions<EmailSettings> settings)
+        public EmailService(IDataRepositoryAsync<EmailLayout> emailLayoutRepository, IOptions<EmailSettings> settings,
+            IDataRepositoryAsync<EmailTemplate> repository, IMapper mapper, ILog logger)
+            : base(repository, mapper, logger)
         {
-            _repository = repository;
             _settings = settings;
+            _emailLayoutRepository = emailLayoutRepository;
         }
 
 
-        public Email FindByName(string name)
+        public async Task<EmailTemplate> FindByName(string name)
         {
-            var email = _repository.Find(new EmailByName(name));
+            var email = await _repository.FindAsync(new EmailByName(name));
 
             if (email == null)
                 throw new Exception($"Can not find the email with the following name: {name}");
@@ -36,46 +49,38 @@ namespace ModCore.Services.MongoDb.Communication
             return email;
         }
 
-        public bool PrepareAndSend(Email email, string currentUserId)
+        public async Task<bool> SendEmail(string emailName)
         {
-            return PrepareAndSend(email, currentUserId, null);
+            var emailTemplate = await FindByName(emailName);
+            var emailMessage = _mapper.Map<EmailMessage>(emailTemplate);
+
+            if (emailTemplate.HasLayout())
+            {
+                var layout = await _emailLayoutRepository.FindByIdAsync(emailTemplate.EmailLayoutId);
+                emailMessage.Body = ReplaceBody(emailMessage.Body, layout.Html);
+            }
+
+            return false;
         }
 
-        public bool PrepareAndSend(string emailName, string to, string currentUserId, Dictionary<string, string> replacements)
-        {
-            var email = FindByName(emailName);
-            email.To.Clear();
-            email.Cc.Clear();
-            email.Bcc.Clear();
 
-            email.To.Add(to);
-
-            return PrepareAndSend(email, currentUserId, replacements);
-        }
-
-        public bool PrepareAndSend(string emailName, string currentUserId, Dictionary<string, string> replacements)
-        {
-            var email = FindByName(emailName);
-            return PrepareAndSend(email, currentUserId, replacements);
-        }
-
-        public bool PrepareAndSend(Email email, string currentUserId, Dictionary<string, string> replacements)
+        private async Task<bool> PrepareAndSend(EmailMessage email, string currentUserId, Dictionary<string, string> replacements)
         {
 
             var emailServer = _settings.Value.EmailServer;
             var emailServerPort = _settings.Value.EmailServerPort;
             var emailServerUserName = _settings.Value.EmailServerPort;
-            var emailServerUserPassword = ConfigurationManager.AppSettings["emailServerUserPassword"].ToString();
-            var emailSecure = Convert.ToBoolean(ConfigurationManager.AppSettings["emailServerSecure"]);
+            var emailServerUserPassword = _settings.Value.EmailServerUserPassword;
+            var emailSecure = _settings.Value.EmailServerSecure;
+            var emailTestMode = _settings.Value.TestMode;
+            var emailTestEmailAddress = _settings.Value.TestEmailAddress;
+            var emailLocalDomain = _settings.Value.LocalDomain;
 
-            email.SendEmail = ConfigurationManager.AppSettings["SendEmail"].ToString();
+            var mailMessage = new MimeMessage(new MailboxAddress(email.From.DisplayName, email.From.EmailAddress), new List<MailboxAddress>(), "", null);
 
-            MailMessage mailMessage = new MailMessage();
-
-            if (email.SendEmail == "Local" && !string.IsNullOrEmpty(currentUserId))
+            if (emailTestMode)
             {
 
-                var testingEmailAddress = ConfigurationManager.AppSettings["emailTestEmail"].ToString();
                 StringBuilder to = new StringBuilder();
                 StringBuilder cc = new StringBuilder();
                 StringBuilder bcc = new StringBuilder();
@@ -83,17 +88,17 @@ namespace ModCore.Services.MongoDb.Communication
 
                 foreach (var ad in email.To)
                 {
-                    to.Append(ad + ";");
+                    to.Append(ad.EmailAddress + ";");
                 }
 
                 foreach (var ad in email.Cc)
                 {
-                    cc.Append(ad + ";");
+                    cc.Append(ad.EmailAddress + ";");
                 }
 
                 foreach (var ad in email.Bcc)
                 {
-                    bcc.Append(ad + ";");
+                    bcc.Append(ad.EmailAddress + ";");
                 }
 
                 message.Append("<table><tr><td colspan=\"2\">This message was not sent in a production environment. This message would normally be sent to the following addresses:</td></tr><tr><td>To:</td><td>");
@@ -105,78 +110,63 @@ namespace ModCore.Services.MongoDb.Communication
                 message.Append("</td></tr></table>");
 
                 email.To.Clear();
-                email.To.Add(testingEmailAddress);
                 email.Cc.Clear();
-                email.Cc.Clear();
+                email.Bcc.Clear();
+
+                email.To.Add(new EmailContact(emailTestEmailAddress));
 
                 email.Body = email.Body + "<br /><br />" + message.ToString();
 
-
-                var user = _userService.Find(currentUserId);
-
-                email.To.Clear();
-                email.To.Add(user.EmailAddress);
-                email.Cc.Clear();
             }
             else
             {
                 foreach (var ad in email.To)
                 {
-                    mailMessage.To.Add(new MailAddress(ad));
+                    mailMessage.To.Add(new MailboxAddress(ad.DisplayName, ad.EmailAddress));
                 }
 
                 foreach (var ad in email.Cc)
                 {
-                    mailMessage.CC.Add(new MailAddress(ad));
+                    mailMessage.To.Add(new MailboxAddress(ad.DisplayName, ad.EmailAddress));
                 }
 
                 foreach (var ad in email.Bcc)
                 {
-                    mailMessage.Bcc.Add(new MailAddress(ad));
+                    mailMessage.To.Add(new MailboxAddress(ad.DisplayName, ad.EmailAddress));
                 }
             }
 
+            var htmlBody = new TextPart(TextFormat.Html);
+            htmlBody.Text = ReplaceVariables(email.Body, replacements);
 
-            mailMessage.IsBodyHtml = true;
-            if (!string.IsNullOrEmpty(email.EmailLayoutId))
+            mailMessage.Body = htmlBody;
+            mailMessage.Subject = ReplaceVariables(email.Subject, replacements);
+
+
+
+
+            using (var client = new SmtpClient())
             {
-                email.Body = ReplaceBody(email.Body, email.EmailLayoutId);
-            }
+                client.LocalDomain = emailLocalDomain;
 
-            email.Body = ReplaceVariables(email.Body, replacements);
-            email.Subject = ReplaceVariables(email.Subject, replacements);
-
-            mailMessage.Body = email.Body;
-            mailMessage.Subject = email.Subject;
-
-            mailMessage.From = new MailAddress(email.From);
-            email.MailMessage = mailMessage;
-
-            using (SmtpClient smtpClient = new SmtpClient(emailServer, emailServerPort))
-            {
-                smtpClient.Credentials = new NetworkCredential(emailServerUserName, emailServerUserPassword);
+                var secure = SecureSocketOptions.None;
 
                 if (emailSecure)
-                    smtpClient.EnableSsl = true;
+                    secure = SecureSocketOptions.Auto;
+                
+                //TODO smtp clients with authentication
 
-                email.SMTPMailServer = smtpClient;
-                SendThroughSmtp(email);
+                await client.ConnectAsync(emailServer, emailServerPort, secure).ConfigureAwait(false);
+                await client.SendAsync(mailMessage).ConfigureAwait(false);
+                await client.DisconnectAsync(true).ConfigureAwait(false);
             }
+
 
             return true;
 
         }
 
-        public bool PrepareAndSend(Email email, Dictionary<string, string> replacements)
-        {
-            return PrepareAndSend(email, "", replacements);
-        }
 
-        public bool PrepareAndSend(string emailName, Dictionary<string, string> replacements)
-        {
-            var email = this.FindByName(emailName);
-            return PrepareAndSend(email, replacements);
-        }
 
         protected string ReplaceVariables(string input, Dictionary<string, string> replacements)
         {
@@ -197,124 +187,36 @@ namespace ModCore.Services.MongoDb.Communication
 
         protected Dictionary<string, string> AddSystemVariables(Dictionary<string, string> replacements)
         {
-            if (replacements.All(a => a.Key != "CURRENT_URL"))
-            {
-                if (ConfigurationManager.AppSettings["CURRENT_URL"] != null)
-                {
-                    replacements.Add("CURRENT_URL", ConfigurationManager.AppSettings["CURRENT_URL"].ToString());
-                }
-            }
+            //TODO add the ability to add "system variables" like:
+            //1. SiteName
+            //2. SiteURl
 
             return replacements;
         }
 
-        protected string ReplaceBody(string body, string emailLayoutId)
+        protected string ReplaceBody(string emailTemplateBody, string layoutHtml)
         {
-            var layout = _emailLayoutRepository.Find(emailLayoutId);
-
             MatchCollection matches;
-            matches = Regex.Matches(layout.Body, "\\@\\@.*?\\@\\@");
+            matches = Regex.Matches(layoutHtml, "\\@\\@.*?\\@\\@");
             if (matches.Count > 0)
             {
 
-                body = layout.Body.Replace("@@RenderBody@@", body);
+                emailTemplateBody = layoutHtml.Replace("@@RenderBody@@", emailTemplateBody);
 
             }
-            return body;
+            return emailTemplateBody;
         }
 
-        protected bool SendThroughSmtp(Email email)
+        private async Task CreateSentEmail(EmailMessage email, EmailSentStatus status)
         {
-            if (SetCustomHeaders(email))
-            {
-                //Send the email
-                if (email.SendEmail != "No")
-                {
-                    //try
-                    //{
-                    //    //TODO Create a historical record of all emails sent - this would be a failure
-                    //    email.SMTPMailServer.Send(email.MailMessage);
-                    //    CreateSentEmail(email, EmailSentStatus.Success);
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    CreateSentEmail(email, EmailSentStatus.Failed);
-                    //    throw new Exception("There was a failure sending the email.", ex);
-                    //}
+            var sentEmail = _mapper.Map<SentEmail>(email);
 
+            sentEmail.DateSent = DateTime.UtcNow;
+            sentEmail.Status = status;
 
-                    try
-                    {
-                        //FUCKING PAYPAL AND PCI COMPLIANCE
-                        // System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-                        email.SMTPMailServer.Send(email.MailMessage);
-                        CreateSentEmail(email, EmailSentStatus.Success);
-                    }
-                    catch (SmtpFailedRecipientsException ex)
-                    {
-                        for (int i = 0; i < ex.InnerExceptions.Length; i++)
-                        {
-                            SmtpStatusCode status = ex.InnerExceptions[i].StatusCode;
-                            if (status == SmtpStatusCode.MailboxBusy ||
-                                status == SmtpStatusCode.MailboxUnavailable)
-                            {
-                                System.Threading.Thread.Sleep(5000);
-                                email.SMTPMailServer.Send(email.MailMessage);
-
-                                CreateSentEmail(email, EmailSentStatus.Success);
-                            }
-                            else
-                            {
-                                CreateSentEmail(email, EmailSentStatus.Failed);
-                                throw new Exception("There was a failure sending the email.", ex);
-                            }
-                        }
-                    }
-                }
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool SetCustomHeaders(Email email)
-        {
-            email.MailMessage.Headers.Remove("Disposition-Notification-To");
-            if (email.ReadReceipt == true)
-            {
-                email.MailMessage.Headers["Disposition-Notification-To"] = email.MailMessage.From.Address;
-            }
-            return true;
-        }
-
-        private void CreateSentEmail(Email email, EmailSentStatus status)
-        {
-            var sentEmail = new SentEmail
-            {
-                Bcc = email.Bcc,
-                Body = email.Body,
-                Cc = email.Cc,
-                Description = email.Description,
-                From = email.From,
-                Name = email.From,
-                ReadReceipt = email.ReadReceipt,
-                SendEmail = email.SendEmail,
-                Subject = email.Subject,
-                To = email.To,
-                DateSent = DateTime.UtcNow,
-                Status = status,
-            };
-
-            _sentEmailRepository.Insert(sentEmail);
+            await _sentEmailRepository.InsertAsync(sentEmail);
 
         }
-
-
-     
-      
-    
 
     }
 
@@ -327,4 +229,6 @@ namespace ModCore.Services.MongoDb.Communication
 
         public static string ForgotPassword => "Builtin-ForgotPassword";
     }
+
+
 }

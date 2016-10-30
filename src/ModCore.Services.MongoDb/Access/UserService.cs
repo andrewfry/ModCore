@@ -13,14 +13,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 using ModCore.Utilities.Security;
+using ModCore.Abstraction.DataAccess;
 
 namespace ModCore.Services.MongoDb.Access
 {
     public class UserService : BaseServiceAsync<User>, IUserService
     {
 
-        public UserService(IOptions<MongoDbSettings> dbSettings, IMapper mapper, ILog logger) :
-            base(dbSettings, mapper, logger)
+        public UserService(IDataRepositoryAsync<User> repos, IMapper mapper, ILog logger) :
+            base(repos, mapper, logger)
         {
         }
 

@@ -24,5 +24,7 @@ namespace ModCore.Abstraction.DataAccess
         Task<ICollection<T>> FindAllAsync(ISpecification<T> specification);
 
         Task<T> FindAsync(ISpecification<T> specification);
+
+        Task<T> FindByIdAsync(string id);
     }
 }

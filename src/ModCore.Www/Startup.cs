@@ -1,30 +1,24 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
 using ModCore.Abstraction.Site;
-using ModCore.DataAccess.InMemory;
 using ModCore.Models.Core;
 using ModCore.Core.Site;
 using System;
 using System.Reflection;
 using ModCore.Models.Plugins;
 using ModCore.Core.HelperExtensions;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using System.IO;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Identity.MongoDB;
 using Microsoft.AspNetCore.Http;
-using MongoDB.Driver;
 using ModCore.DataAccess.MongoDb;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ModCore.Core.Middleware;
 using ModCore.Models.Themes;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Framework.Configuration;
 
 namespace ModCore.Www
 {
@@ -174,24 +168,5 @@ namespace ModCore.Www
         }
 
 
-        private void AddDefaultTokenProviders(IServiceCollection services)
-        {
-            var dataProtectionProviderType = typeof(DataProtectorTokenProvider<>).MakeGenericType(typeof(IdentityUser));
-            var phoneNumberProviderType = typeof(PhoneNumberTokenProvider<>).MakeGenericType(typeof(IdentityUser));
-            var emailTokenProviderType = typeof(EmailTokenProvider<>).MakeGenericType(typeof(IdentityUser));
-            AddTokenProvider(services, TokenOptions.DefaultProvider, dataProtectionProviderType);
-            AddTokenProvider(services, TokenOptions.DefaultEmailProvider, emailTokenProviderType);
-            AddTokenProvider(services, TokenOptions.DefaultPhoneProvider, phoneNumberProviderType);
-        }
-
-        private void AddTokenProvider(IServiceCollection services, string providerName, Type provider)
-        {
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.Tokens.ProviderMap[providerName] = new TokenProviderDescriptor(provider);
-            });
-
-            services.AddSingleton(provider);
-        }
     }
 }

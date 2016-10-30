@@ -6,11 +6,19 @@ using System.Threading.Tasks;
 
 namespace ModCore.Models.Communication
 {
-    public class Email : BaseEntity
+    public class EmailTemplate : BaseEntity
     {
         public string Name { get; set; }
 
         public string DisplayName { get; set; }
+
+        public List<EmailContact> To { get; set; }
+
+        public List<EmailContact> Cc { get; set; }
+
+        public List<EmailContact> Bcc { get; set; }
+
+        public string EmailLayoutId { get; set; }
 
         public string Subject { get; set; }
 
@@ -19,6 +27,11 @@ namespace ModCore.Models.Communication
         public bool ReadReciept { get; set; }
 
         public object MailMessage { get; set; }
+
+        public bool HasLayout()
+        {
+            return string.IsNullOrEmpty(this.EmailLayoutId) || string.IsNullOrWhiteSpace(this.EmailLayoutId);
+        }
 
     }
 }
