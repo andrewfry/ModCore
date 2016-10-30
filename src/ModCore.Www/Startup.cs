@@ -76,7 +76,6 @@ namespace ModCore.Www
             RunTestData(services);
         }
 
-
         public void RunTestData(IServiceCollection services)
         {
             var srcProvider = services.BuildServiceProvider();
@@ -93,23 +92,21 @@ namespace ModCore.Www
             //    PluginVersion = "1.0"
             //});
 
-            var themes = srcProvider.GetService<IDataRepository<ActiveTheme>>();
+            //var themes = srcProvider.GetService<IDataRepository<ActiveTheme>>();
 
-            themes.Insert(new ActiveTheme
-            {
-                Id = "1",
-                Description = "Sample Theme for test purposes.",
-                DisplayName = "Sample Theme",
-                ThemeName = "Sample",
-                ThemeVersion = "1.0"
+            //themes.Insert(new ActiveTheme
+            //{
+            //    Id = "1",
+            //    Description = "Sample Theme for test purposes.",
+            //    DisplayName = "Sample Theme",
+            //    ThemeName = "Sample",
+            //    ThemeVersion = "1.0"
 
-            });
+            //});
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            //  this._hostingEnvironment.WebRootFileProvider = this.CreateCompositeFileProvider();
-
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
