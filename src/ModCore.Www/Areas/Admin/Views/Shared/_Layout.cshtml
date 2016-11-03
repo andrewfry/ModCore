@@ -20,29 +20,37 @@
     <div class="body-container">
         <div class="navbar">
             <div class="fluid-container">
-                <div class="navbar-logo">
-                    <div class="navbar-logo-text">
-                        ModCore Admin
-                    </div>
-                   
-                    <a href="#" class="icon-user-nav" id="btnUserNavMenu">
+                <div class="navbar-container">
+                    <div class="navbar-logo">
+                        <div class="navbar-logo-text">
+                            ModCore Admin
+                        </div>
 
-                    </a>
-                </div>
-                <div class="navbar-content user-nav">
-                    <div class="user-settings-container">
-                        <a href="#"><i class="fa fa-user-circle-o user-icon" aria-hidden="true"></i><span class="welcome-user">Jesus H. Christ </span><i class="fa fa-angle-down icon-user-options" aria-hidden="true"></i></a>
+                        <a href="#" class="icon-user-nav" id="btnUserNavMenu">
+
+                        </a>
                     </div>
-                    @*<div class="search-container">
-                        @Html.TextBox("Search", "", new { @class = "search-input", placeholder = "Search" })
-                    </div>*@
+                    <div class="navbar-content user-nav">
+                        <div class="user-settings-container">
+                            <a href="#">
+                                <i class="fa fa-user-circle-o user-icon" aria-hidden="true"></i>
+                                <span class="welcome-user">Jesus H. Christ </span>
+                                <i class="fa fa-angle-down icon-user-options" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        @*<div class="search-container">
+                                @Html.TextBox("Search", "", new { @class = "search-input", placeholder = "Search" })
+                            </div>*@
+                    </div>
+                    <div style="clear: both;"></div>
                 </div>
-                <div style="clear: both;"></div>
             </div>
         </div>
         <div class="container body-content">
             <div class="sidebar-main">
-                <ul class="admin-sidebar-nav">
+                @Html.RenderPartialAsync("_Menu")
+
+                @*<ul class="admin-sidebar-nav">
                     <li class="icon-listitem">
                         <a class="menu-extend-icon" href="#"></a>
                     </li>
@@ -65,7 +73,7 @@
                     <li>
                         <a href="#">Contact</a>
                     </li>
-                </ul>
+                </ul>*@
             </div>
             <div class="body-wrapper">
                 <div class="page-tree"><h2 class="title">DisplayPageName</h2></div>
@@ -73,7 +81,7 @@
                     @RenderBody()
                 </div>
                 <footer>
-                    <p>&copy; 2016 - ModCore.Www</p>
+                    @*<p>&copy; 2016 - ModCore.Www</p>*@
                 </footer>
             </div>
         </div>
