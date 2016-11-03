@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="~/css/boostrap.overrides.css" />
         <link rel="stylesheet" href="~/css/font-awesome.min.css" />
         <link rel="stylesheet" href="~/css/admin-site.css" />
+        <link href="~/css/materialdesignicons.css" rel="stylesheet" />
     </environment>
     <environment names="Staging,Production">
 
@@ -20,7 +21,10 @@
         <div class="navbar">
             <div class="fluid-container">
                 <div class="navbar-logo">
-                    ModCore Admin
+                    <div class="navbar-logo-text">
+                        ModCore Admin
+                    </div>
+                   
                     <a href="#" class="icon-user-nav" id="btnUserNavMenu">
 
                     </a>
@@ -29,9 +33,9 @@
                     <div class="user-settings-container">
                         <a href="#"><i class="fa fa-user-circle-o user-icon" aria-hidden="true"></i><span class="welcome-user">Jesus H. Christ </span><i class="fa fa-angle-down icon-user-options" aria-hidden="true"></i></a>
                     </div>
-                    <div class="search-container">
+                    @*<div class="search-container">
                         @Html.TextBox("Search", "", new { @class = "search-input", placeholder = "Search" })
-                    </div>
+                    </div>*@
                 </div>
                 <div style="clear: both;"></div>
             </div>
@@ -43,6 +47,7 @@
                         <a class="menu-extend-icon" href="#"></a>
                     </li>
                     <li class="dashboard">
+                        <i class="mdi mdi-gauge mdi-18px"></i>
                         <a href="/admin">Dashboard</a>
                     </li>
                     <li class="pages">

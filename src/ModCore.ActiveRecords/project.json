@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "ModCore.DataAccess.MongoDb": "1.0.0-*",
+    "ModCore.Models": "1.0.0-*",
+    "NETStandard.Library": "1.6.0"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}

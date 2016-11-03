@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -63,8 +64,23 @@ namespace ModCore.Services.MongoDb.Communication
             return false;
         }
 
+        private async Task<bool> PrepareAndSend(EmailMessage email, object objectToBind)
+        {
+            var propValueDict = new Dictionary<string, string>();
+            var typeInfo = objectToBind.GetType().GetTypeInfo();
+            var propList = typeInfo.GetProperties().ToList();
 
-        private async Task<bool> PrepareAndSend(EmailMessage email, string currentUserId, Dictionary<string, string> replacements)
+            foreach (var prop in propList)
+            {
+                var value = prop.GetValue(objectToBind);
+
+                propValueDict.Add(prop.Name, value.ToString());
+            }
+
+            return await PrepareAndSend(email, propValueDict);
+        }
+
+        private async Task<bool> PrepareAndSend(EmailMessage email, Dictionary<string, string> replacements)
         {
 
             var emailServer = _settings.Value.EmailServer;
@@ -153,7 +169,7 @@ namespace ModCore.Services.MongoDb.Communication
 
                 if (emailSecure)
                     secure = SecureSocketOptions.Auto;
-                
+
                 //TODO smtp clients with authentication
 
                 await client.ConnectAsync(emailServer, emailServerPort, secure).ConfigureAwait(false);
@@ -165,8 +181,6 @@ namespace ModCore.Services.MongoDb.Communication
             return true;
 
         }
-
-
 
         protected string ReplaceVariables(string input, Dictionary<string, string> replacements)
         {
