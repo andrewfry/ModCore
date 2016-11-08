@@ -5,14 +5,16 @@ using System.Threading.Tasks;
 
 namespace ModCore.ViewModels.Base
 {
-    public class UserData
+    public class vUserData
     {
 
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
 
-        public string FullName { get
+        public string FullName
+        {
+            get
             {
                 return FirstName + " " + LastName;
             }

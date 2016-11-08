@@ -11,9 +11,11 @@ namespace ModCore.ViewModels.Base
 
         public string UserId { get; set; }
 
-        public UserData UserData { get; set; }
+        public bool IsLoggedIn { get; set; }
 
-        public SiteSettings SiteSettings { get; set; }
+        public vUserData UserData { get; set; }
+
+        public vSiteSettings SiteSettings { get; set; }
 
     }
 }

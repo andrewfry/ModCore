@@ -7,10 +7,12 @@ using ModCore.Core.Controllers;
 using ModCore.Abstraction.Site;
 using Microsoft.Extensions.Logging;
 using ModCore.ViewModels.Base;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class HomeController : BaseController
     {
         public HomeController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,

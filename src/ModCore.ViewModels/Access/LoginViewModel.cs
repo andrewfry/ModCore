@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ModCore.ViewModels.Base;
 
-namespace ModeCore.ViewModels.Access
+namespace ModCore.ViewModels.Access
 {
     public class LoginViewModel : BaseViewModel
     {

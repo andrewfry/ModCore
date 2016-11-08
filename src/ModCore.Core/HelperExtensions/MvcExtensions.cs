@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -7,10 +8,12 @@ using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyModel;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
 using ModCore.Abstraction.Themes;
 using ModCore.Core.Controllers;
+using ModCore.Core.HelperExtensions;
 using ModCore.Core.Plugins;
 using ModCore.Core.Themes;
 using ModCore.Models.Plugins;
@@ -18,6 +21,7 @@ using ModCore.Models.Themes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ModCore.Core.HelperExtensions
@@ -88,7 +92,7 @@ namespace ModCore.Core.HelperExtensions
             return services;
         }
 
-        public static IServiceCollection AddPluginManager(this IServiceCollection services, IConfigurationRoot configRoot,IHostingEnvironment env)
+        public static IServiceCollection AddPluginManager(this IServiceCollection services, IConfigurationRoot configRoot, IHostingEnvironment env)
         {
             if (services == null)
             {
@@ -115,13 +119,69 @@ namespace ModCore.Core.HelperExtensions
             }
 
             services.AddSingleton<IThemeManager, ThemeManager>(srcProvider =>
-            {                
+            {
                 var repos = srcProvider.GetRequiredService<IDataRepository<ActiveTheme>>();
 
                 return new ThemeManager(configRoot, env, repos);
             });
 
             return services;
+        }
+
+
+        public static void AddAutoMapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(DependencyContext.Default);
+        }
+
+        public static void AddAutoMapper(this IServiceCollection services, DependencyContext dependencyContext)
+        {
+            AddAutoMapperClasses(services, dependencyContext.RuntimeLibraries
+                .SelectMany(lib => lib.GetDefaultAssemblyNames(dependencyContext).Select(Assembly.Load)));
+        }
+
+        private static void AddAutoMapperClasses(IServiceCollection services, IEnumerable<Assembly> assembliesToScan)
+        {
+            assembliesToScan = assembliesToScan as Assembly[] ?? assembliesToScan.ToArray();
+
+            var allTypes = assembliesToScan.SelectMany(a => a.ExportedTypes).ToArray();
+
+            var profiles =
+            allTypes
+                .Where(t => typeof(Profile).GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()))
+                .Where(t => !t.GetTypeInfo().IsAbstract);
+
+            Mapper.Initialize(cfg =>
+            {
+                foreach (var profile in profiles)
+                {
+                    cfg.AddProfile(profile);
+                }
+            });
+
+            var openTypes = new[]
+                {
+                    typeof(IValueResolver<,,>),
+                    typeof(IMemberValueResolver<,,,>),
+                    typeof(ITypeConverter<,>)
+                };
+            foreach (var openType in openTypes)
+            {
+                foreach (var type in allTypes
+                    .Where(t => t.GetTypeInfo().IsClass)
+                    .Where(t => !t.GetTypeInfo().IsAbstract)
+                    .Where(t => t.GetInterfaces().Any(i=>i == openType))
+                    //.Where(t => t.ImplementsGenericInterface(openType))
+                    )
+                {
+                    services.AddTransient(type);
+                }
+            }
+
+
+            services.AddSingleton(Mapper.Configuration);
+            services.AddScoped<IMapper>(sp =>
+              new Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
         }
 
     }

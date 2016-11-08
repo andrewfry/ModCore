@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ModCore.Www.Areas.Admin.Controllers;
 using ModCore.Abstraction.Services.Access;
-using ModeCore.ViewModels.Access;
 using System.Security.Claims;
+using ModCore.ViewModels.Access;
 
 namespace IdentitySample.Controllers
 {

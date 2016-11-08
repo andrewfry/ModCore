@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ModeCore.ViewModels.Access
+namespace ModCore.ViewModels.Access
 {
     public class VerifyCodeViewModel : BaseViewModel
     {

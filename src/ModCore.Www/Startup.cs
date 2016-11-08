@@ -18,11 +18,17 @@ using ModCore.Core.Middleware;
 using ModCore.Models.Themes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ModCore.Services.MongoDb.Access;
+using ModCore.Abstraction.Services.Access;
+using ModCore.Models.Access;
+using AutoMapper;
+using ModCore.Services.MongoDb.Mappings;
 
 namespace ModCore.Www
 {
     public class Startup
     {
+        private MapperConfiguration _mapperConfiguration { get; set; }
         public IConfigurationRoot Configuration { get; }
 
         private IPluginManager _pluginManager;
@@ -38,6 +44,11 @@ namespace ModCore.Www
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
 
+            _mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new AutoMapperProfileConfiguration());
+            });
+
             _hostingEnvironment = env;
         }
 
@@ -52,11 +63,19 @@ namespace ModCore.Www
             services.AddTransient<ISessionManager, SessionManager>();
             services.AddTransient<ISiteSettingsManager, SiteSettingsManager>();
             services.AddTransient<IBaseViewModelProvider, DefaultBaseViewModelProvider>();
+            services.AddSingleton<IMapper>(sp => _mapperConfiguration.CreateMapper());
 
             //Persistent Data Repositories
             services.AddTransient<IDataRepository<Log>, MongoDbRepository<Log>>();
             services.AddTransient<IDataRepository<InstalledPlugin>, MongoDbRepository<InstalledPlugin>>();
             services.AddTransient<IDataRepository<ActiveTheme>, MongoDbRepository<ActiveTheme>>();
+
+            //adding the async Data Repositories 
+            services.AddTransient<IDataRepositoryAsync<User>, MongoDbRepository<User>>();
+
+            //Adding the business logic Services
+            services.AddTransient<IUserService, UserService>();
+
 
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
@@ -128,20 +147,22 @@ namespace ModCore.Www
             app.UseCookieAuthentication(new CookieAuthenticationOptions()
             {
                 AuthenticationScheme = "ModCoreBasicCookieAuth",
-                LoginPath = new PathString("/Login"),
-                AccessDeniedPath = new PathString("/Login"),
+                LoginPath = new PathString("/Admin/Account/Login"),
+                AccessDeniedPath = new PathString("/Admin/Account/Login"),
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
                 CookieHttpOnly = true,
                 ExpireTimeSpan = TimeSpan.FromMinutes(30),
                 SlidingExpiration = true,
+                CookieSecure = env.IsDevelopment()
+                            ? CookieSecurePolicy.SameAsRequest
+                            : CookieSecurePolicy.Always,
                 Events = new CookieAuthenticationEvents
                 {
                     // Set other options
                     OnValidatePrincipal = LastChangedValidator.ValidateAsync,
                 }
-
-        });
+            });
 
             app.UseMvcWithPlugin(routes =>
             {
@@ -160,7 +181,7 @@ namespace ModCore.Www
                     new { Namespace = this.CurrentNameSpace });
             });
 
-
+            
         }
 
 

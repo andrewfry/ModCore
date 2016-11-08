@@ -16,5 +16,7 @@ namespace ModCore.Models.Sessions
 
         public string UserId { get; set; }
 
+        public SessionUserData UserData { get; set; }
+
     }
 }

@@ -9,8 +9,8 @@ a { outline: none !important; }
 .user-nav.extended { display: block; height: 200px; width: 100%; }
 
 .body-container { position: absolute; height: 100%; width: 100%; }
-.body-main { width: 100%; padding: 12px; height: calc(100% - 60px); float: left; }
-.page-tree { width: 100%; background-color: #fff; float: left; padding: 20px; height: 60px; }
+.body-main { width: 100%; padding: 12px; height: calc(100% - 60px); float: left; background-color: #F7F9FA; }
+.page-tree { width: 100%; background-color: #fff; float: left; padding: 20px; height: 60px; border-bottom: 1px solid #EEE; }
 .page-tree h2.title { font-size: 24px; color: #313b3d; margin: 0px; }
 
 .body-content { width: 100%; height: calc(100% - 40px); padding: 0px; }
@@ -35,8 +35,6 @@ footer p { margin: 0px; padding: 4px; font-weight: bold; }
 .user-settings-container > a { color: #768387; }
 .user-settings-container > a:hover, .user-settings-container > a:focus { text-decoration: none; }
 .navbar-logo-text { padding: 5px; background-color: #4A73C9; border-radius: 2px; text-align: center; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
-
-
 
 
 
@@ -77,10 +75,12 @@ footer p { margin: 0px; padding: 4px; font-weight: bold; }
     .side-menu .menu-item .menu-item-icon.mdi:before { font-size: 16px; }
     .side-menu .menu-item .menu-item-text { display: inline-block; padding: 5px; }
 
-    .body-content { width: 100%; height: 100% - 80px; padding: 0px; }
+    .body-content { width: 100%; height: calc(100% - 80px); padding: 0px; }
     .body-wrapper { float: left; width: calc(100% - 220px); height: calc(100% - 50px); }
 
     .user-settings-container { float: right; }
     .user-settings-container .welcome-user { font-size: 14px; }
     .user-settings-container .user-icon { font-size: 14px; }
+
+    .panel.panel-default {padding:50px;}
 }

@@ -49,34 +49,12 @@
         <div class="container body-content">
             <div class="side-menu-container">
                 @Html.Partial("_Menu")
-
-                @*<ul class="admin-sidebar-nav">
-                    <li class="icon-listitem">
-                        <a class="menu-extend-icon" href="#"></a>
-                    </li>
-                    <li class="dashboard">
-                        <i class="mdi mdi-gauge mdi-18px"></i>
-                        <a href="/admin">Dashboard</a>
-                    </li>
-                    <li class="pages">
-                        <a href="#">Pages</a>
-                    </li>
-                    <li class="plugins">
-                        <a href="/admin/plugin">Plugins</a>
-                    </li>
-                    <li>
-                        <a href="#">About</a>
-                    </li>
-                    <li>
-                        <a href="#">Services</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
-                </ul>*@
             </div>
             <div class="body-wrapper">
-                <div class="page-tree"><h2 class="title">DisplayPageName</h2></div>
+                @if (ViewData["Title"] != null && !string.IsNullOrEmpty(ViewData["Title"].ToString()))
+                {
+                    <div class="page-tree"><h2 class="title">@ViewData["Title"]</h2></div>
+                }
                 <div class="body-main">
                     @RenderBody()
                 </div>

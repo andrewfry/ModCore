@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ModCore.ViewModels.Base
 {
-    public class SiteSettings
+    public class vSiteSettings
     {
     }
 }

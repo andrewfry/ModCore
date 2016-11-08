@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ModCore.ViewModels.Base;
 
-namespace ModeCore.ViewModels.Access
+namespace ModCore.ViewModels.Access
 {
     public class SendCodeViewModel : BaseViewModel
     {
