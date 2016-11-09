@@ -9,15 +9,15 @@ using ModCore.Abstraction.Themes;
 
 namespace ModCore.Specifications.Themes
 {
-    public class ActiveSiteTheme : Specification<ActiveTheme>
+    public class ActiveSiteTheme : Specification<SiteTheme>
     {      
         public ActiveSiteTheme()
         {
 
         }
-        public override Expression<Func<ActiveTheme, bool>> IsSatisifiedBy()
+        public override Expression<Func<SiteTheme, bool>> IsSatisifiedBy()
         {
-            return x => x.Id == "1";
+            return x => x.Active == true;
         }
     }
 }

@@ -8,18 +8,35 @@ namespace ModCore.Core.Themes
 {
     public class Theme : ITheme
     {
-        public Theme() {
+        private string _themeName;
+        private string _themeDescription;
+        private string _displayName;
+        private string _themeVersion;
+        private string _cssLocation;
 
+        public string ThemeName
+        {
+            get { return _themeName; }
+            set { _themeName = value; }
         }
 
-        public string ThemeName { get; set; }
+        public string Description
+        {
+            get { return _themeDescription; }
+            set { _themeDescription = value; }
+        }
 
-        public string ThemeVersion { get; set; }
+        public string DisplayName
+        {
+            get { return _displayName; }
+            set { _displayName = value; }
+        }
 
-        public string Description { get; set; }
+        public string ThemeVersion
+        {
+            get { return _themeVersion; }
+            set { _themeVersion = value; }
+        }
 
-        public string DisplayName { get; set; }
-
-        public string PreviewURL { get; set; }
     }
 }

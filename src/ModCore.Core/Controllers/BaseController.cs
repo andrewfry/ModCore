@@ -10,6 +10,11 @@ using ModCore.Core.Constraints;
 using ModCore.ViewModels.Base;
 using Microsoft.AspNetCore.Http;
 using ModCore.Core.HelperExtensions;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using System.IO;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ModCore.Core.Controllers
 {
@@ -52,7 +57,7 @@ namespace ModCore.Core.Controllers
 
                 return _currentSession;
             }
-          
+
         }
 
         //public ISessionManager SessionManager
@@ -81,7 +86,7 @@ namespace ModCore.Core.Controllers
 
         public void CommitSession()
         {
-           var jsonString = _currentSession.ToJson();
+            var jsonString = _currentSession.ToJson();
             _session.SetString("sessionData", jsonString);
 
             _currentSession = null;
@@ -108,6 +113,40 @@ namespace ModCore.Core.Controllers
                 _baseClassProvider.Update(this, baseVm);
 
             return base.View(viewName, model);
+        }
+
+        public string RenderViewAsString(string viewPath)
+        {
+            return RenderViewAsString(viewPath, "");
+        }
+
+        public string RenderViewAsString<TModel>(string viewPath, TModel model)
+        {
+           var engine = ControllerContext.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
+           var viewEngineResult = engine.GetView("~/", viewPath, false);
+
+            if (!viewEngineResult.Success)
+            {
+                throw new InvalidOperationException($"Could not find view {viewPath}");
+            }
+
+            var view = viewEngineResult.View;
+            var result = "";
+            using (var output = new StringWriter())
+            {
+                var viewContext = new ViewContext();
+                viewContext.HttpContext = ControllerContext.HttpContext; // _httpContextAccessor.HttpContext;
+                viewContext.ViewData = new ViewDataDictionary<TModel>(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                { Model = model };
+                viewContext.Writer = output;
+
+                view.RenderAsync(viewContext).GetAwaiter().GetResult();
+
+                result = output.GetStringBuilder().Replace("\"", "'").ToString();
+
+            }
+
+            return result;
         }
     }
 }

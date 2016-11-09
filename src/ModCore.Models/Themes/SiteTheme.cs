@@ -7,15 +7,17 @@ using ModCore.Models.BaseEntities;
 
 namespace ModCore.Models.Themes
 {
-    public class ActiveTheme : BaseEntity
+    public class SiteTheme : BaseEntity
     {
+        public bool Active { get; set; }
+
         public string ThemeName { get; set; }
 
         public string ThemeVersion { get; set; }
-        
+
         public string Description { get; set; }
 
         public string DisplayName { get; set; }
-
     }
+
 }

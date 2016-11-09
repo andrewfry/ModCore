@@ -1,18 +1,23 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Internal;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
+using ModCore.Abstraction.Services.PageService;
 using ModCore.Abstraction.Themes;
 using ModCore.Core.Controllers;
 using ModCore.Core.Plugins;
+using ModCore.Core.Routers;
 using ModCore.Core.Themes;
+using ModCore.Models.Page;
 using ModCore.Models.Plugins;
 using ModCore.Models.Themes;
 using System;
@@ -61,6 +66,8 @@ namespace ModCore.Core.HelperExtensions
 
             configureRoutes(routes);
 
+            var cmsPage = app.ApplicationServices.GetService<IDataRepository<Page>>();
+            routes.Routes.Add(new CmsPageRoute(cmsPage,routes.DefaultHandler));
             //Disable for now.
             //routes.Routes.Insert(0, AttributeRouting.CreateAttributeMegaRoute(app.ApplicationServices));
 
@@ -113,16 +120,17 @@ namespace ModCore.Core.HelperExtensions
             {
                 throw new ArgumentNullException(nameof(services));
             }
-
+            
             services.AddSingleton<IThemeManager, ThemeManager>(srcProvider =>
             {                
-                var repos = srcProvider.GetRequiredService<IDataRepository<ActiveTheme>>();
+                var repos = srcProvider.GetRequiredService<IDataRepository<SiteTheme>>();
 
                 return new ThemeManager(configRoot, env, repos);
             });
 
             return services;
         }
+
 
     }
 }
