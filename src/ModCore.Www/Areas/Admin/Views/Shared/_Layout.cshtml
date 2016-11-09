@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="~/css/boostrap.overrides.css" />
         <link rel="stylesheet" href="~/css/font-awesome.min.css" />
         <link rel="stylesheet" href="~/css/admin-site.css" />
+        <link href="~/css/materialdesignicons.css" rel="stylesheet" />
     </environment>
     <environment names="Staging,Production">
 
@@ -19,56 +20,46 @@
     <div class="body-container">
         <div class="navbar">
             <div class="fluid-container">
-                <div class="navbar-logo">
-                    ModCore Admin
-                    <a href="#" class="icon-user-nav" id="btnUserNavMenu">
+                <div class="navbar-container">
+                    <div class="navbar-logo">
+                        <div class="navbar-logo-text">
+                            ModCore Admin
+                        </div>
 
-                    </a>
-                </div>
-                <div class="navbar-content user-nav">
-                    <div class="user-settings-container">
-                        <a href="#"><i class="fa fa-user-circle-o user-icon" aria-hidden="true"></i><span class="welcome-user">Jesus H. Christ </span><i class="fa fa-angle-down icon-user-options" aria-hidden="true"></i></a>
+                        <a href="#" class="icon-user-nav" id="btnUserNavMenu">
+
+                        </a>
                     </div>
-                    <div class="search-container">
-                        @Html.TextBox("Search", "", new { @class = "search-input", placeholder = "Search" })
+                    <div class="navbar-content user-nav">
+                        <div class="user-settings-container">
+                            <a href="#">
+                                <i class="fa fa-user-circle-o user-icon" aria-hidden="true"></i>
+                                <span class="welcome-user">Jesus H. Christ </span>
+                                <i class="fa fa-angle-down icon-user-options" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        @*<div class="search-container">
+                                @Html.TextBox("Search", "", new { @class = "search-input", placeholder = "Search" })
+                            </div>*@
                     </div>
+                    <div style="clear: both;"></div>
                 </div>
-                <div style="clear: both;"></div>
             </div>
         </div>
         <div class="container body-content">
-            <div class="sidebar-main">
-                <ul class="admin-sidebar-nav">
-                    <li class="icon-listitem">
-                        <a class="menu-extend-icon" href="#"></a>
-                    </li>
-                    <li class="dashboard">
-                        <a href="/admin">Dashboard</a>
-                    </li>
-                    <li class="pages">
-                        <a href="#">Pages</a>
-                    </li>
-                    <li class="plugins">
-                        <a href="/admin/plugin">Plugins</a>
-                    </li>
-                    <li>
-                        <a href="#">About</a>
-                    </li>
-                    <li>
-                        <a href="#">Services</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
-                </ul>
+            <div class="side-menu-container">
+                @Html.Partial("_Menu")
             </div>
             <div class="body-wrapper">
-                <div class="page-tree"><h2 class="title">DisplayPageName</h2></div>
+                @if (ViewData["Title"] != null && !string.IsNullOrEmpty(ViewData["Title"].ToString()))
+                {
+                    <div class="page-tree"><h2 class="title">@ViewData["Title"]</h2></div>
+                }
                 <div class="body-main">
                     @RenderBody()
                 </div>
                 <footer>
-                    <p>&copy; 2016 - ModCore.Www</p>
+                    @*<p>&copy; 2016 - ModCore.Www</p>*@
                 </footer>
             </div>
         </div>

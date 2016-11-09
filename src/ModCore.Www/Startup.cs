@@ -25,11 +25,16 @@ using System.IO;
 using ModCore.Core.Routers;
 using ModCore.Services.MongoDb.PageService;
 using ModCore.Abstraction.Services.PageService;
-
+using ModCore.Services.MongoDb.Access;
+using ModCore.Abstraction.Services.Access;
+using ModCore.Models.Access;
+using AutoMapper;
+using ModCore.Services.MongoDb.Mappings;
 namespace ModCore.Www
 {
     public class Startup
     {
+        private MapperConfiguration _mapperConfiguration { get; set; }
         public IConfigurationRoot Configuration { get; }
 
         private IPluginManager _pluginManager;
@@ -44,7 +49,12 @@ namespace ModCore.Www
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
-           
+
+            _mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new AutoMapperProfileConfiguration());
+            });
+
             _hostingEnvironment = env;
         }
 
@@ -52,25 +62,31 @@ namespace ModCore.Www
         {
             //Configure Settings
             services.Configure<MongoDbSettings>(options => Configuration.GetSection("MongoDbSettings").Bind(options));
-            
+
             var mvcBuilder = services.AddMvc();
 
             services.AddTransient<ILog, SiteLogger>();
             services.AddTransient<ISessionManager, SessionManager>();
             services.AddTransient<ISiteSettingsManager, SiteSettingsManager>();
             services.AddTransient<IBaseViewModelProvider, DefaultBaseViewModelProvider>();
+            services.AddSingleton<IMapper>(sp => _mapperConfiguration.CreateMapper());
 
             //Persistent Data Repositories
             services.AddTransient<IDataRepository<Log>, MongoDbRepository<Log>>();
             services.AddTransient<IDataRepository<InstalledPlugin>, MongoDbRepository<InstalledPlugin>>();
             services.AddTransient<IDataRepository<SiteTheme>, MongoDbRepository<SiteTheme>>();
-            services.AddTransient<IDataRepository<Page>, MongoDbRepository<Page>>();
+             services.AddTransient<IDataRepository<Page>, MongoDbRepository<Page>>();
+            //adding the async Data Repositories 
+            services.AddTransient<IDataRepositoryAsync<User>, MongoDbRepository<User>>();
+
+            //Adding the business logic Services
+            services.AddTransient<IUserService, UserService>();
+
 
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
             services.AddPluginManager(Configuration, _hostingEnvironment);
             services.AddThemeManager(Configuration, _hostingEnvironment);
-            
             var sessionGuid = "TEMP"; //TODO - Get the sessionGuid from the DB
 
             //setting up the sesssion
@@ -80,7 +96,7 @@ namespace ModCore.Www
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.CookieName = ".Modcore-" + sessionGuid;
             });
-            
+
             //TEST
             RunTestData(services);
         }
@@ -127,8 +143,6 @@ namespace ModCore.Www
             //    ThemeVersion = "1.0"
 
             //});
-
-
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -159,23 +173,25 @@ namespace ModCore.Www
             app.UseCookieAuthentication(new CookieAuthenticationOptions()
             {
                 AuthenticationScheme = "ModCoreBasicCookieAuth",
-                LoginPath = new PathString("/Login"),
-                AccessDeniedPath = new PathString("/Login"),
+                LoginPath = new PathString("/Admin/Account/Login"),
+                AccessDeniedPath = new PathString("/Admin/Account/Login"),
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
                 CookieHttpOnly = true,
                 ExpireTimeSpan = TimeSpan.FromMinutes(30),
                 SlidingExpiration = true,
+                CookieSecure = env.IsDevelopment()
+                            ? CookieSecurePolicy.SameAsRequest
+                            : CookieSecurePolicy.Always,
                 Events = new CookieAuthenticationEvents
                 {
                     // Set other options
                     OnValidatePrincipal = LastChangedValidator.ValidateAsync,
                 }
-
             });
 
             app.UseMvcWithPlugin(routes =>
-            {                
+            {
                 routes.MapRoute(
                    "areaRoute",
                    "{area:exists}/{controller=Home}/{action=Index}",
@@ -191,7 +207,7 @@ namespace ModCore.Www
                     new { Namespace = this.CurrentNameSpace });
             });
 
-
+            
         }
 
 

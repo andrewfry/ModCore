@@ -6,14 +6,8 @@ using System.Threading.Tasks;
 
 namespace ModCore.ViewModels.Base
 {
-    public class SiteSettingViewModel
+    public class vSiteSettings
     {
         public vTheme Theme { get; set; }
-
-        public SiteSettingViewModel()
-        {
-            Theme = new vTheme();
-        }
     }
-
 }

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ModCore.Models.Access;
-using ModeCore.ViewModels.Access;
+using ModCore.ViewModels.Access;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 
 namespace ModCore.Services.MongoDb.Mappings
 {
-    public static class AutoMapperConfig
+    public class AutoMapperProfileConfiguration : Profile
     {
-        public static void RegisterMappings()
+        protected override void Configure()
         {
             //Access
-            Mapper.Initialize(cfg => cfg.CreateMap<User, RegisterViewModel>());
-
+            CreateMap<User, RegisterViewModel>();
+            CreateMap<RegisterViewModel, User>();
+            CreateMap<LoginViewModel, User>();
         }
     }
 }

@@ -4,7 +4,6 @@ using ModCore.Abstraction.Services.Access;
 using ModCore.Abstraction.Site;
 using ModCore.Models.Access;
 using ModCore.Services.MongoDb.Base;
-using ModeCore.ViewModels.Access;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 using ModCore.Utilities.Security;
 using ModCore.Abstraction.DataAccess;
+using ModCore.ViewModels.Access;
 
 namespace ModCore.Services.MongoDb.Access
 {
@@ -62,7 +62,7 @@ namespace ModCore.Services.MongoDb.Access
 
         public async Task<User> CreateNewUser(RegisterViewModel registerModel)
         {
-            var user = Mapper.Map<User>(registerModel);
+            var user = _mapper.Map<User>(registerModel);
 
             user.PasswordSalt = SecurityUtil.GetSalt();
             user.PasswordHash = SecurityUtil.GetHash(registerModel.Password + user.PasswordSalt);

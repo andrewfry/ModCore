@@ -34,7 +34,7 @@ namespace ModCore.Www.Controllers
             this.CommitSession();
             var test = this.CurrentSession.IsLoggedIn;
 
-            m.SiteSettings = new SiteSettingViewModel();
+            m.SiteSettings = new vSiteSettings();
             m.SiteSettings.Theme = new vTheme() {
                 ThemeName = _themeManager.ActiveTheme.ThemeName,
                 Description = _themeManager.ActiveTheme.Description,

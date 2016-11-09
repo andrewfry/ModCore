@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using ModCore.Models.Access;
 using System.Security.Claims;
-using ModeCore.ViewModels.Access;
+using ModCore.ViewModels.Access;
 
 namespace ModCore.Abstraction.Services.Access
 {

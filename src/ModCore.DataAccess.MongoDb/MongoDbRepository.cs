@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ModCore.DataAccess.MongoDb
 {
-    public class MongoDbRepository<T> : IDataRepository<T> where T : BaseEntity
+    public class MongoDbRepository<T> : IDataRepository<T>, IDataRepositoryAsync<T> where T : BaseEntity
     {
         protected internal IMongoCollection<T> collection;
 

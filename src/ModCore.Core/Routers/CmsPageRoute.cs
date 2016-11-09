@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ModCore.Core.Routers
+namespace ModCore.Core.Routers 
 {
     public class CmsPageRoute : IRouter
     {

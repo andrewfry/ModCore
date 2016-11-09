@@ -1,5 +1,4 @@
-﻿using ModCore.ViewModels.Theme;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,9 +11,11 @@ namespace ModCore.ViewModels.Base
 
         public string UserId { get; set; }
 
-        public UserData UserData { get; set; }
+        public bool IsLoggedIn { get; set; }
 
-        public SiteSettingViewModel SiteSettings { get; set; }
+        public vUserData UserData { get; set; }
+
+        public vSiteSettings SiteSettings { get; set; }
 
     }
 }
