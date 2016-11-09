@@ -18,6 +18,13 @@ using ModCore.Core.Middleware;
 using ModCore.Models.Themes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ModCore.Models.Page;
+using System.Collections.Generic;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using ModCore.Core.Routers;
+using ModCore.Services.MongoDb.PageService;
+using ModCore.Abstraction.Services.PageService;
 
 namespace ModCore.Www
 {
@@ -37,7 +44,7 @@ namespace ModCore.Www
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
-
+           
             _hostingEnvironment = env;
         }
 
@@ -45,7 +52,7 @@ namespace ModCore.Www
         {
             //Configure Settings
             services.Configure<MongoDbSettings>(options => Configuration.GetSection("MongoDbSettings").Bind(options));
-
+            
             var mvcBuilder = services.AddMvc();
 
             services.AddTransient<ILog, SiteLogger>();
@@ -56,12 +63,14 @@ namespace ModCore.Www
             //Persistent Data Repositories
             services.AddTransient<IDataRepository<Log>, MongoDbRepository<Log>>();
             services.AddTransient<IDataRepository<InstalledPlugin>, MongoDbRepository<InstalledPlugin>>();
-            services.AddTransient<IDataRepository<ActiveTheme>, MongoDbRepository<ActiveTheme>>();
+            services.AddTransient<IDataRepository<SiteTheme>, MongoDbRepository<SiteTheme>>();
+            services.AddTransient<IDataRepository<Page>, MongoDbRepository<Page>>();
 
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
             services.AddPluginManager(Configuration, _hostingEnvironment);
             services.AddThemeManager(Configuration, _hostingEnvironment);
+            
             var sessionGuid = "TEMP"; //TODO - Get the sessionGuid from the DB
 
             //setting up the sesssion
@@ -71,7 +80,7 @@ namespace ModCore.Www
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.CookieName = ".Modcore-" + sessionGuid;
             });
-
+            
             //TEST
             RunTestData(services);
         }
@@ -79,8 +88,23 @@ namespace ModCore.Www
         public void RunTestData(IServiceCollection services)
         {
             var srcProvider = services.BuildServiceProvider();
-            var repos = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
+            var repos = srcProvider.GetService<IDataRepository<Page>>();
 
+            //repos.Insert(new Page
+            //{
+            //    Active = true,
+            //    HTMLContent = "<h1>Sample page content 1<h2>",
+            //    FriendlyURL = "sample-page",
+            //    PageName = "Sample"
+            //});
+            //repos.Insert(new Page
+            //{
+            //    Active = true,
+            //    HTMLContent = "<h2>Another page</h2>",
+            //    FriendlyURL = "sample-page/sub-page",
+            //    PageName = "SubSample"
+            //});
+            //});
             //repos.Insert(new InstalledPlugin
             //{
             //    Active = false,
@@ -103,6 +127,8 @@ namespace ModCore.Www
             //    ThemeVersion = "1.0"
 
             //});
+
+
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -124,7 +150,12 @@ namespace ModCore.Www
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseSession();
-
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), @"Themes")),
+                RequestPath = new PathString("/Themes")
+            });
             app.UseCookieAuthentication(new CookieAuthenticationOptions()
             {
                 AuthenticationScheme = "ModCoreBasicCookieAuth",
@@ -141,10 +172,10 @@ namespace ModCore.Www
                     OnValidatePrincipal = LastChangedValidator.ValidateAsync,
                 }
 
-        });
+            });
 
             app.UseMvcWithPlugin(routes =>
-            {
+            {                
                 routes.MapRoute(
                    "areaRoute",
                    "{area:exists}/{controller=Home}/{action=Index}",

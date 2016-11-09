@@ -1,0 +1,13 @@
+﻿@model IEnumerable<ModCore.ViewModels.Theme.vTheme>
+
+<div class="list-group">
+    @foreach (var theme in Model)
+    {        
+        <div class="list-group-item " style="margin:12px">
+            <h4 class="list-group-item-heading">@theme.DisplayName @Html.Raw(theme.Active ? "<i class='fa fa-check' aria-hidden='true'></i>" : "")</h4>
+            <p class="list-group-item-text">@theme.Description</p>
+            @if (!theme.Active) { 
+            <button class="btn button btn-select-theme" data-theme="@theme.ThemeName" >Activate</button> }
+        </div>
+    }
+</div>

@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
     RegisterMenuEvents();
+    RegisterThemeEvents();
 });
 
 
@@ -40,4 +41,22 @@ function RegisterMenuEvents() {
         $(this).toggleClass("extended");
     })
 
+}
+
+function RegisterThemeEvents(){
+    $(".btn-select-theme").click(function (e) {
+        e.preventDefault();
+        var theme = $(this).data("theme");
+       
+        $.ajax({
+            url: 'Theme/SetTheme',
+            type: 'POST',
+            data: { themeName: theme },
+            success: function (result) {           
+                 $("#ThemeList").html(result.html);
+                 RegisterThemeEvents();
+            }
+        });
+    })
+    
 }
