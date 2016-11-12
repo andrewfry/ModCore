@@ -9,7 +9,6 @@ using ModCore.ViewModels.Access;
 
 namespace IdentitySample.Controllers
 {
-    [Authorize]
     public class AccountController : Controller
     {
         private readonly IUserService _userService;

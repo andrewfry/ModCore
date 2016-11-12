@@ -11,7 +11,7 @@ namespace ModCore.ViewModels.Access
     {
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string EmailAddress { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -19,5 +19,8 @@ namespace ModCore.ViewModels.Access
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
+
+
+        public string ReturnUrl { get; set; }
     }
 }

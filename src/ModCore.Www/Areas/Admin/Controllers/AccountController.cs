@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using ModCore.ViewModels.Base;
 using ModCore.ViewModels.Access;
 using ModCore.Abstraction.Services.Access;
+using System.Security.Claims;
+using ModCore.Models.Access;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
@@ -19,16 +21,16 @@ namespace ModCore.Www.Areas.Admin.Controllers
 
         public AccountController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
             IBaseViewModelProvider baseModeProvider, IUserService userService)
-            : base(log,sessionManager,siteSettingsManager, baseModeProvider)
+            : base(log, sessionManager, siteSettingsManager, baseModeProvider)
         {
             _userService = userService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login(string ReturnUrl)
         {
             var m = new LoginViewModel();
-
+            m.ReturnUrl = ReturnUrl;
 
             return View(m);
         }
@@ -36,11 +38,34 @@ namespace ModCore.Www.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginModel)
         {
+            var result = false;
+            User user = null;
 
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("Summary", "The password or user name did not match");
 
-            return null;
+                return View(loginModel);
+            }
+
+            user = await _userService.GetByEmail(loginModel.EmailAddress);
+            result = await _userService.ValidatePassword(user, loginModel.EmailAddress, loginModel.Password);
+
+            if (result)
+            {
+                this.CurrentSession.UpdateUserData(user, true);
+                this.CommitSession();
+
+                var returnUrl = loginModel.ReturnUrl;
+                if (string.IsNullOrEmpty(returnUrl))
+                    returnUrl = "/";
+
+                return Redirect(returnUrl);
+            }
+
+            throw new Exception("An unexpected system error has occured.");
+
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Register()
@@ -54,9 +79,9 @@ namespace ModCore.Www.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel loginModel)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-              var user = await  _userService.CreateNewUser(loginModel);
+                var user = await _userService.CreateNewUser(loginModel);
             }
 
 

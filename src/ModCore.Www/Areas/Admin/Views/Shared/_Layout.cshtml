@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model ModCore.ViewModels.Base.BaseViewModel
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -31,25 +33,28 @@
                         </a>
                     </div>
                     <div class="navbar-content user-nav">
-                        <div class="user-settings-container">
-                            <a href="#">
-                                <i class="fa fa-user-circle-o user-icon" aria-hidden="true"></i>
-                                <span class="welcome-user">Jesus H. Christ </span>
-                                <i class="fa fa-angle-down icon-user-options" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                        @*<div class="search-container">
-                                @Html.TextBox("Search", "", new { @class = "search-input", placeholder = "Search" })
-                            </div>*@
+                        @if (Model.IsLoggedIn)
+                        {
+                            <div class="user-settings-container">
+                                <a href="#">
+                                    <i class="fa fa-user-circle-o user-icon" aria-hidden="true"></i>
+                                    <span class="welcome-user">@Model?.UserData?.FullName</span>
+                                    <i class="fa fa-angle-down icon-user-options" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        }
                     </div>
                     <div style="clear: both;"></div>
                 </div>
             </div>
         </div>
         <div class="container body-content">
-            <div class="side-menu-container">
-                @Html.Partial("_Menu")
-            </div>
+            @if (Model.IsLoggedIn)
+            {
+                <div class="side-menu-container">
+                    @Html.Partial("_Menu")
+                </div>
+            }
             <div class="body-wrapper">
                 @if (ViewData["Title"] != null && !string.IsNullOrEmpty(ViewData["Title"].ToString()))
                 {

@@ -104,6 +104,7 @@ namespace ModCore.DataAccess.MongoDb
             return this.collection.AsQueryable<T>().Where<T>(specification.Predicate()).SingleOrDefault();
         }
 
+
         public virtual T FindById(string id)
         {
             return Find(new GetById<T>(id));
@@ -165,6 +166,8 @@ namespace ModCore.DataAccess.MongoDb
         {
             //TODO: No SingleOrDefaultAsync() in .net core?
             return await Task.Run<T>(() => this.collection.AsQueryable<T>().Where<T>(specification.Predicate()).SingleOrDefault());
+
+            //await this.Collection.FindAsync<T>(specification.GetExpression());
         }
 
         public virtual async Task<T> FindByIdAsync(string id)

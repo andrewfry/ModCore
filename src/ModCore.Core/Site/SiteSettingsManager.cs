@@ -8,6 +8,11 @@ namespace ModCore.Core.Site
 {
     public class SiteSettingsManager : ISiteSettingsManager
     {
+        public SiteSettingsManager()
+        {
+                
+        }
+
         public bool AddSettings(string key, object value)
         {
             throw new NotImplementedException();

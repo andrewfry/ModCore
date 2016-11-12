@@ -14,6 +14,9 @@ using System.Security.Cryptography;
 using ModCore.Utilities.Security;
 using ModCore.Abstraction.DataAccess;
 using ModCore.ViewModels.Access;
+using ModCore.Specifications.Access;
+using ModCore.Services.MongoDb.Exceptions;
+using Microsoft.AspNetCore.Routing;
 
 namespace ModCore.Services.MongoDb.Access
 {
@@ -30,7 +33,7 @@ namespace ModCore.Services.MongoDb.Access
             var userId = userPrincipal.Identity.Name;
             var user = await this.GetByIdAsync(userId);
 
-            if(lastChanged < user.LastUpdateDate)
+            if (lastChanged < user.LastUpdateDate)
             {
                 return true;
             }
@@ -38,12 +41,27 @@ namespace ModCore.Services.MongoDb.Access
             return false;
         }
 
-        public async Task<bool> ValidatePassword(string userId, string password)
+        public async Task<bool> ValidatePassword(string emailAddress, string password)
         {
-            var user = await this.GetByIdAsync(userId);
-            var sentHash = SecurityUtil.GetHash(password + user.PasswordSalt);
+            var user = await _repository.FindAsync(new GetByEmail(emailAddress));
 
-            return string.Compare(user.PasswordHash, sentHash) == 0;
+            return await ValidatePassword(user, emailAddress, password);
+        }
+
+        public async Task<bool> ValidatePassword(User user, string emailAddress, string password)
+        {
+            if (user.LockedOut)
+                return false;
+
+            var sentHash = SecurityUtil.GetHash(password + user.PasswordSalt);
+            var result = string.Compare(user.PasswordHash, sentHash) == 0;
+
+            if (!result)
+            {
+                await IncrementFailedLogin(user);
+            }
+
+            return result;
         }
 
         public async Task ResetPassword(string userId, string password)
@@ -64,6 +82,10 @@ namespace ModCore.Services.MongoDb.Access
         {
             var user = _mapper.Map<User>(registerModel);
 
+            var existingUser = await _repository.FindAsync(new GetByEmail(user.EmailAddress));
+            if (existingUser != null)
+                throw new DuplicateUserException($"A user with the email: {user.EmailAddress} already exists.");
+
             user.PasswordSalt = SecurityUtil.GetSalt();
             user.PasswordHash = SecurityUtil.GetHash(registerModel.Password + user.PasswordSalt);
             user.FailedLoginAttempts = 0;
@@ -81,5 +103,23 @@ namespace ModCore.Services.MongoDb.Access
             return user;
         }
 
+        //TODO - we need to bring in the site settings and then lockt he account out if it exceeds X
+        public async Task IncrementFailedLogin(User user)
+        {
+            user.FailedLoginAttempts += 1;
+
+            await _repository.UpdateAsync(user);
+        }
+
+        public async Task<User> GetByEmail(string emailAddress)
+        {
+            return await _repository.FindAsync(new GetByEmail(emailAddress));
+        }
+
+        public async Task<bool> UserAllowedAdminAccess(string userId, RouteData route)
+        {
+
+            return  true;
+        }
     }
 }

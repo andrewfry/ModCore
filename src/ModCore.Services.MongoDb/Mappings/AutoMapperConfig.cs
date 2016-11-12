@@ -10,11 +10,9 @@ namespace ModCore.Services.MongoDb.Mappings
 {
     public class AutoMapperProfileConfiguration : Profile
     {
-        protected override void Configure()
+        public AutoMapperProfileConfiguration()
         {
-            //Access
-            CreateMap<User, RegisterViewModel>();
-            CreateMap<RegisterViewModel, User>();
+            CreateMap<User, RegisterViewModel>().ReverseMap();
             CreateMap<LoginViewModel, User>();
         }
     }

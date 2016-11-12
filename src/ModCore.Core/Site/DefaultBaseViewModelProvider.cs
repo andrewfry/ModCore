@@ -14,12 +14,10 @@ namespace ModCore.Core.Site
         public BaseViewModel Update(IBaseController controller, BaseViewModel model)
         {
             var s = controller.CurrentSession;
-            //controller.HttpContext.RequestServices.GetService()
 
-            model.IsLoggedIn = controller.User.Identity.IsAuthenticated;
-
-            if (model.IsLoggedIn)
+            if (s.IsLoggedIn)
             {
+                model.IsLoggedIn = s.IsLoggedIn;
                 model.UserId = s.UserId;
                 model.UserData = new vUserData
                 {

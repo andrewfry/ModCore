@@ -10,6 +10,7 @@ using ModCore.Core.Constraints;
 using ModCore.ViewModels.Base;
 using Microsoft.AspNetCore.Http;
 using ModCore.Core.HelperExtensions;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ModCore.Core.Controllers
 {
@@ -19,7 +20,6 @@ namespace ModCore.Core.Controllers
         protected ILog _logger;
         private SessionData _currentSession;
         private ISession _session => HttpContext.Session;
-        //private ISessionManager _sessionManager;
         private ISiteSettingsManager _siteSettingsManager;
         private IBaseViewModelProvider _baseClassProvider;
 
@@ -39,6 +39,8 @@ namespace ModCore.Core.Controllers
 
                     {
                         var newSession = new SessionData();
+                        newSession.SessionId = HttpContext.Session.Id;
+
                         jsonString = newSession.ToJson();
                         _session.SetString("sessionData", jsonString);
 
@@ -52,16 +54,8 @@ namespace ModCore.Core.Controllers
 
                 return _currentSession;
             }
-          
-        }
 
-        //public ISessionManager SessionManager
-        //{
-        //    get
-        //    {
-        //        return _sessionManager;
-        //    }
-        //}
+        }
 
         public ISiteSettingsManager SiteSettingsManager
         {
@@ -81,7 +75,7 @@ namespace ModCore.Core.Controllers
 
         public void CommitSession()
         {
-           var jsonString = _currentSession.ToJson();
+            var jsonString = _currentSession.ToJson();
             _session.SetString("sessionData", jsonString);
 
             _currentSession = null;
@@ -89,12 +83,6 @@ namespace ModCore.Core.Controllers
 
         public override ViewResult View(string viewName, object model)
         {
-            var baseVm = model as BaseViewModel;
-            if (model == null)
-                throw new ArgumentNullException("You must provide a model to every view that inherits from BaseViewModel");
-
-            _baseClassProvider.Update(this, baseVm);
-
             return View(viewName, model, true);
         }
 
@@ -108,6 +96,17 @@ namespace ModCore.Core.Controllers
                 _baseClassProvider.Update(this, baseVm);
 
             return base.View(viewName, model);
+        }
+
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if(context.HttpContext.User.Identity.IsAuthenticated)
+            {
+
+            }
+
+
         }
     }
 }

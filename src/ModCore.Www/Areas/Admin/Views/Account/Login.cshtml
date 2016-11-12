@@ -14,7 +14,7 @@
         <div class="panel-body">
             <div class="form-group">
                 <div class="col-xs-12">
-                    @Html.TextBoxFor(a => a.Email, new { @class = "form-control" })
+                    @Html.TextBoxFor(a => a.EmailAddress, new { @class = "form-control" })
                 </div>
             </div>
             <div class="form-group">
@@ -24,6 +24,8 @@
             </div>
             <div class="form-group">
                 <div class="col-xs-12">
+                    @Html.HiddenFor(a=>a.ReturnUrl)
+
                     <button type="submit" class="btn btn-primary">Sign in</button>
                 </div>
             </div>

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using ModCore.Models.Access;
 using System.Security.Claims;
 using ModCore.ViewModels.Access;
+using Microsoft.AspNetCore.Routing;
 
 namespace ModCore.Abstraction.Services.Access
 {
@@ -12,10 +13,16 @@ namespace ModCore.Abstraction.Services.Access
     {
         Task<bool> ValidateLastChanged(ClaimsPrincipal userPrincipal, DateTime lastChanged);
 
-        Task<bool> ValidatePassword(string userId, string password);
+        Task<bool> ValidatePassword(User user, string emailAddress, string password);
 
-        Task ResetPassword(string userId, string password);
+        Task<bool> ValidatePassword(string emailAddress, string password);
+
+        Task ResetPassword(string emailAddress, string password);
 
         Task<User> CreateNewUser(RegisterViewModel registerModel);
+
+        Task<User> GetByEmail(string emailAddress);
+
+        Task<bool> UserAllowedAdminAccess(string userId, RouteData route);
     }
 }

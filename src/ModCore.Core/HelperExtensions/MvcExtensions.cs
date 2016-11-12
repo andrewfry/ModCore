@@ -144,44 +144,14 @@ namespace ModCore.Core.HelperExtensions
         {
             assembliesToScan = assembliesToScan as Assembly[] ?? assembliesToScan.ToArray();
 
-            var allTypes = assembliesToScan.SelectMany(a => a.ExportedTypes).ToArray();
-
-            var profiles =
-            allTypes
-                .Where(t => typeof(Profile).GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()))
-                .Where(t => !t.GetTypeInfo().IsAbstract);
-
-            Mapper.Initialize(cfg =>
+            var mapperConfiguration = new MapperConfiguration(cfg =>
             {
-                foreach (var profile in profiles)
-                {
-                    cfg.AddProfile(profile);
-                }
+                cfg.AddProfiles(assembliesToScan);
+
             });
 
-            var openTypes = new[]
-                {
-                    typeof(IValueResolver<,,>),
-                    typeof(IMemberValueResolver<,,,>),
-                    typeof(ITypeConverter<,>)
-                };
-            foreach (var openType in openTypes)
-            {
-                foreach (var type in allTypes
-                    .Where(t => t.GetTypeInfo().IsClass)
-                    .Where(t => !t.GetTypeInfo().IsAbstract)
-                    .Where(t => t.GetInterfaces().Any(i=>i == openType))
-                    //.Where(t => t.ImplementsGenericInterface(openType))
-                    )
-                {
-                    services.AddTransient(type);
-                }
-            }
 
-
-            services.AddSingleton(Mapper.Configuration);
-            services.AddScoped<IMapper>(sp =>
-              new Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
+            services.AddSingleton<IMapper>(sp => mapperConfiguration.CreateMapper());
         }
 
     }

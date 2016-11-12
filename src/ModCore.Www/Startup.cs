@@ -28,7 +28,6 @@ namespace ModCore.Www
 {
     public class Startup
     {
-        private MapperConfiguration _mapperConfiguration { get; set; }
         public IConfigurationRoot Configuration { get; }
 
         private IPluginManager _pluginManager;
@@ -44,11 +43,6 @@ namespace ModCore.Www
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
 
-            _mapperConfiguration = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new AutoMapperProfileConfiguration());
-            });
-
             _hostingEnvironment = env;
         }
 
@@ -57,25 +51,26 @@ namespace ModCore.Www
             //Configure Settings
             services.Configure<MongoDbSettings>(options => Configuration.GetSection("MongoDbSettings").Bind(options));
 
-            var mvcBuilder = services.AddMvc();
+            var mvcBuilder = services.AddMvc(config =>
+            {
+                config.Filters.Add(new AdminAuthFilter());
+            });
 
+            services.AddTransient<ILogger, SiteLogger>();
             services.AddTransient<ILog, SiteLogger>();
             services.AddTransient<ISessionManager, SessionManager>();
             services.AddTransient<ISiteSettingsManager, SiteSettingsManager>();
             services.AddTransient<IBaseViewModelProvider, DefaultBaseViewModelProvider>();
-            services.AddSingleton<IMapper>(sp => _mapperConfiguration.CreateMapper());
 
             //Persistent Data Repositories
-            services.AddTransient<IDataRepository<Log>, MongoDbRepository<Log>>();
             services.AddTransient<IDataRepository<InstalledPlugin>, MongoDbRepository<InstalledPlugin>>();
             services.AddTransient<IDataRepository<ActiveTheme>, MongoDbRepository<ActiveTheme>>();
 
-            //adding the async Data Repositories 
             services.AddTransient<IDataRepositoryAsync<User>, MongoDbRepository<User>>();
+            services.AddTransient<IDataRepositoryAsync<Log>, MongoDbRepository<Log>>();
 
             //Adding the business logic Services
             services.AddTransient<IUserService, UserService>();
-
 
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
@@ -90,6 +85,9 @@ namespace ModCore.Www
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.CookieName = ".Modcore-" + sessionGuid;
             });
+
+            //TODO - Double check if this is pulling profiles from the plugins
+            services.AddAutoMapper();
 
             //TEST
             RunTestData(services);
@@ -144,25 +142,24 @@ namespace ModCore.Www
             app.UseStatusCodePages();
             app.UseSession();
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions()
-            {
-                AuthenticationScheme = "ModCoreBasicCookieAuth",
-                LoginPath = new PathString("/Admin/Account/Login"),
-                AccessDeniedPath = new PathString("/Admin/Account/Login"),
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                CookieHttpOnly = true,
-                ExpireTimeSpan = TimeSpan.FromMinutes(30),
-                SlidingExpiration = true,
-                CookieSecure = env.IsDevelopment()
-                            ? CookieSecurePolicy.SameAsRequest
-                            : CookieSecurePolicy.Always,
-                Events = new CookieAuthenticationEvents
-                {
-                    // Set other options
-                    OnValidatePrincipal = LastChangedValidator.ValidateAsync,
-                }
-            });
+            //We are doing our own custom authentication via the session.
+            //app.UseCookieAuthentication(new CookieAuthenticationOptions()
+            //{
+            //    AuthenticationScheme = "ModCoreBasicCookieAuth",
+            //    AutomaticAuthenticate = true,
+            //    AutomaticChallenge = false,
+            //    CookieHttpOnly = true,
+            //    ExpireTimeSpan = TimeSpan.FromMinutes(30),
+            //    SlidingExpiration = true,
+            //    CookieSecure = env.IsDevelopment()
+            //                ? CookieSecurePolicy.SameAsRequest
+            //                : CookieSecurePolicy.Always,
+            //    Events = new CookieAuthenticationEvents
+            //    {
+            //        // Set other options
+            //       // OnValidatePrincipal = LastChangedValidator.ValidateAsync, //not sure if this makes sense since we arent using the claims for data
+            //    }
+            //});
 
             app.UseMvcWithPlugin(routes =>
             {

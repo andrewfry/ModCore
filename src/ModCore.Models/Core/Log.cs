@@ -5,16 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace ModCore.Models.Core
 {
     public class Log : BaseEntity
     {
+        public string Route { get; set; }
+
         public string ClassName { get; set; }
 
         public string PluginName { get; set; }
 
-        public ErrorLevel ErrorLevel { get; set; }
+        public LogLevel ErrorLevel { get; set; }
 
         public string Message { get; set; }
 
