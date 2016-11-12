@@ -70,7 +70,7 @@ namespace ModCore.Www
 
             //Persistent Data Repositories
             services.AddTransient<IDataRepository<InstalledPlugin>, MongoDbRepository<InstalledPlugin>>();
-            services.AddTransient<IDataRepository<ActiveTheme>, MongoDbRepository<ActiveTheme>>();
+            services.AddTransient<IDataRepository<SiteTheme>, MongoDbRepository<SiteTheme>>();
 
             services.AddTransient<IDataRepositoryAsync<User>, MongoDbRepository<User>>();
             services.AddTransient<IDataRepositoryAsync<Log>, MongoDbRepository<Log>>();
