@@ -12,5 +12,7 @@ namespace ModCore.Abstraction.Themes
         ITheme ActiveTheme { get; }
 
         void ActivateTheme(ITheme theme);
+
+        string ThemeDirectory { get; }
     }
 }

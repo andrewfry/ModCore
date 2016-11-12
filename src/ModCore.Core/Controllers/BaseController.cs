@@ -10,7 +10,12 @@ using ModCore.Core.Constraints;
 using ModCore.ViewModels.Base;
 using Microsoft.AspNetCore.Http;
 using ModCore.Core.HelperExtensions;
-using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using System.IO;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 
 namespace ModCore.Core.Controllers
 {
@@ -98,15 +103,38 @@ namespace ModCore.Core.Controllers
             return base.View(viewName, model);
         }
 
-
-        public override void OnActionExecuting(ActionExecutingContext context)
+        public string RenderViewAsString(string viewPath)
         {
-            if(context.HttpContext.User.Identity.IsAuthenticated)
+            return RenderViewAsString(viewPath, "");
+        }
+
+        public string RenderViewAsString<TModel>(string viewPath, TModel model)
+        {
+           var engine = ControllerContext.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
+           var viewEngineResult = engine.GetView("~/", viewPath, false);
+
+            if (!viewEngineResult.Success)
             {
+                throw new InvalidOperationException($"Could not find view {viewPath}");
+            }
+
+            var view = viewEngineResult.View;
+            var result = "";
+            using (var output = new StringWriter())
+            {
+                var viewContext = new ViewContext();
+                viewContext.HttpContext = ControllerContext.HttpContext; // _httpContextAccessor.HttpContext;
+                viewContext.ViewData = new ViewDataDictionary<TModel>(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                { Model = model };
+                viewContext.Writer = output;
+
+                view.RenderAsync(viewContext).GetAwaiter().GetResult();
+
+                result = output.GetStringBuilder().Replace("\"", "'").ToString();
 
             }
 
-
+            return result;
         }
     }
 }

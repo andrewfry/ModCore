@@ -75,7 +75,7 @@ footer p { margin: 0px; padding: 4px; font-weight: bold; }
     .side-menu .menu-item .menu-item-icon.mdi:before { font-size: 16px; }
     .side-menu .menu-item .menu-item-text { display: inline-block; padding: 5px; }
 
-    .body-content { width: 100%; height: calc(100% - 80px); padding: 0px; }
+    .body-content { width: 100%; height: calc(100% - 50px); padding: 0px; }
     .body-wrapper { float: left; width: calc(100% - 220px); height: calc(100% - 50px); }
 
     .user-settings-container { float: right; }

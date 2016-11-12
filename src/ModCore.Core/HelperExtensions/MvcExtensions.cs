@@ -15,7 +15,9 @@ using ModCore.Abstraction.Themes;
 using ModCore.Core.Controllers;
 using ModCore.Core.HelperExtensions;
 using ModCore.Core.Plugins;
+using ModCore.Core.Routers;
 using ModCore.Core.Themes;
+using ModCore.Models.Page;
 using ModCore.Models.Plugins;
 using ModCore.Models.Themes;
 using System;
@@ -65,6 +67,8 @@ namespace ModCore.Core.HelperExtensions
 
             configureRoutes(routes);
 
+            var cmsPage = app.ApplicationServices.GetService<IDataRepository<Page>>();
+            routes.Routes.Add(new CmsPageRoute(cmsPage,routes.DefaultHandler));
             //Disable for now.
             //routes.Routes.Insert(0, AttributeRouting.CreateAttributeMegaRoute(app.ApplicationServices));
 
@@ -120,7 +124,7 @@ namespace ModCore.Core.HelperExtensions
 
             services.AddSingleton<IThemeManager, ThemeManager>(srcProvider =>
             {
-                var repos = srcProvider.GetRequiredService<IDataRepository<ActiveTheme>>();
+                var repos = srcProvider.GetRequiredService<IDataRepository<SiteTheme>>();
 
                 return new ThemeManager(configRoot, env, repos);
             });

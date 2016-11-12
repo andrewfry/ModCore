@@ -1,13 +1,23 @@
-﻿<!DOCTYPE html>
+﻿
+@using ModCore.ViewModels.Base;
+@{ 
+    var model = Model as BaseViewModel;
+}
+<!DOCTYPE html>
 
 <html>
+
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/boostrap.overrides.css" />
+        <link rel="stylesheet" href="@(model.SiteSettings != null ? model.SiteSettings.Theme.CSSLocation : "")" />
+    </environment>
 </head>
 <body>
-    <div>
-        @RenderBody()
-    </div>
+    @RenderBody()
+
 </body>
 </html>

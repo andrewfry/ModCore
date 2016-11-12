@@ -15,7 +15,5 @@ namespace ModCore.Abstraction.Themes
 
         string DisplayName { get;}
 
-        string PreviewURL { get; set; }
-
     }
 }

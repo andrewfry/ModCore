@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
     RegisterMenuEvents();
+    RegisterThemeEvents();
 });
 
 
@@ -41,7 +42,7 @@ function RegisterMenuEvents() {
     //})
 
     $(".menu-item ").click(function () {
-        if ($(this).hasClass("has-sub") == false) {
+        if ($(this).hasClass("has-sub") === false) {
             return;
         }
 
@@ -57,4 +58,20 @@ function RegisterMenuEvents() {
 
     });
 }
-
+function RegisterThemeEvents(){
+    $(".btn-select-theme").click(function (e) {
+        e.preventDefault();
+        var theme = $(this).data("theme");
+       
+        $.ajax({
+            url: 'Theme/SetTheme',
+            type: 'POST',
+            data: { themeName: theme },
+            success: function (result) {           
+                 $("#ThemeList").html(result.html);
+                 RegisterThemeEvents();
+            }
+        });
+    })
+    
+}

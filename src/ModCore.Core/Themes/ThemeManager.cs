@@ -28,7 +28,7 @@ namespace ModCore.Core.Themes
         private IThemeManager _themeManager;
         private IConfigurationRoot _configurationRoot;
         IHostingEnvironment _hostingEnvironment;
-        IDataRepository<ActiveTheme> _repository;
+        IDataRepository<SiteTheme> _repository;
 
         public IList<ITheme> AvailableThemes {
             get {
@@ -55,6 +55,23 @@ namespace ModCore.Core.Themes
                 }
 
                 return _activeTheme;
+            }
+        }
+
+        public string ThemeDirectory
+        {
+            get
+            {
+                if (_activeTheme == null)
+                {
+                    //load active theme from db see if that exists in available themes
+                    var activeTheme = _repository.Find(new ActiveSiteTheme());
+                    if (AvailableThemes.Any(a => a.ThemeName == activeTheme.ThemeName))
+                    {
+                        _activeTheme = AvailableThemes.Single(a => a.ThemeName == activeTheme.ThemeName);
+                    }
+                }
+                return Path.Combine(_themesLocation, _activeTheme.ThemeName);
             }
         }
 
@@ -86,7 +103,7 @@ namespace ModCore.Core.Themes
         }
 
         public ThemeManager(IConfigurationRoot configurationRoot, 
-            IHostingEnvironment hostingEnvironment, IDataRepository<ActiveTheme> repository)
+            IHostingEnvironment hostingEnvironment, IDataRepository<SiteTheme> repository)
         {
             _configurationRoot = configurationRoot;
             _hostingEnvironment = hostingEnvironment;
@@ -109,13 +126,13 @@ namespace ModCore.Core.Themes
                 activeTheme.DisplayName = theme.DisplayName;
                 activeTheme.ThemeName = theme.ThemeName;
                 activeTheme.ThemeVersion = theme.ThemeVersion;
+                _repository.Update(activeTheme);
 
-                _repository.Update(activeTheme);          
+                _activeTheme = null;      
             }
 
             //clear page cache??
         }
 
-      
     }
 }

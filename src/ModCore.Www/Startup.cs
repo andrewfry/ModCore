@@ -18,12 +18,18 @@ using ModCore.Core.Middleware;
 using ModCore.Models.Themes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ModCore.Models.Page;
+using System.Collections.Generic;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using ModCore.Core.Routers;
+using ModCore.Services.MongoDb.PageService;
+using ModCore.Abstraction.Services.PageService;
 using ModCore.Services.MongoDb.Access;
 using ModCore.Abstraction.Services.Access;
 using ModCore.Models.Access;
 using AutoMapper;
 using ModCore.Services.MongoDb.Mappings;
-
 namespace ModCore.Www
 {
     public class Startup
@@ -96,8 +102,23 @@ namespace ModCore.Www
         public void RunTestData(IServiceCollection services)
         {
             var srcProvider = services.BuildServiceProvider();
-            var repos = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
+            var repos = srcProvider.GetService<IDataRepository<Page>>();
 
+            //repos.Insert(new Page
+            //{
+            //    Active = true,
+            //    HTMLContent = "<h1>Sample page content 1<h2>",
+            //    FriendlyURL = "sample-page",
+            //    PageName = "Sample"
+            //});
+            //repos.Insert(new Page
+            //{
+            //    Active = true,
+            //    HTMLContent = "<h2>Another page</h2>",
+            //    FriendlyURL = "sample-page/sub-page",
+            //    PageName = "SubSample"
+            //});
+            //});
             //repos.Insert(new InstalledPlugin
             //{
             //    Active = false,
@@ -141,25 +162,13 @@ namespace ModCore.Www
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseSession();
-
-            //We are doing our own custom authentication via the session.
-            //app.UseCookieAuthentication(new CookieAuthenticationOptions()
-            //{
-            //    AuthenticationScheme = "ModCoreBasicCookieAuth",
-            //    AutomaticAuthenticate = true,
-            //    AutomaticChallenge = false,
-            //    CookieHttpOnly = true,
-            //    ExpireTimeSpan = TimeSpan.FromMinutes(30),
-            //    SlidingExpiration = true,
-            //    CookieSecure = env.IsDevelopment()
-            //                ? CookieSecurePolicy.SameAsRequest
-            //                : CookieSecurePolicy.Always,
-            //    Events = new CookieAuthenticationEvents
-            //    {
-            //        // Set other options
-            //       // OnValidatePrincipal = LastChangedValidator.ValidateAsync, //not sure if this makes sense since we arent using the claims for data
-            //    }
-            //});
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), @"Themes")),
+                RequestPath = new PathString("/Themes")
+            });
+           
 
             app.UseMvcWithPlugin(routes =>
             {
