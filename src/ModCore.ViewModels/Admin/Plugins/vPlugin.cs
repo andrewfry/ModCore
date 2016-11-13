@@ -8,11 +8,13 @@ namespace ModCore.ViewModels.Admin.Plugin
     public class vPlugin
     {
 
-        public string PluginName { get; set; }
+        public string Name { get; set; }
 
-        public string PluginVersion { get; set; }
+        public string Version { get; set; }
 
-        public string PluginDescription { get; set; }
+        public string AssemblyName { get; set; }
+
+        public string Description { get; set; }
 
         public bool Installed { get; set; }
 

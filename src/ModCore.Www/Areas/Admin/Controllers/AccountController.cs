@@ -11,6 +11,7 @@ using ModCore.ViewModels.Access;
 using ModCore.Abstraction.Services.Access;
 using System.Security.Claims;
 using ModCore.Models.Access;
+using AutoMapper;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
@@ -20,8 +21,8 @@ namespace ModCore.Www.Areas.Admin.Controllers
         private IUserService _userService;
 
         public AccountController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IUserService userService)
-            : base(log, sessionManager, siteSettingsManager, baseModeProvider)
+            IBaseViewModelProvider baseModeProvider, IUserService userService, IMapper mapper)
+            : base(log, sessionManager, siteSettingsManager, baseModeProvider, mapper)
         {
             _userService = userService;
         }

@@ -15,7 +15,7 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-
+using AutoMapper;
 
 namespace ModCore.Core.Controllers
 {
@@ -27,6 +27,7 @@ namespace ModCore.Core.Controllers
         private ISession _session => HttpContext.Session;
         private ISiteSettingsManager _siteSettingsManager;
         private IBaseViewModelProvider _baseClassProvider;
+        protected IMapper _mapper;
 
         public SessionData CurrentSession
         {
@@ -71,11 +72,12 @@ namespace ModCore.Core.Controllers
         }
 
         public BaseController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
-            IBaseViewModelProvider baseClassProvider)
+            IBaseViewModelProvider baseClassProvider, IMapper mapper)
         {
             _logger = log;
             _siteSettingsManager = siteSettingsManager;
             _baseClassProvider = baseClassProvider;
+            _mapper = mapper;
         }
 
         public void DiscardSession()

@@ -10,6 +10,7 @@ using ModCore.ViewModels.Base;
 using ModCore.Abstraction.Plugins;
 using ModCore.ViewModels.Admin.Plugin;
 using ModCore.Core.Plugins;
+using AutoMapper;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
@@ -19,21 +20,30 @@ namespace ModCore.Www.Areas.Admin.Controllers
         private IPluginManager _pluginManager;
 
         public PluginController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IPluginManager pluginManager)
-            : base(log,sessionManager,siteSettingsManager, baseModeProvider)
+            IBaseViewModelProvider baseModeProvider, IPluginManager pluginManager, IMapper mapper)
+            : base(log, sessionManager, siteSettingsManager, baseModeProvider, mapper)
         {
             _pluginManager = pluginManager;
         }
 
         public IActionResult Index()
         {
-            var m = new vPluginList();
-            m.Plugins = _pluginManager.AvailablePlugins.Select(a => new vPlugin
+
+            var availablePlugins = _pluginManager.AvailablePlugins.Select(a => _mapper.Map<vPlugin>(a)).ToList();
+            var installedPlugins = _pluginManager.InstalledPlugins.ToList();
+            var activePlugins = _pluginManager.ActivePlugins.ToList();
+
+            foreach(var avail in availablePlugins)
             {
-                PluginName = a.Name,
-                PluginDescription = a.Description,
-                PluginVersion = a.Version
-            }).ToList();
+                avail.Installed = installedPlugins.Any(a => a.AssemblyName == avail.AssemblyName && avail.Version == a.Version);
+                avail.Active = activePlugins.Any(a => a.AssemblyName == avail.AssemblyName && avail.Version == a.Version);
+
+            }
+
+
+            var m = new vPluginList();
+            m.Plugins = availablePlugins;
+
 
             return View(m);
         }

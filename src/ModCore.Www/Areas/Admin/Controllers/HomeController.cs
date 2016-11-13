@@ -8,6 +8,7 @@ using ModCore.Abstraction.Site;
 using Microsoft.Extensions.Logging;
 using ModCore.ViewModels.Base;
 using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
@@ -15,8 +16,8 @@ namespace ModCore.Www.Areas.Admin.Controllers
     public class HomeController : BaseController
     {
         public HomeController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider)
-            : base(log,sessionManager,siteSettingsManager, baseModeProvider)
+            IBaseViewModelProvider baseModeProvider, IMapper mapper)
+            : base(log,sessionManager,siteSettingsManager, baseModeProvider, mapper)
         {
 
         }

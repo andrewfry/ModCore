@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using ModCore.Abstraction.Plugins;
 using ModCore.Abstraction.Site;
 using ModCore.Core.Controllers;
@@ -22,8 +23,8 @@ namespace Blog.Plugin.Controllers
         }
 
         public PluginController(IPluginLog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager, IPluginSettingsManager pluginSettingsManager,
-            IBaseViewModelProvider baseViewModelProvider) :
-            base(log, sessionManager, siteSettingsManager, pluginSettingsManager, baseViewModelProvider)
+            IBaseViewModelProvider baseViewModelProvider, IMapper _mapper) :
+            base(log, sessionManager, siteSettingsManager, pluginSettingsManager, baseViewModelProvider, _mapper)
         {
 
         }

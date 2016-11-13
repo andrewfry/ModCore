@@ -1,49 +1,12 @@
 ﻿@{
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Manage Plugins";
 }
 
-  
 
-    <nav class="side-menu">
-        <div class="menu-group">
-            <div class="menu-item has-sub">
-                <a href="#">
-                    Sub menu
-                </a>
-                <div class="menu-group">
-                    <div class="menu-item">
-                        <a href="#">
-                            Test
-                        </a>
-                    </div>
-                    <div class="menu-item">
-                        <a href="#">
-                            Test
-                        </a>
-                    </div>
-                    <div class="menu-item">
-                        <a href="#">
-                            Test
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="menu-item">
-                <a href="#">
-                    Test
-                </a>
-            </div>
-            <div class="menu-item">
-                <a href="#">
-                    Test
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    @RenderBody()
+@RenderBody()
 
 
 @section scripts{
-@RenderSection("scripts", required: false)
+    @RenderSection("scripts", required: false)
 }

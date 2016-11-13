@@ -74,6 +74,7 @@ footer p { margin: 0px; padding: 4px; font-weight: bold; }
 
     .side-menu .menu-item .menu-item-icon.mdi:before { font-size: 16px; }
     .side-menu .menu-item .menu-item-text { display: inline-block; padding: 5px; }
+    .side-menu .menu-item .menu-item-text a { text-decoration: none; color: #FFF; }
 
     .body-content { width: 100%; height: calc(100% - 50px); padding: 0px; }
     .body-wrapper { float: left; width: calc(100% - 220px); height: calc(100% - 50px); }
@@ -82,5 +83,5 @@ footer p { margin: 0px; padding: 4px; font-weight: bold; }
     .user-settings-container .welcome-user { font-size: 14px; }
     .user-settings-container .user-icon { font-size: 14px; }
 
-    .panel.panel-default {padding:50px;}
+    .panel.panel-default { padding: 50px; }
 }

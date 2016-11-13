@@ -5,14 +5,14 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
 }
 
-Admin
 
 <div class="list-group">
     @foreach (var plug in Model.Plugins)
     {
         <a href="#" class="list-group-item">
-            <h4 class="list-group-item-heading">@plug.PluginName @plug.PluginVersion</h4>
-            <p class="list-group-item-text">@plug.PluginDescription</p>
+            <h4 class="list-group-item-heading">@plug.Name @plug.Version</h4>
+            <p class="list-group-item-text">@plug.Description</p>
+            <p class="list-group-item-text">@plug.Active</p>
         </a>
     }
 </div>

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using ModCore.ViewModels.Base;
 using ModCore.ViewModels.Theme;
 using ModCore.Abstraction.Themes;
+using AutoMapper;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,8 +21,8 @@ namespace ModCore.Www.Areas.Admin.Controllers
     {
         private IThemeManager _themeManager;
         public ThemeController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IThemeManager themeManager)
-            : base(log, sessionManager, siteSettingsManager, baseModeProvider)
+            IBaseViewModelProvider baseModeProvider, IThemeManager themeManager, IMapper mapper)
+            : base(log, sessionManager, siteSettingsManager, baseModeProvider, mapper)
         {
             _themeManager = themeManager;
         }
