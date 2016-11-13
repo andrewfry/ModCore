@@ -36,6 +36,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel loginModel)
         {
             var result = false;
@@ -56,11 +57,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
                 this.CurrentSession.UpdateUserData(user, true);
                 this.CommitSession();
 
-                var returnUrl = loginModel.ReturnUrl;
-                if (string.IsNullOrEmpty(returnUrl))
-                    returnUrl = "/";
-
-                return Redirect(returnUrl);
+                return RedirectToLocal(loginModel.ReturnUrl);
             }
 
             throw new Exception("An unexpected system error has occured.");
@@ -77,6 +74,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel loginModel)
         {
             if (ModelState.IsValid)
@@ -87,5 +85,26 @@ namespace ModCore.Www.Areas.Admin.Controllers
 
             return View(loginModel);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> LogOut()
+        {
+            DiscardSession();
+
+            return RedirectToAction("Account", "Login", new { Area = "Admin" });
+        }
+
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction(nameof(HomeController.Index), "Home", new { Area = "Admin" });
+            }
+        }
+
     }
 }

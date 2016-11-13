@@ -30,6 +30,8 @@ using ModCore.Abstraction.Services.Access;
 using ModCore.Models.Access;
 using AutoMapper;
 using ModCore.Services.MongoDb.Mappings;
+using ModCore.Specifications.Themes;
+
 namespace ModCore.Www
 {
     public class Startup
@@ -130,17 +132,36 @@ namespace ModCore.Www
             //    PluginVersion = "1.0"
             //});
 
-            //var themes = srcProvider.GetService<IDataRepository<ActiveTheme>>();
+            var usrService = srcProvider.GetService<IUserService>();
+            var user = usrService.GetByEmail("test@test.com");
+            if(user == null)
+            {
+                var testUser = usrService.CreateNewUser(new ViewModels.Access.RegisterViewModel
+                {
+                    EmailAddress = "test@test.com",
+                    Password = "test",
+                    ConfirmPassword = "test",
+                    FirstName = "Test",
+                    LastName = "Test",
+                });
+            }
+            
 
-            //themes.Insert(new ActiveTheme
-            //{
-            //    Id = "1",
-            //    Description = "Sample Theme for test purposes.",
-            //    DisplayName = "Sample Theme",
-            //    ThemeName = "Sample",
-            //    ThemeVersion = "1.0"
+            var themes = srcProvider.GetService<IDataRepository<SiteTheme>>();
+            var theme = themes.FindAll(new ActiveSiteTheme());
+            if (theme.Count == 0)
+            {
+                themes.Insert(new SiteTheme
+                {
+                    Description = "Sample Theme for test purposes.",
+                    DisplayName = "Sample Theme",
+                    ThemeName = "Sample",
+                    ThemeVersion = "1.0",
+                    Active = true,
 
-            //});
+                });
+            }
+
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -168,7 +189,7 @@ namespace ModCore.Www
                 Path.Combine(Directory.GetCurrentDirectory(), @"Themes")),
                 RequestPath = new PathString("/Themes")
             });
-           
+
 
             app.UseMvcWithPlugin(routes =>
             {
@@ -187,7 +208,7 @@ namespace ModCore.Www
                     new { Namespace = this.CurrentNameSpace });
             });
 
-            
+
         }
 
 

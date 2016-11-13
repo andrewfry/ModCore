@@ -6,7 +6,7 @@
 }
 
 <form action="/Admin/Account/Login" method="post" class="form-horizontal">
-
+    @Html.AntiForgeryToken()
     <div class="panel panel-default">
         <div class="panel-title">
             Sign in now

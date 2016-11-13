@@ -78,6 +78,12 @@ namespace ModCore.Core.Controllers
             _baseClassProvider = baseClassProvider;
         }
 
+        public void DiscardSession()
+        {
+            _session.SetString("sessionData", null);
+            _currentSession = null;
+        }
+
         public void CommitSession()
         {
             var jsonString = _currentSession.ToJson();
@@ -110,8 +116,8 @@ namespace ModCore.Core.Controllers
 
         public string RenderViewAsString<TModel>(string viewPath, TModel model)
         {
-           var engine = ControllerContext.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
-           var viewEngineResult = engine.GetView("~/", viewPath, false);
+            var engine = ControllerContext.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
+            var viewEngineResult = engine.GetView("~/", viewPath, false);
 
             if (!viewEngineResult.Success)
             {
