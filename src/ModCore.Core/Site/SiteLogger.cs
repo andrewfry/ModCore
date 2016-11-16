@@ -16,9 +16,9 @@ namespace ModCore.Core.Site
     {
         IDataRepositoryAsync<Log> _dbRepos;
         protected string _pluginName;
-        ISiteSettingsManager _siteSettingsManager;
+        ISiteSettingsManagerAsync _siteSettingsManager;
 
-        public SiteLogger(IDataRepositoryAsync<Log> logDb, ISiteSettingsManager siteSettingsManager)
+        public SiteLogger(IDataRepositoryAsync<Log> logDb, ISiteSettingsManagerAsync siteSettingsManager)
         {
             _dbRepos = logDb;
             _pluginName = string.Empty;
@@ -119,21 +119,18 @@ namespace ModCore.Core.Site
 
         public bool IsEnabled(LogLevel logLevel)
         {
-
-            var settingLogLevel = _siteSettingsManager.GetSetting<LogLevel>("Logging-Level");
-
+            var settingLogLevel = _siteSettingsManager.GetSettingAsync<LogLevel>(BuiltInSettings.LogLevel).Result;
             if ((int)logLevel <= (int)settingLogLevel)
             {
                 return true;
             }
-
 
             return false;
         }
 
         public void Log<T>(LogLevel logLevel, EventId eventId, T state, Exception exception, Func<T, Exception, string> formatter)
         {
-            ExecuteLogging(logLevel, typeof(T).FullName, formatter(state, exception), exception.Message.ToString(), exception.InnerException.ToString(), exception.StackTrace.ToString(), null,"");
+            ExecuteLogging(logLevel, typeof(T).FullName, formatter(state, exception), exception?.Message?.ToString(), exception?.InnerException?.ToString(), exception?.StackTrace?.ToString(), null,"");
         }
 
         public IDisposable BeginScope<TState>(TState state)

@@ -20,7 +20,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
     {
         private IUserService _userService;
 
-        public AccountController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
+        public AccountController(ILog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager,
             IBaseViewModelProvider baseModeProvider, IUserService userService, IMapper mapper)
             : base(log, sessionManager, siteSettingsManager, baseModeProvider, mapper)
         {
@@ -51,7 +51,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
             }
 
             user = await _userService.GetByEmail(loginModel.EmailAddress);
-            result = await _userService.ValidatePassword(user, loginModel.EmailAddress, loginModel.Password);
+            //result = await _userService.ValidatePassword(user, loginModel.EmailAddress, loginModel.Password);
 
             if (result)
             {

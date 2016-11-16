@@ -8,28 +8,28 @@ using ModCore.Abstraction.Services.Access;
 
 namespace ModCore.Core.Middleware
 {
-    public static class LastChangedValidator
-    {
-        public static async Task ValidateAsync(CookieValidatePrincipalContext context)
-        {
-            // Pull database from registered DI services.
-            var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-            var userPrincipal = context.Principal;
+    //public static class LastChangedValidator
+    //{
+    //    public static async Task ValidateAsync(CookieValidatePrincipalContext context)
+    //    {
+    //        // Pull database from registered DI services.
+    //        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
+    //        var userPrincipal = context.Principal;
 
-            // Look for the last changed claim.
-            string lastChanged;
-            lastChanged = (from c in userPrincipal.Claims
-                           where c.Type == "LastUpdated"
-                           select c.Value).FirstOrDefault();
+    //        // Look for the last changed claim.
+    //        string lastChanged;
+    //        lastChanged = (from c in userPrincipal.Claims
+    //                       where c.Type == "LastUpdated"
+    //                       select c.Value).FirstOrDefault();
 
-            DateTime lastChangedDate = DateTime.Parse(lastChanged);
-            var lastChange = await userService.ValidateLastChanged(userPrincipal, lastChangedDate);
+    //        DateTime lastChangedDate = DateTime.Parse(lastChanged);
+    //        var lastChange = await userService.ValidateLastChanged(userPrincipal, lastChangedDate);
 
-            if (string.IsNullOrEmpty(lastChanged) || !lastChange)
-            {
-                context.RejectPrincipal();
-                await context.HttpContext.Authentication.SignOutAsync("ModCoreBasicCookieAuth");
-            }
-        }
-    }
+    //        if (string.IsNullOrEmpty(lastChanged) || !lastChange)
+    //        {
+    //            context.RejectPrincipal();
+    //            await context.HttpContext.Authentication.SignOutAsync("ModCoreBasicCookieAuth");
+    //        }
+    //    }
+    //}
 }

@@ -19,7 +19,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
     {
         private IPluginManager _pluginManager;
 
-        public PluginController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
+        public PluginController(ILog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager,
             IBaseViewModelProvider baseModeProvider, IPluginManager pluginManager, IMapper mapper)
             : base(log, sessionManager, siteSettingsManager, baseModeProvider, mapper)
         {

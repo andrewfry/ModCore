@@ -7,11 +7,20 @@ using Microsoft.Extensions.DependencyModel;
 using ModCore.Abstraction.Plugins;
 using System.Runtime.Loader;
 using ModCore.Core.HelperExtensions;
+using Microsoft.Extensions.Logging;
 
 namespace ModCore.Core.Plugins
 {
     public class PluginAssemblyManager : IAssemblyManager
     {
+
+        private readonly ILogger _logger;
+
+        public PluginAssemblyManager(ILogger logger)
+        {
+            _logger = logger;
+        }
+
         internal static HashSet<string> ReferenceAssembliesStartsWith { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "ModCore"
@@ -56,11 +65,6 @@ namespace ModCore.Core.Plugins
             }
         }
 
-        public PluginAssemblyManager()
-        {
-
-        }
-
         public IEnumerable<Assembly> GetReferencingAssemblies(string assemblyNameStartsWith)
         {
             var assemblies = new List<Assembly>();
@@ -69,9 +73,15 @@ namespace ModCore.Core.Plugins
             {
                 if (IsCandidateLibrary(library, assemblyNameStartsWith))
                 {
-                    var assembly = Assembly.Load(new AssemblyName(library.Name));
-                    assemblies.Add(assembly);
-
+                    try
+                    {
+                        var assembly = Assembly.Load(new AssemblyName(library.Name));
+                        assemblies.Add(assembly);
+                    }
+                    catch(Exception ex)
+                    {
+                        _logger.LogError(new EventId(), ex, "Failed to load the library {0}.", library.Name);
+                    }
                 }
             }
             return assemblies;
@@ -129,13 +139,20 @@ namespace ModCore.Core.Plugins
 
                     if (!AlreadyLoaded(assemblyName))
                     {
-                        Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(dllPath);
-                        assemblies.Add(assembly);
-
-                        var pluginType = assembly.GetImplementationOrDefault<IPlugin>();
-                        if (pluginType != null)
+                        try
                         {
-                            pluginInstance = assembly.GetInstance<IPlugin>();
+                            Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(dllPath);
+                            assemblies.Add(assembly);
+
+                            var pluginType = assembly.GetImplementationOrDefault<IPlugin>();
+                            if (pluginType != null)
+                            {
+                                pluginInstance = assembly.GetInstance<IPlugin>();
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            _logger.LogError(new EventId(), ex, "The dll {0} did not load the instance of IPlugin correctly.", dllPath);
                         }
                     }
                 }

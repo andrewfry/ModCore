@@ -28,7 +28,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ModCore.Core", "src\ModCore
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Blog.Plugin", "src\plugin-src\Blog.Plugin\Blog.Plugin.xproj", "{689A4140-5957-461F-ABCE-05F5E9FFA87C}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ModCore.Services.MongoDb", "src\ModCore.Services.MongoDb\ModCore.Services.MongoDb.xproj", "{B3A12193-3BDE-4918-AA83-AF45A7655A9B}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ModCore.Services", "src\ModCore.Services.MongoDb\ModCore.Services.xproj", "{B3A12193-3BDE-4918-AA83-AF45A7655A9B}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ModCore.DataAccess.MongoDb", "src\ModCore.DataAccess.MongoDb\ModCore.DataAccess.MongoDb.xproj", "{09F46CB4-4FF7-42D3-9BA5-A2D0249CEABE}"
 EndProject
@@ -39,6 +39,8 @@ EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ModCore.DataAccess.MongoDb.Test", "tests\ModCore.DataAccess.MongoDb.Test\ModCore.DataAccess.MongoDb.Test.xproj", "{50519618-7CF7-4E5C-A352-CC52F4CE48B5}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ModCore.ActiveRecords", "src\ModCore.ActiveRecords\ModCore.ActiveRecords.xproj", "{C008EB0E-378B-4CD2-B835-906950FA4320}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "BasicAuthentication.Plugin", "src\plugin-src\BasicAuthentication.Plugin\BasicAuthentication.Plugin.xproj", "{2FA49D78-0DF3-48B5-91F3-C0758C4736E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,6 +100,10 @@ Global
 		{C008EB0E-378B-4CD2-B835-906950FA4320}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C008EB0E-378B-4CD2-B835-906950FA4320}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C008EB0E-378B-4CD2-B835-906950FA4320}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FA49D78-0DF3-48B5-91F3-C0758C4736E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FA49D78-0DF3-48B5-91F3-C0758C4736E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FA49D78-0DF3-48B5-91F3-C0758C4736E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FA49D78-0DF3-48B5-91F3-C0758C4736E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,5 +123,6 @@ Global
 		{FB08635A-CAAD-4501-9FAC-20FC61B094FC} = {CBA41F16-7012-4B6B-923C-406C9603B52C}
 		{50519618-7CF7-4E5C-A352-CC52F4CE48B5} = {1EA92745-3787-43DD-8C1C-AEA46770A876}
 		{C008EB0E-378B-4CD2-B835-906950FA4320} = {CBA41F16-7012-4B6B-923C-406C9603B52C}
+		{2FA49D78-0DF3-48B5-91F3-C0758C4736E3} = {E95848E4-1302-43CF-AB1C-59B32943873D}
 	EndGlobalSection
 EndGlobal

@@ -8,7 +8,7 @@ using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Site;
 using ModCore.Models.Communication;
 using ModCore.Models.Enum;
-using ModCore.Services.MongoDb.Base;
+using ModCore.Services.Base;
 using ModCore.Specifications.Base;
 using ModCore.Specifications.Communication;
 using System;
@@ -20,7 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ModCore.Services.MongoDb.Communication
+namespace ModCore.Services.Communication
 {
     public class EmailService : BaseServiceAsync<EmailTemplate>
     {

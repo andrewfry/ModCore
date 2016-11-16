@@ -20,7 +20,7 @@ namespace ModCore.Www.Controllers
     public class HomeController : BaseController
     {
         private IThemeManager _themeManager;
-        public HomeController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
+        public HomeController(ILog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager,
             IBaseViewModelProvider baseModeProvider, IThemeManager themeManager, IMapper mapper)
             : base(log,sessionManager,siteSettingsManager, baseModeProvider, mapper)
         {

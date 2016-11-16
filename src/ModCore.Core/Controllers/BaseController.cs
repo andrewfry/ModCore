@@ -25,7 +25,7 @@ namespace ModCore.Core.Controllers
         protected ILog _logger;
         private SessionData _currentSession;
         private ISession _session => HttpContext.Session;
-        private ISiteSettingsManager _siteSettingsManager;
+        private ISiteSettingsManagerAsync _siteSettingsManager;
         private IBaseViewModelProvider _baseClassProvider;
         protected IMapper _mapper;
 
@@ -63,7 +63,7 @@ namespace ModCore.Core.Controllers
 
         }
 
-        public ISiteSettingsManager SiteSettingsManager
+        public ISiteSettingsManagerAsync SiteSettingsManager
         {
             get
             {
@@ -71,7 +71,7 @@ namespace ModCore.Core.Controllers
             }
         }
 
-        public BaseController(ILog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager,
+        public BaseController(ILog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager,
             IBaseViewModelProvider baseClassProvider, IMapper mapper)
         {
             _logger = log;

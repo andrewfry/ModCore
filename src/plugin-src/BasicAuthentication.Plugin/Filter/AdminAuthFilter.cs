@@ -1,25 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Mvc.Filters;
-using ModCore.Abstraction.Services.Access;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using ModCore.Core.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using ModCore.Abstraction.Site;
 
-namespace ModCore.Core.Site
+namespace BasicAuthentication.Plugin.Filters
 {
-
-
-
     public class AdminAuthFilter : ActionFilterAttribute
     {
-
-
         public AdminAuthFilter()
-
         {
 
         }
@@ -49,20 +37,13 @@ namespace ModCore.Core.Site
 
             if (controller.CurrentSession.IsLoggedIn)
             {
-                var userService = context.HttpContext.RequestServices.GetService(typeof(IUserService)) as IUserService;
+                var authService = context.HttpContext.RequestServices.GetService(typeof(IAuthenticationService)) as IAuthenticationService;
                 var userId = controller.CurrentSession.UserId;
-                //var userId = context.HttpContext.User.Claims.Single(a => a.Type == "UserId").Value;
 
-                //if (string.IsNullOrEmpty(controller.CurrentSession.UserId))
-                //{
-                //    var user = await userService.GetByIdAsync(userId);
-
-                //    controller.CurrentSession.UpdateUserData(user, true);
-                //    controller.CommitSession();
-                //}
 
                 var routeData = context.RouteData;
-                var isAllowed = await userService.UserAllowedAdminAccess(userId, routeData);
+                //var isAllowed = await authService.UserAllowedAdminAccess(userId, routeData);
+                var isAllowed = true;
 
                 if (!isAllowed)
                 {

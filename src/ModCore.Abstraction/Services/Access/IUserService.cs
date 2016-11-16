@@ -11,11 +11,11 @@ namespace ModCore.Abstraction.Services.Access
 {
     public interface IUserService : IServiceAsync<User>
     {
-        Task<bool> ValidateLastChanged(ClaimsPrincipal userPrincipal, DateTime lastChanged);
+        //Task<bool> ValidateLastChanged(ClaimsPrincipal userPrincipal, DateTime lastChanged);
 
-        Task<bool> ValidatePassword(User user, string emailAddress, string password);
+        //Task<bool> ValidatePassword(User user, string emailAddress, string password);
 
-        Task<bool> ValidatePassword(string emailAddress, string password);
+        //Task<bool> ValidatePassword(string emailAddress, string password);
 
         Task ResetPassword(string emailAddress, string password);
 
@@ -23,6 +23,8 @@ namespace ModCore.Abstraction.Services.Access
 
         Task<User> GetByEmail(string emailAddress);
 
-        Task<bool> UserAllowedAdminAccess(string userId, RouteData route);
+        //Task<bool> UserAllowedAdminAccess(string userId, RouteData route);
+
+        Task IncrementFailedLogin(User user);
     }
 }

@@ -22,7 +22,7 @@ namespace Blog.Plugin.Controllers
             }
         }
 
-        public PluginController(IPluginLog log, ISessionManager sessionManager, ISiteSettingsManager siteSettingsManager, IPluginSettingsManager pluginSettingsManager,
+        public PluginController(IPluginLog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager, IPluginSettingsManager pluginSettingsManager,
             IBaseViewModelProvider baseViewModelProvider, IMapper _mapper) :
             base(log, sessionManager, siteSettingsManager, pluginSettingsManager, baseViewModelProvider, _mapper)
         {

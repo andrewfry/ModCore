@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -220,8 +221,6 @@ namespace ModCore.Core.Plugins
             foreach (var actPlugin in this.ActivePlugins)
             {
 
-                
-
                 foreach (var r in actPlugin.Routes)
                 {
                     //var dataTokens = new RouteValueDictionary(new { Namespace = actPlugin.AssemblyName });
@@ -244,6 +243,34 @@ namespace ModCore.Core.Plugins
             return routes;
         }
 
+        public FilterCollection GetFiltersForPlugins()
+        {
+            var filters = new FilterCollection();
+
+            foreach (var actPlugin in this.ActivePlugins)
+            {
+                foreach (var filt in actPlugin.Filters)
+                {
+                    filters.Add(filt);
+                }
+            }
+
+            return filters;
+        }
+
+        public IList<FilterDescriptor> GetFilterDescriptorsForPlugins()
+        {
+            var returnList = new List<FilterDescriptor>();
+
+            foreach (var filter in GetFiltersForPlugins())
+            {
+                var filtDesc = new FilterDescriptor(filter, 0);
+                returnList.Add(filtDesc);
+            }
+
+            return returnList;
+        }
+        
         private void RegisterAssemblyInPartManager(IPlugin plugin)
         {
             var pluginAssemblies = AvailablePluginAssemblies.FirstOrDefault(a => a.Item1.AssemblyName == plugin.AssemblyName)?.Item2;

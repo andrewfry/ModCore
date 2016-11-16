@@ -13,7 +13,7 @@ namespace ModCore.Core.Plugins
     public class PluginLogger : SiteLogger, IPluginLog, ILog
     {
 
-        public PluginLogger(IDataRepositoryAsync<Log> logDb, ISiteSettingsManager siteSettingsManager)
+        public PluginLogger(IDataRepositoryAsync<Log> logDb, ISiteSettingsManagerAsync siteSettingsManager)
             :base(logDb, siteSettingsManager)
         {
             

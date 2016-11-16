@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using ModCore.Models.Plugins;
 using ModCore.Core.Plugins;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Blog.Plugin
 {
@@ -38,21 +39,6 @@ namespace Blog.Plugin
             }
         }
 
-        //public IDictionary<int, Action<IPluginRoutes>>  Routes
-        //{
-        //    get
-        //    {
-        //        var dict = new Dictionary<int, Action<IPluginRoutes>>();
-        //        dict.Add(10, a => a.MapPluginRoute(
-        //            name: "blogDefault",
-        //            template: "Blog/{controller=Home}/{action=Index}/{id?}",
-        //            plugin : new Blog()));
-
-        //        return dict;
-
-        //    }
-        //}
-
         public ICollection<IPluginRoute> Routes
         {
             get
@@ -68,13 +54,21 @@ namespace Blog.Plugin
             }
         }
 
-
-
         public ICollection<ServiceDescriptor> Services
         {
             get
             {
                 var list = new List<ServiceDescriptor>();
+
+                return list;
+            }
+        }
+
+        public FilterCollection Filters
+        {
+            get
+            {
+                var list = new FilterCollection();
 
                 return list;
             }

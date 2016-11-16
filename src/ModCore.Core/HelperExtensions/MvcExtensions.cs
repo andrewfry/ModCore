@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyModel;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
@@ -112,6 +115,9 @@ namespace ModCore.Core.HelperExtensions
                 return new PluginManager(assbly, configRoot, env, repos, appMgr);
             });
 
+            services.TryAddEnumerable(
+            ServiceDescriptor.Transient<IApplicationModelProvider, PluginApplicationModelProvider>());
+
             return services;
         }
 
@@ -129,6 +135,11 @@ namespace ModCore.Core.HelperExtensions
                 return new ThemeManager(configRoot, env, repos);
             });
 
+            return services;
+        }
+
+        public static IServiceCollection ConfigureMvcWithSettings(this IServiceCollection services, IMvcBuilder mvcBuilder)
+        {
             return services;
         }
 

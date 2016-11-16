@@ -14,7 +14,6 @@ using ModCore.Core.HelperExtensions;
 using Microsoft.AspNetCore.Http;
 using ModCore.DataAccess.MongoDb;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using ModCore.Core.Middleware;
 using ModCore.Models.Themes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,14 +21,13 @@ using ModCore.Models.Page;
 using System.Collections.Generic;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
-using ModCore.Core.Routers;
-using ModCore.Services.MongoDb.PageService;
+using ModCore.Services.PageService;
 using ModCore.Abstraction.Services.PageService;
-using ModCore.Services.MongoDb.Access;
+using ModCore.Services.Access;
 using ModCore.Abstraction.Services.Access;
 using ModCore.Models.Access;
 using AutoMapper;
-using ModCore.Services.MongoDb.Mappings;
+using ModCore.Services.Mappings;
 using ModCore.Specifications.Themes;
 
 namespace ModCore.Www
@@ -59,15 +57,12 @@ namespace ModCore.Www
             //Configure Settings
             services.Configure<MongoDbSettings>(options => Configuration.GetSection("MongoDbSettings").Bind(options));
 
-            var mvcBuilder = services.AddMvc(config =>
-            {
-                config.Filters.Add(new AdminAuthFilter());
-            });
+            var mvcBuilder = services.AddMvc();
 
             services.AddTransient<ILogger, SiteLogger>();
             services.AddTransient<ILog, SiteLogger>();
             services.AddTransient<ISessionManager, SessionManager>();
-            services.AddTransient<ISiteSettingsManager, SiteSettingsManager>();
+            services.AddSingleton<ISiteSettingsManagerAsync, SiteSettingsManager>();
             services.AddTransient<IBaseViewModelProvider, DefaultBaseViewModelProvider>();
 
             //Persistent Data Repositories
@@ -76,6 +71,7 @@ namespace ModCore.Www
 
             services.AddTransient<IDataRepositoryAsync<User>, MongoDbRepository<User>>();
             services.AddTransient<IDataRepositoryAsync<Log>, MongoDbRepository<Log>>();
+            services.AddTransient<IDataRepositoryAsync<SiteSetting>, MongoDbRepository<SiteSetting>>();
 
             //Adding the business logic Services
             services.AddTransient<IUserService, UserService>();
@@ -131,6 +127,17 @@ namespace ModCore.Www
             //    PluginName = "Blog",
             //    PluginVersion = "1.0"
             //});
+
+            var repos1 = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
+            repos1.Insert(new InstalledPlugin
+            {
+                Active = true,
+                DateInstalled = DateTime.UtcNow,
+                Installed = true,
+                PluginAssemblyName = "BasicAuthentication.Plugin",
+                PluginName = "BasicAuthentication",
+                PluginVersion = "1.0"
+            });
 
             var usrService = srcProvider.GetService<IUserService>();
             var user = usrService.GetByEmail("test@test.com");

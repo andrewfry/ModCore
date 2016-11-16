@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ModCore.Services.MongoDb.Mappings
+namespace ModCore.Services.Mappings
 {
     public class AutoMapperProfileConfiguration : Profile
     {

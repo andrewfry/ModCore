@@ -12,12 +12,11 @@ namespace ModCore.Abstraction.Site
     {
         SessionData CurrentSession { get;  }
 
-        ISiteSettingsManager SiteSettingsManager { get; }
+        ISiteSettingsManagerAsync SiteSettingsManager { get; }
 
         HttpContext HttpContext { get; }
 
         HttpRequest Request { get; }
 
-        ClaimsPrincipal User { get; }
     }
 }

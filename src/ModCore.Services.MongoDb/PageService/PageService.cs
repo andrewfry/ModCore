@@ -1,4 +1,4 @@
-﻿using ModCore.Services.MongoDb.Base;
+﻿using ModCore.Services.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using AutoMapper;
 using ModCore.Abstraction.Site;
 using ModCore.Specifications.Pages;
 
-namespace ModCore.Services.MongoDb.PageService
+namespace ModCore.Services.PageService
 {
     public class PageService : BaseServiceAsync<Page>, IPageService
     {

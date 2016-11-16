@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using ModCore.Models.Plugins;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ModCore.Abstraction.Plugins
 {
@@ -26,6 +27,7 @@ namespace ModCore.Abstraction.Plugins
 
         ICollection<ServiceDescriptor> Services { get; }
 
+        FilterCollection Filters { get; }
 
         PluginInstallResult Install();
 
