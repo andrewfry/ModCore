@@ -216,6 +216,7 @@ namespace ModCore.Www
                     new { Namespace = this.CurrentNameSpace });
             });
 
+            app.UseDefaultSettings();
 
         }
 

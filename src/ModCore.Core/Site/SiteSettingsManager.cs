@@ -68,7 +68,7 @@ namespace ModCore.Core.Site
 
         public async Task<object> GetSettingAsync(string key, string regionName)
         {
-            return await GetSettingAsync(new SettingRegionPair(key,regionName));
+            return await GetSettingAsync(new SettingRegionPair(key, regionName));
         }
 
         public async Task<object> GetSettingAsync(SettingRegionPair pair)
@@ -93,6 +93,24 @@ namespace ModCore.Core.Site
             return await GetSettingAsync<T>(key);
         }
 
+
+        public async Task<bool> ContainsSettingAsync(SettingRegionPair pair)
+        {
+            var key = string.Concat(pair.Region, "_", pair.Key);
+            var exists = _settings.Settings.ContainsKey(key.ToLower());
+
+            return exists;
+        }
+
+        public async Task EnsureDefaultSettingAsync(SettingRegionPair pair, object value)
+        {
+            var exists = await ContainsSettingAsync(pair);
+            if (exists)
+                return;
+
+            await UpsertSettingAsync(pair, value);
+        }
+
         public async Task<T> GetSettingAsync<T>(string key)
         {
             var setting = await GetSettingValueAsync(key);
@@ -108,7 +126,7 @@ namespace ModCore.Core.Site
 
         private async Task<SettingValue> GetSettingValueAsync(string key)
         {
-            var exists = _settings.Settings.ContainsKey(key.ToLower()); ;
+            var exists = _settings.Settings.ContainsKey(key.ToLower());
 
             if (exists == false)
             {
@@ -118,26 +136,11 @@ namespace ModCore.Core.Site
             return _settings.Settings[key.ToLower()];
         }
 
-        //public void UpsertSetting(string key, string region, object value)
-        //{
-
-        //    UpsertSettingAsync(key, region, value).RunSynchronously();
-        //}
-
-        //public object GetSetting(string key)
-        //{
-        //    return GetSettingAsync(key).Result;
-        //}
-
-        //public T GetSetting<T>(string key)
-        //{
-        //    return GetSettingAsync<T>(key).Result;
-        //}
     }
 
-    
 
-    public class BuiltInSettings
+
+    public static class BuiltInSettings
     {
         public static SettingRegionPair LogLevel => new SettingRegionPair("LOG", "LEVEL");
 

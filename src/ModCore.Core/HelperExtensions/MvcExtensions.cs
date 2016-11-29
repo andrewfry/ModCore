@@ -12,13 +12,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.Logging;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
+using ModCore.Abstraction.Site;
 using ModCore.Abstraction.Themes;
 using ModCore.Core.Controllers;
 using ModCore.Core.HelperExtensions;
 using ModCore.Core.Plugins;
 using ModCore.Core.Routers;
+using ModCore.Core.Site;
 using ModCore.Core.Themes;
 using ModCore.Models.Page;
 using ModCore.Models.Plugins;
@@ -76,6 +79,22 @@ namespace ModCore.Core.HelperExtensions
             //routes.Routes.Insert(0, AttributeRouting.CreateAttributeMegaRoute(app.ApplicationServices));
 
             return app.UseRouter(routes.Build());
+        }
+
+        public static IApplicationBuilder UseDefaultSettings(this IApplicationBuilder app)
+        {
+            if (app == null)
+            {
+                throw new ArgumentNullException(nameof(app));
+            }
+
+            var pluginManager = app.ApplicationServices.GetService<IPluginManager>();
+            var siteSettings = app.ApplicationServices.GetService<ISiteSettingsManagerAsync>();
+
+            siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.LogLevel, LogLevel.Warning);
+            siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.AuthenticationLockOut, 3);
+
+            return app;
         }
 
         public static IServiceCollection AddPlugins(this IServiceCollection services, IMvcBuilder mvcBuilder)

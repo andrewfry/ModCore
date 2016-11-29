@@ -12,7 +12,11 @@
         <a href="#" class="list-group-item">
             <h4 class="list-group-item-heading">@plug.Name @plug.Version</h4>
             <p class="list-group-item-text">@plug.Description</p>
-            <p class="list-group-item-text">@plug.Active</p>
+
+            @if (plug.Active)
+            {
+                <span class="tag tag-success tag-pill float-xs-right">Active</span>
+            }
         </a>
     }
 </div>
