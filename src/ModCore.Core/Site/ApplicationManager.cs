@@ -39,6 +39,19 @@ namespace ModCore.Core.Site
             _startUpType = startUpType;
         }
 
+        public static void Launch(Type startUpType)
+        {
+            var appManager = ApplicationManager.Load();
+            appManager.SetStartUpClass(startUpType);
+
+            do
+            {
+                appManager.Start();
+            }
+
+            while (appManager.Restarting);
+        }
+
         public void Start()
         {
             if (_running)
