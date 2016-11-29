@@ -13,6 +13,9 @@ using BasicAuthentication.Plugin.Models;
 using Microsoft.AspNetCore.Routing;
 using ModCore.ViewModels.Access;
 using ModCore.Services.Base;
+using ModCore.Core.Controllers;
+using ModCore.Models.Sessions;
+using ModCore.Abstraction.Plugins;
 
 namespace BasicAuthentication.Plugin.Services
 {
@@ -27,6 +30,11 @@ namespace BasicAuthentication.Plugin.Services
         {
             _userService = userService;
             _siteSettings = siteSettings;
+        }
+
+        public IPlugin CurrentPlugin()
+        {
+            return new BasicAuthentication();
         }
 
         public async Task<User> CreateNewUser(RegisterViewModel registerModel)
@@ -68,37 +76,63 @@ namespace BasicAuthentication.Plugin.Services
             }
         }
 
-        public async Task<IAuthenticationResult> SignIn(AuthenticationUser authUser)
+        public async Task<IAuthenticationResult> SignIn(AuthenticationUser authUser, IBaseController controller)
         {
-            throw new NotImplementedException();
-
             try
             {
-                return new BasicAuthenticationResult(true);
+                var result = new BasicAuthenticationResult(true);
+                var baseController =  controller as BaseController;
+
+                if(baseController == null)
+                {
+                    throw new InvalidCastException("The IBaseController is NOT a base controller");
+                }
+
+                baseController.CurrentSession.IsLoggedIn = true;
+                baseController.CurrentSession.UserId = authUser.Id;
+                baseController.CurrentSession.UserData = _mapper.Map<SessionUserData>(authUser);
+                baseController.CommitSession();
+
+                result.SetResult(baseController.RedirectToAction("Account", "Login", new { Area = "Admin" }));
+
+                return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError<AuthenticationService>(ex, "User Id {0}, failed to reset password", authUser.Id);
+                _logger.LogError<AuthenticationService>(ex, "User Id {0}, failed to SignIn", authUser.Id);
                 return new BasicAuthenticationResult(false, "An error occurred");
             }
         }
 
-        public async Task<IAuthenticationResult> SignOut(AuthenticationUser authUser)
+        public async Task<IAuthenticationResult> SignOut(AuthenticationUser authUser, IBaseController controller)
         {
-            throw new NotImplementedException();
-
             try
             {
-                return new BasicAuthenticationResult(true);
+                var result = new BasicAuthenticationResult(true);
+                var baseController = controller as BaseController;
+
+                if (baseController == null)
+                {
+                    throw new InvalidCastException("The IBaseController is NOT a base controller");
+                }
+
+                baseController.CurrentSession.IsLoggedIn = false;
+                baseController.CurrentSession.UserId = string.Empty;
+                baseController.CurrentSession.UserData = null;
+                baseController.CommitSession();
+
+                result.SetResult(baseController.RedirectToAction("Account", "Login", new { Area = "Admin" }));
+
+                return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError<AuthenticationService>(ex, "User Id {0}, failed to reset password", authUser.Id);
+                _logger.LogError<AuthenticationService>(ex, "User Id {0}, failed to SignIn", authUser.Id);
                 return new BasicAuthenticationResult(false, "An error occurred");
             }
         }
 
-        public async Task<bool> UserAllowedAdminAccess(string userId, RouteData route)
+        public async Task<bool> UserAllowedAdminAccess(AuthenticationUser authUser, RouteData route)
         {
 
             return true;

@@ -40,7 +40,7 @@ namespace ModCore.Core.Plugins
 
             if (context.ActionContext.ActionDescriptor.FilterDescriptors != null)
             {
-                var filterCollection = _pluginManager.GetFilterDescriptorsForPlugins() as List<FilterDescriptor>;
+                var filterCollection = _pluginManager.GlobalFilterDescriptors;
                 if (filterCollection != null)
                 {
                     for (var i = 0; i < filterCollection.Count; i++)

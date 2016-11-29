@@ -37,7 +37,7 @@ namespace ModCore.Core.Plugins
 
             foreach (var controllerModel in context.Result.Controllers)
             {
-                var filterCollection = _pluginManager.GetFilterDescriptorsForPlugins();
+                var filterCollection = _pluginManager.GlobalFilterDescriptors;
                 if (filterCollection != null)
                 {
                     for (var i = 0; i < filterCollection.Count; i++)

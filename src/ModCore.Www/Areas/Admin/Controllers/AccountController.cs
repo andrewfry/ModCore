@@ -19,12 +19,14 @@ namespace ModCore.Www.Areas.Admin.Controllers
     public class AccountController : BaseController
     {
         private IUserService _userService;
+        private IAuthenticationService _authService;
 
         public AccountController(ILog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IUserService userService, IMapper mapper)
+            IBaseViewModelProvider baseModeProvider, IMapper mapper, IUserService userService, IAuthenticationService authService)
             : base(log, sessionManager, siteSettingsManager, baseModeProvider, mapper)
         {
             _userService = userService;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -51,18 +53,34 @@ namespace ModCore.Www.Areas.Admin.Controllers
             }
 
             user = await _userService.GetByEmail(loginModel.EmailAddress);
-            //result = await _userService.ValidatePassword(user, loginModel.EmailAddress, loginModel.Password);
+            var authuser = _mapper.Map<AuthenticationUser>(user);
+            var validationResult = await _authService.ValidatePassword(authuser, loginModel.Password);
+            result = validationResult.Successful;
 
             if (result)
             {
-                this.CurrentSession.UpdateUserData(user, true);
-                this.CommitSession();
+                var authResult = await _authService.SignIn(authuser, this);
 
-                return RedirectToLocal(loginModel.ReturnUrl);
+                if (!string.IsNullOrEmpty(loginModel.ReturnUrl))
+                {
+                    if (Url.IsLocalUrl(loginModel.ReturnUrl))
+                    {
+                        return Redirect(loginModel.ReturnUrl);
+                    }
+                }
+
+                if (authResult.HasResult)
+                {
+                    return authResult.ActionResult;
+                }
+                else
+                {
+                    throw new Exception($"{_authService.CurrentPlugin().Name}'s AuthenticatioService does not have a return ActionResult.");
+                }
             }
 
-            throw new Exception("An unexpected system error has occured.");
-
+            ModelState.AddModelError("Summary", validationResult.ErrorMessage);
+            return View(loginModel);
         }
 
         [HttpGet]
@@ -90,22 +108,17 @@ namespace ModCore.Www.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> LogOut()
         {
-            DiscardSession();
+            var authUser = _mapper.Map<AuthenticationUser>(this.CurrentSession.UserData);
+            var authResult = await _authService.SignOut(authUser, this);
 
-            return RedirectToAction("Account", "Login", new { Area = "Admin" });
-        }
-
-        private IActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
+            if (authResult.HasResult)
             {
-                return Redirect(returnUrl);
+                return authResult.ActionResult;
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home", new { Area = "Admin" });
+                return RedirectToAction("Account", "Login", new { Area = "Admin" });
             }
         }
-
     }
 }

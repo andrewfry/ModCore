@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,11 @@ namespace ModCore.Abstraction.Plugins
 
         IList<Tuple<IPlugin, IList<Assembly>>> ActivePluginAssemblies { get; }
 
+        IList<FilterDescriptor> GlobalFilterDescriptors { get; }
+
         IList<Assembly> ActiveAssemblies { get; }
+
+        IList<ServiceDescriptor> ActivePluginServices { get; }
 
         void ActivatePlugin(IPlugin plugin);
 
@@ -32,6 +37,5 @@ namespace ModCore.Abstraction.Plugins
 
         ICollection<IRouter> GetActiveRoutesForPlugins(IRouter defaultHandler, IInlineConstraintResolver inlineConstraintResolver);
 
-        IList<FilterDescriptor> GetFilterDescriptorsForPlugins();
     }
 }

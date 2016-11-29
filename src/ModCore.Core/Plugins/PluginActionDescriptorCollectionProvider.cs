@@ -38,6 +38,11 @@ namespace ModCore.Core.Plugins
             }
         }
 
+        //private void RegisterServices()
+        //{
+        //    _serviceProvider
+        //}
+
         private ActionDescriptorCollection GetCollection()
         {
             var providers =

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ModCore.Models.Sessions;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ModCore.Abstraction.Site
 {
-    public interface IBaseController
+    public interface IBaseController 
     {
         SessionData CurrentSession { get;  }
 
@@ -17,6 +18,10 @@ namespace ModCore.Abstraction.Site
         HttpContext HttpContext { get; }
 
         HttpRequest Request { get; }
+
+        void CommitSession();
+
+
 
     }
 }

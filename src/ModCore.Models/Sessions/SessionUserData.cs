@@ -20,5 +20,19 @@ namespace ModCore.Models.Sessions
         }
 
         public string EmailAddress { get; set; }
+
+        public bool EmailVerified { get; set; }
+
+        public DateTime LastLogin { get; set; }
+
+        public DateTime DateCreated { get; set; }
+
+        public DateTime? LastPasswordReset { get; set; }
+
+        public DateTime LastUpdateDate { get; set; }
+
+        public int FailedLoginAttempts { get; set; }
+
+        public bool LockedOut { get; set; }
     }
 }

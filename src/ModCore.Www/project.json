@@ -1,4 +1,8 @@
 {
+  "version": "0.1-alpha",
+  "authors": [ "Andrew Fry", "Matt Crain" ],
+  "description": "Modular platform that allows for rapid extension of web applications.",
+
   "dependencies": {
     "Microsoft.NETCore.App": {
       "version": "1.0.1",
@@ -27,12 +31,12 @@
     "Microsoft.AspNetCore.Session": "1.0.0",
     "Microsoft.AspNetCore.Identity.MongoDB": "1.0.2",
     "Microsoft.AspNetCore.DataProtection.Extensions": "1.0.0",
-    "ModCore.Services.MongoDb": "1.0.0-*",
     "ModCore.DataAccess.MongoDb": "1.0.0-*",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
-    "Microsoft.AspNetCore.Authorization": "1.0.0"
+    "Microsoft.AspNetCore.Authorization": "1.0.0",
+    "ModCore.Services.MongoDb": "1.0.0-*",
   },
 
   "tools": {

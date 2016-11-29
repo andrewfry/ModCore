@@ -40,7 +40,7 @@ namespace ModCore.Core.Site
         {
             message = string.Format(message, messageVariables);
 
-            ExecuteLogging(LogLevel.Error, className, message, exception.Message, exception.InnerException.ToString(), exception.StackTrace, sessionData, route);
+            ExecuteLogging(LogLevel.Error, className, message, exception?.Message, exception?.InnerException?.ToString(), exception?.StackTrace, sessionData, route);
         }
 
         public void LogWarning<T>(Exception exception, string message, params string[] messageVariables)
@@ -58,7 +58,7 @@ namespace ModCore.Core.Site
         {
             message = string.Format(message, messageVariables);
 
-            ExecuteLogging(LogLevel.Warning, className, message, exception.Message, exception.InnerException.ToString(), exception.StackTrace, sessionData, route);
+            ExecuteLogging(LogLevel.Warning, className, message, exception?.Message, exception?.InnerException?.ToString(), exception?.StackTrace, sessionData, route);
         }
 
         public void LogDebug<T>(string message, params string[] messageVariables)

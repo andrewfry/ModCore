@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ModCore.Abstraction.Plugins;
 using ModCore.Models.Access;
+using ModCore.Models.Sessions;
 using ModCore.ViewModels.Access;
 using ModCore.ViewModels.Admin.Plugin;
 using System;
@@ -14,6 +15,8 @@ namespace ModCore.Services.Mappings
     {
         public AutoMapperProfileConfiguration()
         {
+            CreateMap<SessionUserData, AuthenticationUser>().ReverseMap();
+            CreateMap<User, AuthenticationUser>().ReverseMap();
             CreateMap<User, RegisterViewModel>().ReverseMap();
             CreateMap<LoginViewModel, User>();
             CreateMap<IPlugin, vPlugin>();

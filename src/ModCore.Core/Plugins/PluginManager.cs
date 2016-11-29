@@ -142,6 +142,60 @@ namespace ModCore.Core.Plugins
             }
         }
 
+        public IList<ServiceDescriptor> ActivePluginServices
+        {
+            get
+            {
+                var services = new List<ServiceDescriptor>();
+
+                foreach (var actPlugin in this.ActivePlugins)
+                {
+                    foreach (var srv in actPlugin.Services)
+                    {
+                        services.Add(srv);
+                    }
+                }
+
+                return services;
+            }
+
+        }
+        
+        public FilterCollection ActivePluginGlobalFilters
+        {
+            get
+            {
+                var filters = new FilterCollection();
+
+                foreach (var actPlugin in this.ActivePlugins)
+                {
+                    foreach (var filt in actPlugin.Filters)
+                    {
+                        filters.Add(filt);
+                    }
+                }
+
+                return filters;
+            }
+
+        }
+
+        public IList<FilterDescriptor> GlobalFilterDescriptors
+        {
+            get
+            {
+                var returnList = new List<FilterDescriptor>();
+
+                foreach (var filter in ActivePluginGlobalFilters)
+                {
+                    var filtDesc = new FilterDescriptor(filter, 0);
+                    returnList.Add(filtDesc);
+                }
+
+                return returnList;
+            }
+        }
+
         public IList<Assembly> ActiveAssemblies
         {
             get
@@ -213,6 +267,21 @@ namespace ModCore.Core.Plugins
             Refresh();
         }
 
+        public void RemoveServices(IPlugin plugin, IMvcCoreBuilder coreBuilder)
+        {
+            foreach (var srv in plugin.Services)
+            {
+                coreBuilder.Services.Remove(srv);
+            }
+        }
+
+        public void AddServices(IPlugin plugin, IMvcCoreBuilder coreBuilder)
+        {
+            foreach (var srv in plugin.Services)
+            {
+                coreBuilder.Services.Remove(srv);
+            }
+        }
 
         public ICollection<IRouter> GetActiveRoutesForPlugins(IRouter defaultHandler, IInlineConstraintResolver inlineConstraintResolver)
         {
@@ -241,34 +310,6 @@ namespace ModCore.Core.Plugins
             }
 
             return routes;
-        }
-
-        public FilterCollection GetFiltersForPlugins()
-        {
-            var filters = new FilterCollection();
-
-            foreach (var actPlugin in this.ActivePlugins)
-            {
-                foreach (var filt in actPlugin.Filters)
-                {
-                    filters.Add(filt);
-                }
-            }
-
-            return filters;
-        }
-
-        public IList<FilterDescriptor> GetFilterDescriptorsForPlugins()
-        {
-            var returnList = new List<FilterDescriptor>();
-
-            foreach (var filter in GetFiltersForPlugins())
-            {
-                var filtDesc = new FilterDescriptor(filter, 0);
-                returnList.Add(filtDesc);
-            }
-
-            return returnList;
         }
         
         private void RegisterAssemblyInPartManager(IPlugin plugin)
@@ -300,7 +341,6 @@ namespace ModCore.Core.Plugins
                 _appPartManager.ApplicationParts.Remove(assmblyPartFromMgr);
             }
         }
-
 
     }
 }

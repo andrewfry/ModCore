@@ -63,7 +63,7 @@ namespace ModCore.Core.HelperExtensions
 
             if (app.ApplicationServices.GetService(typeof(IPluginManager)) == null)
             {
-                throw new InvalidOperationException("Plugin manager was not set up correctly");
+                throw new InvalidOperationException("Plugin manager was not set up correctly, missing IPluginManager service.");
             }
 
             var pluginManager = app.ApplicationServices.GetService<IPluginManager>();
@@ -115,9 +115,28 @@ namespace ModCore.Core.HelperExtensions
                 return new PluginManager(assbly, configRoot, env, repos, appMgr);
             });
 
+
             services.TryAddEnumerable(
             ServiceDescriptor.Transient<IApplicationModelProvider, PluginApplicationModelProvider>());
 
+            return services;
+        }
+
+        public static IServiceCollection AddActivePluginServices(this IServiceCollection services)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            var srvProvider = services.BuildServiceProvider();
+            var pluginMangager = srvProvider.GetRequiredService<IPluginManager>();
+
+            foreach(var srv in pluginMangager.ActivePluginServices)
+            {
+                services.Add(srv);
+            }
+                       
             return services;
         }
 

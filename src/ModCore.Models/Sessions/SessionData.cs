@@ -23,18 +23,6 @@ namespace ModCore.Models.Sessions
             IsLoggedIn = false;
             UserData = null;
         }
-
-        public void UpdateUserData(User user, bool userLoggedIn)
-        {
-            if (user == null)
-                return;
-
-            this.IsLoggedIn = userLoggedIn;
-            this.UserId = user.Id;
-            this.UserData = new SessionUserData();
-            this.UserData.EmailAddress = user.EmailAddress;
-            this.UserData.FirstName = user.FirstName;
-            this.UserData.LastName = user.LastName;
-        }
+                
     }
 }

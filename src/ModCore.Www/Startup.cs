@@ -79,6 +79,7 @@ namespace ModCore.Www
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
             services.AddPluginManager(Configuration, _hostingEnvironment);
+            services.AddActivePluginServices();
             services.AddThemeManager(Configuration, _hostingEnvironment);
             var sessionGuid = "TEMP"; //TODO - Get the sessionGuid from the DB
 
