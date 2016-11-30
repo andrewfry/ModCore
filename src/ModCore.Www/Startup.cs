@@ -29,6 +29,7 @@ using ModCore.Models.Access;
 using AutoMapper;
 using ModCore.Services.Mappings;
 using ModCore.Specifications.Themes;
+using ModCore.Specifications.Plugins;
 
 namespace ModCore.Www
 {
@@ -69,6 +70,7 @@ namespace ModCore.Www
             services.AddTransient<IDataRepository<InstalledPlugin>, MongoDbRepository<InstalledPlugin>>();
             services.AddTransient<IDataRepository<SiteTheme>, MongoDbRepository<SiteTheme>>();
 
+            services.AddTransient<IDataRepositoryAsync<Page>, MongoDbRepository<Page>>();
             services.AddTransient<IDataRepositoryAsync<User>, MongoDbRepository<User>>();
             services.AddTransient<IDataRepositoryAsync<Log>, MongoDbRepository<Log>>();
             services.AddTransient<IDataRepositoryAsync<SiteSetting>, MongoDbRepository<SiteSetting>>();
@@ -130,15 +132,19 @@ namespace ModCore.Www
             //});
 
             var repos1 = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
-            repos1.Insert(new InstalledPlugin
+            if(repos1.Find(new ByAssemblyName("BasicAuthentication.Plugin")) == null)
             {
-                Active = true,
-                DateInstalled = DateTime.UtcNow,
-                Installed = true,
-                PluginAssemblyName = "BasicAuthentication.Plugin",
-                PluginName = "BasicAuthentication",
-                PluginVersion = "1.0"
-            });
+                repos1.Insert(new InstalledPlugin
+                {
+                    Active = true,
+                    DateInstalled = DateTime.UtcNow,
+                    Installed = true,
+                    PluginAssemblyName = "BasicAuthentication.Plugin",
+                    PluginName = "BasicAuthentication",
+                    PluginVersion = "1.0"
+                });
+            }
+            
 
             var usrService = srcProvider.GetService<IUserService>();
             var user = usrService.GetByEmail("test@test.com");

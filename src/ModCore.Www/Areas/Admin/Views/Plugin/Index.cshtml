@@ -21,11 +21,11 @@
 
             @if (plug.Active)
             {
-                <btn class="btn btn-default btn-sm btn-disable" data-pluginid="@plug.PluginAssemblyName">Disable</btn>
+                <btn class="btn btn-default btn-sm btn-disable" data-pluginid="@plug.AssemblyName">Disable</btn>
             }
             else
             {
-                <btn class="btn btn-default btn-sm btn-enable" data-pluginid="@plug.PluginAssemblyName">Enable</btn>
+                <btn class="btn btn-default btn-sm btn-enable" data-pluginid="@plug.AssemblyName">Enable</btn>
             }
         </a>
     }
@@ -37,7 +37,7 @@
         $(".btn-enable").click(function (e) {
             e.preventDefault();
             $.ajax({
-                url: "/Admin/EnabledPlugin",
+                url: "/Admin/Plugin/EnabledPlugin",
                 type: "POST",
                 data: { pluginAssembly: $(this).data("pluginid") },
                 success: function (data, textStatus, jqXHR) {
@@ -49,7 +49,7 @@
         $(".btn-disable").click(function (e) {
             e.preventDefault();
             $.ajax({
-                url: "/Admin/EnabledPlugin",
+                url: "/Admin/Plugin/DisablePlugin",
                 type: "POST",
                 data: { pluginAssembly: $(this).data("pluginid") },
                 success: function (data, textStatus, jqXHR) {

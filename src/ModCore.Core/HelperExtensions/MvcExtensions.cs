@@ -73,7 +73,7 @@ namespace ModCore.Core.HelperExtensions
 
             configureRoutes(routes);
 
-            var cmsPage = app.ApplicationServices.GetService<IDataRepository<Page>>();
+            var cmsPage = app.ApplicationServices.GetService<IDataRepositoryAsync<Page>>();
             routes.Routes.Add(new CmsPageRoute(cmsPage,routes.DefaultHandler));
             //Disable for now.
             //routes.Routes.Insert(0, AttributeRouting.CreateAttributeMegaRoute(app.ApplicationServices));

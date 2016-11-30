@@ -20,8 +20,6 @@ namespace ModCore.ViewModels.Admin.Plugin
 
         public bool Active { get; set; }
 
-        public string PluginAssemblyName { get; set; }
-
         public DateTime DateInstalled { get; set; }
 
         public DateTime DateActivated { get; set; }

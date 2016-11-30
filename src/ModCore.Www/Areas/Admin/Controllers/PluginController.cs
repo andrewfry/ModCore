@@ -53,7 +53,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
         {
            var plugin = _pluginManager.AvailablePlugins.FirstOrDefault(a => a.AssemblyName == pluginAssembly);
 
-            if (plugin != null)
+            if (plugin == null)
                 throw new Exception("To be replaced"); //HACK - needs to be replaced with base controller handling of json errors
 
             _pluginManager.ActivatePlugin(plugin);
@@ -71,7 +71,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
         {
             var plugin = _pluginManager.InstalledPlugins.FirstOrDefault(a => a.AssemblyName == pluginAssembly);
 
-            if (plugin != null)
+            if (plugin == null)
                 throw new Exception("To be replaced"); //HACK - needs to be replaced with base controller handling of json errors
 
             _pluginManager.DeactivatePlugin(plugin);

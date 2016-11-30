@@ -10,21 +10,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ModCore.Core.Routers 
+namespace ModCore.Core.Routers
 {
     public class CmsPageRoute : IRouter
     {
         //private readonly string _controller; // get from object in database or manually set for 1 specific controller
         //private readonly string _action;
         private readonly IRouter _router;
-        private readonly IDataRepository<Page> _pageRepo;
+        private readonly IDataRepositoryAsync<Page> _pageRepo;
 
         public CmsPageRoute(
             //string controller,
             //string action,
             //ICachedRouteDataProvider<TPrimaryKey> dataProvider,
             //IMemoryCache cache,
-            IDataRepository<Page> pageRepo,
+            IDataRepositoryAsync<Page> pageRepo,
              IRouter router)
         {
             //if (string.IsNullOrWhiteSpace(controller))
@@ -35,7 +35,10 @@ namespace ModCore.Core.Routers
             //    throw new ArgumentNullException("dataProvider");
             if (router == null)
                 throw new ArgumentNullException("router");
-     
+
+            if (pageRepo == null)
+                throw new ArgumentNullException("pageRepo");
+
             //_dataProvider = dataProvider;
             //_cache = cache;
             _router = router;
@@ -56,20 +59,20 @@ namespace ModCore.Core.Routers
             }
 
             // Get the page that matches.
-            var page = _pageRepo.Find(new PageByUrl(requestPath));
+            var page = await _pageRepo.FindAsync(new PageByUrl(requestPath));
             // If we got back a null value set, that means the URI did not match
-            if (page !=null)
+            if (page != null)
             {
-                var routeData = new RouteData();  
+                var routeData = new RouteData();
                 routeData.Values["controller"] = "Page";
                 routeData.Values["action"] = "Index";
                 routeData.Values["page"] = page;
 
                 context.RouteData = routeData;
-                await _router.RouteAsync(context);                
-              
+                await _router.RouteAsync(context);
+
             }
-            
+
         }
 
         public VirtualPathData GetVirtualPath(VirtualPathContext context)
@@ -77,6 +80,6 @@ namespace ModCore.Core.Routers
             return null;
         }
 
-        
+
     }
 }
