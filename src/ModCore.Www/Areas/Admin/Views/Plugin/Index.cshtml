@@ -1,13 +1,14 @@
-﻿
-
-@model ModCore.ViewModels.Admin.Plugin.vPluginList
+﻿@model ModCore.ViewModels.Admin.Plugin.vPluginList
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
 }
 
+<h2>
+    Plugins
+</h2>
 
 <div class="list-group">
-    @foreach (var plug in Model.Plugins)
+    @foreach (var plug in Model.Plugins.OrderBy(a => a.Active))
     {
         <a href="#" class="list-group-item">
             <h4 class="list-group-item-heading">@plug.Name @plug.Version</h4>
@@ -17,6 +18,45 @@
             {
                 <span class="tag tag-success tag-pill float-xs-right">Active</span>
             }
+
+            @if (plug.Active)
+            {
+                <btn class="btn btn-default btn-sm btn-disable" data-pluginid="@plug.PluginAssemblyName">Disable</btn>
+            }
+            else
+            {
+                <btn class="btn btn-default btn-sm btn-enable" data-pluginid="@plug.PluginAssemblyName">Enable</btn>
+            }
         </a>
     }
 </div>
+
+
+@section scripts{
+    <script>
+        $(".btn-enable").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "/Admin/EnabledPlugin",
+                type: "POST",
+                data: { pluginAssembly: $(this).data("pluginid") },
+                success: function (data, textStatus, jqXHR) {
+                    alert("Success, the application will now restart.");
+                },
+            });
+        });
+
+        $(".btn-disable").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "/Admin/EnabledPlugin",
+                type: "POST",
+                data: { pluginAssembly: $(this).data("pluginid") },
+                success: function (data, textStatus, jqXHR) {
+                    alert("Success, the application will now restart.");
+                },
+            });
+        });
+
+    </script>
+}

@@ -11,6 +11,7 @@ using ModCore.Abstraction.Plugins;
 using ModCore.ViewModels.Admin.Plugin;
 using ModCore.Core.Plugins;
 using AutoMapper;
+using ModCore.Core.Site;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
@@ -37,16 +38,48 @@ namespace ModCore.Www.Areas.Admin.Controllers
             {
                 avail.Installed = installedPlugins.Any(a => a.AssemblyName == avail.AssemblyName && avail.Version == a.Version);
                 avail.Active = activePlugins.Any(a => a.AssemblyName == avail.AssemblyName && avail.Version == a.Version);
-
             }
-
 
             var m = new vPluginList();
             m.Plugins = availablePlugins;
 
-
             return View(m);
         }
 
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public IActionResult EnabledPlugin(string pluginAssembly)
+        {
+           var plugin = _pluginManager.AvailablePlugins.FirstOrDefault(a => a.AssemblyName == pluginAssembly);
+
+            if (plugin != null)
+                throw new Exception("To be replaced"); //HACK - needs to be replaced with base controller handling of json errors
+
+            _pluginManager.ActivatePlugin(plugin);
+
+            var appManager = ApplicationManager.Load();
+            appManager.Restart();
+
+            return null;
+        }
+
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public IActionResult DisablePlugin(string pluginAssembly)
+        {
+            var plugin = _pluginManager.InstalledPlugins.FirstOrDefault(a => a.AssemblyName == pluginAssembly);
+
+            if (plugin != null)
+                throw new Exception("To be replaced"); //HACK - needs to be replaced with base controller handling of json errors
+
+            _pluginManager.DeactivatePlugin(plugin);
+
+            var appManager = ApplicationManager.Load();
+            appManager.Restart();
+
+            return null;
+        }
     }
 }
