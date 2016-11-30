@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ModCore.Www.Helpers
 {
-    public class TemplateSectionViewComponent : ViewComponent 
-    {
-        //private readonly IPageService
-    }
+    //public class TemplateSectionViewComponent : ViewComponent 
+    //{
+    //    //private readonly IPageService
+    //}
 }

@@ -4,7 +4,7 @@
   "dependencies": {
     "ModCore.DataAccess.MongoDb": "1.0.0-*",
     "ModCore.Models": "1.0.0-*",
-    "NETStandard.Library": "1.6.0"
+    "NETStandard.Library": "1.6.1"
   },
 
   "frameworks": {

@@ -2,10 +2,10 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Microsoft.AspNetCore.Routing": "1.0.1",
-    "NETStandard.Library": "1.6.0",
     "ModCore.Models": "1.0.0-*",
     "ModCore.ViewModels": "1.0.0-*",
+    "Microsoft.AspNetCore.Routing": "1.1.0",
+    "NETStandard.Library": "1.6.1",
   },
 
   "frameworks": {

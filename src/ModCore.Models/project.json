@@ -2,9 +2,9 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc2-final",
-    "MongoDB.Bson": "2.3.0",
-    "NETStandard.Library": "1.6.0"
+    "Microsoft.Extensions.Logging.Abstractions": "1.1.0",
+    "MongoDB.Bson": "2.4.0",
+    "NETStandard.Library": "1.6.1"
   },
 
   "frameworks": {
