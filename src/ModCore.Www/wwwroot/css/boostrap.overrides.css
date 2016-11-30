@@ -1,10 +1,11 @@
 ﻿
-@font-face {
-    font-family: "Poppins-Regular";
-    src: url('/fonts/Poppins-Regular.ttf');
-}
+@font-face { font-family: "Poppins-Regular"; src: url('/fonts/Poppins-Regular.ttf'); }
 
-body {
-    font-family: "Poppins-Regular";
-    background-color: #F7F9FA;
-}
+body { font-family: "Poppins-Regular"; background-color: #F7F9FA; }
+
+.tag { padding: 4px; border-radius: 3px; }
+.tag.tag-sm {font-size:12px;}
+.tag.tag-success { color: #FFF; background-color: #5cb85c; border-color: #4cae4c }
+
+
+.list-group-item-buttons {width:100%; margin-top:5px;}

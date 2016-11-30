@@ -3,30 +3,30 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
 }
 
-<h2>
-    Plugins
-</h2>
-
 <div class="list-group">
     @foreach (var plug in Model.Plugins.OrderBy(a => a.Active))
     {
         <a href="#" class="list-group-item">
-            <h4 class="list-group-item-heading">@plug.Name @plug.Version</h4>
+            <h4 class="list-group-item-heading">
+                @plug.Name @plug.Version
+
+                @if (plug.Active)
+                {
+                    <span class="tag tag-success tag-sm pull-right">Active</span>
+                }
+            </h4>
             <p class="list-group-item-text">@plug.Description</p>
 
-            @if (plug.Active)
-            {
-                <span class="tag tag-success tag-pill float-xs-right">Active</span>
-            }
-
-            @if (plug.Active)
-            {
-                <btn class="btn btn-default btn-sm btn-disable" data-pluginid="@plug.AssemblyName">Disable</btn>
-            }
-            else
-            {
-                <btn class="btn btn-default btn-sm btn-enable" data-pluginid="@plug.AssemblyName">Enable</btn>
-            }
+            <div class="list-group-item-buttons">
+                @if (plug.Active)
+                {
+                    <btn class="btn btn-danger btn-sm btn-disable" data-pluginid="@plug.AssemblyName">Disable</btn>
+                }
+                else
+                {
+                    <btn class="btn btn-success btn-sm btn-enable" data-pluginid="@plug.AssemblyName">Enable</btn>
+                }
+            </div>
         </a>
     }
 </div>
