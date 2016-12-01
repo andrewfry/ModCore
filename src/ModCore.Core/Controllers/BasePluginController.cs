@@ -27,9 +27,9 @@ namespace ModCore.Core.Controllers
         public abstract IPlugin Plugin { get; }
 
 
-        public BasePluginController(IPluginLog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager, IPluginSettingsManager pluginSettingsManager,
+        public BasePluginController(IPluginLog log, ISiteSettingsManagerAsync siteSettingsManager, IPluginSettingsManager pluginSettingsManager,
             IBaseViewModelProvider baseModelProvider, IMapper mapper) :
-            base(log, sessionManager, siteSettingsManager, baseModelProvider, mapper)
+            base(log, siteSettingsManager, baseModelProvider, mapper)
         {
             log.SetPlugin(this.Plugin);
             _pluginSettingsManager = pluginSettingsManager;

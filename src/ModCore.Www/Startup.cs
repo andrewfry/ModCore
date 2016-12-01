@@ -30,6 +30,7 @@ using AutoMapper;
 using ModCore.Services.Mappings;
 using ModCore.Specifications.Themes;
 using ModCore.Specifications.Plugins;
+using System.Threading.Tasks;
 
 namespace ModCore.Www
 {
@@ -83,13 +84,17 @@ namespace ModCore.Www
             services.AddPluginManager(Configuration, _hostingEnvironment);
             services.AddActivePluginServices();
             services.AddThemeManager(Configuration, _hostingEnvironment);
-            var sessionGuid = "TEMP"; //TODO - Get the sessionGuid from the DB
-
+           
             //setting up the sesssion
             services.AddMemoryCache();
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                var srvProvider = services.BuildServiceProvider();
+                var siteSettings = srvProvider.GetRequiredService<ISiteSettingsManagerAsync>();
+                var sessionGuid = GetSettingOrDefault<string>(siteSettings,BuiltInSettings.SessionId,"defaultId").Result;
+                var sessionTimeOut = GetSettingOrDefault<int>(siteSettings, BuiltInSettings.SessionTimeOut, 20).Result;
+
+                options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeOut);
                 options.CookieName = ".Modcore-" + sessionGuid;
             });
 
@@ -226,6 +231,13 @@ namespace ModCore.Www
 
         }
 
+        private async Task<T> GetSettingOrDefault<T>(ISiteSettingsManagerAsync manager, SettingRegionPair setting, T defaultVal)
+        {
+            var exists = await manager.ContainsSettingAsync(setting);
+            if (exists)
+                return await manager.GetSettingAsync<T>(setting);
+            return defaultVal;
+        }
 
     }
 }

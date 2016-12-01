@@ -13,6 +13,9 @@ namespace ModCore.Core.Site
 
         public BaseViewModel Update(IBaseController controller, BaseViewModel model)
         {
+            if (model == null)
+                throw new ArgumentNullException("model");
+
             var s = controller.CurrentSession;
 
             if (s.IsLoggedIn)

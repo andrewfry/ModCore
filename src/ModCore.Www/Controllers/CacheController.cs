@@ -13,9 +13,9 @@ namespace ModCore.Www.Controllers
 {
     public class CacheController : BaseController
     {
-        public CacheController(ILog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager,
+        public CacheController(ILog log,  ISiteSettingsManagerAsync siteSettingsManager,
             IBaseViewModelProvider baseModeProvider, IMapper mapper)
-            : base(log,sessionManager,siteSettingsManager, baseModeProvider, mapper)
+            : base(log,siteSettingsManager, baseModeProvider, mapper)
         {
 
         }

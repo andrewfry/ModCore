@@ -20,9 +20,9 @@ namespace ModCore.Www.Controllers
     public class PageController : BaseController
     {
         private IThemeManager _themeManager;
-        public PageController(ILog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager,
+        public PageController(ILog log,  ISiteSettingsManagerAsync siteSettingsManager,
             IBaseViewModelProvider baseModeProvider, IThemeManager themeManager, IMapper mapper)
-            : base(log, sessionManager, siteSettingsManager, baseModeProvider, mapper)
+            : base(log,  siteSettingsManager, baseModeProvider, mapper)
         {
             _themeManager = themeManager;
         }

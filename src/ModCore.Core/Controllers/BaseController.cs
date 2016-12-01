@@ -71,7 +71,7 @@ namespace ModCore.Core.Controllers
             }
         }
 
-        public BaseController(ILog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager,
+        public BaseController(ILog log, ISiteSettingsManagerAsync siteSettingsManager,
             IBaseViewModelProvider baseClassProvider, IMapper mapper)
         {
             _logger = log;

@@ -7,9 +7,11 @@ namespace BasicAuthentication.Plugin.Filters
 {
     public class AdminAuthFilter : ActionFilterAttribute
     {
-        public AdminAuthFilter()
-        {
+        private readonly ISiteSettingsManagerAsync _siteSettings;
 
+        public AdminAuthFilter(ISiteSettingsManagerAsync siteSettings)
+        {
+            _siteSettings = siteSettings;
         }
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

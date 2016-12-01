@@ -20,9 +20,9 @@ namespace ModCore.Www.Areas.Admin.Controllers
     public class ThemeController : BaseController
     {
         private IThemeManager _themeManager;
-        public ThemeController(ILog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager,
+        public ThemeController(ILog log, ISiteSettingsManagerAsync siteSettingsManager,
             IBaseViewModelProvider baseModeProvider, IThemeManager themeManager, IMapper mapper)
-            : base(log, sessionManager, siteSettingsManager, baseModeProvider, mapper)
+            : base(log,  siteSettingsManager, baseModeProvider, mapper)
         {
             _themeManager = themeManager;
         }

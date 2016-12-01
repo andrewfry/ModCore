@@ -93,6 +93,8 @@ namespace ModCore.Core.HelperExtensions
 
             siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.LogLevel, LogLevel.Warning);
             siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.AuthenticationLockOut, 3);
+            siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.SessionId, Guid.NewGuid().ToString());
+            siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.SessionTimeOut, 20);
 
             return app;
         }

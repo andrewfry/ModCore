@@ -20,9 +20,9 @@ namespace ModCore.Www.Areas.Admin.Controllers
     {
         private IPluginManager _pluginManager;
 
-        public PluginController(ILog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager,
+        public PluginController(ILog log, ISiteSettingsManagerAsync siteSettingsManager,
             IBaseViewModelProvider baseModeProvider, IPluginManager pluginManager, IMapper mapper)
-            : base(log, sessionManager, siteSettingsManager, baseModeProvider, mapper)
+            : base(log, siteSettingsManager, baseModeProvider, mapper)
         {
             _pluginManager = pluginManager;
         }
@@ -34,7 +34,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
             var installedPlugins = _pluginManager.InstalledPlugins.ToList();
             var activePlugins = _pluginManager.ActivePlugins.ToList();
 
-            foreach(var avail in availablePlugins)
+            foreach (var avail in availablePlugins)
             {
                 avail.Installed = installedPlugins.Any(a => a.AssemblyName == avail.AssemblyName && avail.Version == a.Version);
                 avail.Active = activePlugins.Any(a => a.AssemblyName == avail.AssemblyName && avail.Version == a.Version);
@@ -51,7 +51,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
         //[ValidateAntiForgeryToken]
         public IActionResult EnabledPlugin(string pluginAssembly)
         {
-           var plugin = _pluginManager.AvailablePlugins.FirstOrDefault(a => a.AssemblyName == pluginAssembly);
+            var plugin = _pluginManager.AvailablePlugins.FirstOrDefault(a => a.AssemblyName == pluginAssembly);
 
             if (plugin == null)
                 throw new Exception("To be replaced"); //HACK - needs to be replaced with base controller handling of json errors

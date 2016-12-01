@@ -13,9 +13,9 @@ namespace ModCore.Www.Areas.Admin.Controllers
     [Area("Admin")]
     public class HomeController : BaseController
     {
-        public HomeController(ILog log, ISessionManager sessionManager, ISiteSettingsManagerAsync siteSettingsManager,
+        public HomeController(ILog log,  ISiteSettingsManagerAsync siteSettingsManager,
             IBaseViewModelProvider baseModeProvider, IMapper mapper)
-            : base(log,sessionManager,siteSettingsManager, baseModeProvider, mapper)
+            : base(log,siteSettingsManager, baseModeProvider, mapper)
         {
 
         }

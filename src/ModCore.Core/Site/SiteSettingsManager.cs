@@ -41,18 +41,16 @@ namespace ModCore.Core.Site
 
         public async Task UpsertSettingAsync(SettingRegionPair pair, object value)
         {
-            var key = string.Concat(pair.Region, "_", pair.Key);
+            var key = GenerateKey(pair.Region, pair.Key);
             var nameOfType = value.GetType().FullName;
-            var settingExists = _settings.Settings.ContainsKey(key.ToLower());
+            var settingExists = _settings.Settings.ContainsKey(key.ToUpper());
             SettingValue setting = null;
 
             if (settingExists)
             {
-                setting = _settings.Settings[key.ToLower()];
+                setting = _settings.Settings[key.ToUpper()];
                 setting.Value = value;
                 setting.TypeName = nameOfType;
-
-                _settings.Settings.Add(key, setting);
             }
             else
             {
@@ -61,6 +59,8 @@ namespace ModCore.Core.Site
                     TypeName = nameOfType,
                     Value = value,
                 };
+
+                _settings.Settings.Add(key, setting);
             }
 
             await _repository.UpdateAsync(_settings);
@@ -73,7 +73,7 @@ namespace ModCore.Core.Site
 
         public async Task<object> GetSettingAsync(SettingRegionPair pair)
         {
-            var key = string.Concat(pair.Region, "_", pair.Key);
+            var key = GenerateKey(pair.Region, pair.Key);
             return await GetSettingAsync(key);
         }
 
@@ -89,15 +89,15 @@ namespace ModCore.Core.Site
 
         public async Task<T> GetSettingAsync<T>(SettingRegionPair pair)
         {
-            var key = string.Concat(pair.Region, "_", pair.Key);
+            var key = GenerateKey(pair.Region, pair.Key);
             return await GetSettingAsync<T>(key);
         }
 
 
         public async Task<bool> ContainsSettingAsync(SettingRegionPair pair)
         {
-            var key = string.Concat(pair.Region, "_", pair.Key);
-            var exists = _settings.Settings.ContainsKey(key.ToLower());
+            var key = GenerateKey(pair.Region, pair.Key);
+            var exists = _settings.Settings.ContainsKey(key.ToUpper());
 
             return exists;
         }
@@ -114,7 +114,7 @@ namespace ModCore.Core.Site
         public async Task<T> GetSettingAsync<T>(string key)
         {
             var setting = await GetSettingValueAsync(key);
-            var nameOfType = setting.GetType().FullName;
+            var nameOfType = setting.Value.GetType().FullName;
 
             if (setting.TypeName != nameOfType)
             {
@@ -124,17 +124,60 @@ namespace ModCore.Core.Site
             return (T)setting.Value;
         }
 
+        public async Task<List<SettingDescriptor>> GetAllAsync()
+        {
+            var returnValue = new List<SettingDescriptor>();
+
+            foreach (var setting in _settings.Settings)
+            {
+                returnValue.Add(GetSettingDescriptor(setting));
+            }
+
+            return returnValue;
+        }
+
+        public SettingRegionPair GetSettingRegionPair(string rawKey)
+        {
+            var split = rawKey.Split('|');
+            var region = split.Length > 1 ? split[0] : "";
+            var key = split.Length > 1 ? split[1] : split[0];
+
+            return new SettingRegionPair(region, key);
+        }
+
+        private string GenerateKey(string region, string key)
+        {
+            key = key.Replace("|", "");
+
+            return string.Concat(region, "|", key).ToUpper();
+        }
+
+        private SettingDescriptor GetSettingDescriptor(KeyValuePair<string, SettingValue> setting)
+        {
+            var settingPair = GetSettingRegionPair(setting.Key);
+            
+            return new SettingDescriptor
+            {
+                Key = settingPair.Key,
+                RegionName = settingPair.Region,
+                Value = setting.Value.Value,
+                TypeName = setting.Value.TypeName,
+            };
+        }
+
         private async Task<SettingValue> GetSettingValueAsync(string key)
         {
-            var exists = _settings.Settings.ContainsKey(key.ToLower());
+            var exists = _settings.Settings.ContainsKey(key.ToUpper());
 
             if (exists == false)
             {
                 throw new KeyNotFoundException(key);
             }
 
-            return _settings.Settings[key.ToLower()];
+            return _settings.Settings[key.ToUpper()];
         }
+
+
 
     }
 
@@ -145,6 +188,10 @@ namespace ModCore.Core.Site
         public static SettingRegionPair LogLevel => new SettingRegionPair("LOG", "LEVEL");
 
         public static SettingRegionPair AuthenticationLockOut => new SettingRegionPair("AUTHENTICATION", "LOCK_OUT");
+
+        public static SettingRegionPair SessionId => new SettingRegionPair("GENERAL", "SESSION_ID");
+
+        public static SettingRegionPair SessionTimeOut => new SettingRegionPair("GENERAL", "SESSION_TIMEOUT");
 
     }
 }

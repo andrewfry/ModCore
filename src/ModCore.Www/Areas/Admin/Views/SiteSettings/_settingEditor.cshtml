@@ -1,0 +1,12 @@
+﻿@model ModCore.ViewModels.Core.vSettingValue
+
+@if (Model.TypeName == "System.Int32" || Model.TypeName == "System.String")
+{
+    @Html.TextBox(Model.RegionName + "|" + Model.Key, Model.Value, new { @class = "form-control" })
+}
+else if (Model.TypeName == "System.Boolean")
+{
+    var boolObj = Model.Value as bool?;
+    @Html.CheckBox(Model.RegionName + "|" + Model.Key, boolObj == true, new { @class = "form-control" })
+}
+

@@ -27,5 +27,9 @@ namespace ModCore.Abstraction.Site
         Task<bool> ContainsSettingAsync(SettingRegionPair pair);
 
         Task EnsureDefaultSettingAsync(SettingRegionPair pair, object value);
+
+        Task<List<SettingDescriptor>> GetAllAsync();
+
+        SettingRegionPair GetSettingRegionPair(string rawKey);
     }
 }

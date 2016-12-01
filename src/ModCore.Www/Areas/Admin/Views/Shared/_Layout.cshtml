@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ModCore Admin</title>
+    <title>@ViewBag.Title - ModCore Admin</title>
 
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -56,9 +56,9 @@
                 </div>
             }
             <div class="body-wrapper">
-                @if (ViewData["Title"] != null && !string.IsNullOrEmpty(ViewData["Title"].ToString()))
+                @if (ViewBag.Title != null && !string.IsNullOrEmpty(ViewBag.Title))
                 {
-                    <div class="page-tree"><h2 class="title">@ViewData["Title"]</h2></div>
+                    <div class="page-tree"><h2 class="title">@ViewBag.Title</h2></div>
                 }
                 <div class="body-main">
                     @RenderBody()
