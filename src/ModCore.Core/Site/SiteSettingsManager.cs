@@ -43,6 +43,7 @@ namespace ModCore.Core.Site
         {
             var key = GenerateKey(pair.Region, pair.Key);
             var nameOfType = value.GetType().FullName;
+            var qualifiedNameOfType = value.GetType().AssemblyQualifiedName;
             var settingExists = _settings.Settings.ContainsKey(key.ToUpper());
             SettingValue setting = null;
 
@@ -50,13 +51,14 @@ namespace ModCore.Core.Site
             {
                 setting = _settings.Settings[key.ToUpper()];
                 setting.Value = value;
-                setting.TypeName = nameOfType;
+                //setting.TypeName = nameOfType; - I dont think we should change the type on an upsert
             }
             else
             {
                 setting = new SettingValue()
                 {
                     TypeName = nameOfType,
+                    AssemblyQualifiedTypeName = qualifiedNameOfType,
                     Value = value,
                 };
 
@@ -155,13 +157,14 @@ namespace ModCore.Core.Site
         private SettingDescriptor GetSettingDescriptor(KeyValuePair<string, SettingValue> setting)
         {
             var settingPair = GetSettingRegionPair(setting.Key);
-            
+
             return new SettingDescriptor
             {
                 Key = settingPair.Key,
                 RegionName = settingPair.Region,
                 Value = setting.Value.Value,
                 TypeName = setting.Value.TypeName,
+                 AssemblyQualifiedTypeName = setting.Value.AssemblyQualifiedTypeName
             };
         }
 

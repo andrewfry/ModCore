@@ -1,4 +1,6 @@
 ﻿@model ModCore.ViewModels.Core.vSettingValue
+@using ModCore.Utilities.Reflection
+@using System.Reflection;
 
 @if (Model.TypeName == "System.Int32" || Model.TypeName == "System.String")
 {
@@ -9,4 +11,25 @@ else if (Model.TypeName == "System.Boolean")
     var boolObj = Model.Value as bool?;
     @Html.CheckBox(Model.RegionName + "|" + Model.Key, boolObj == true, new { @class = "form-control" })
 }
+else
+{
+    var type = Type.GetType(Model.AssemblyQualifiedTypeName);
+    if (type != null)
+    {
+        if(type.GetTypeInfo().IsEnum)
+        {
+            //var value = Enum.ToObject(type, Model.Value);
+            var selectList = Html.GetEnumSelectList(type);
+            foreach(var item in selectList)
+            {
+                if (item.Value == Model.Value.ToString())
+                {
+                    item.Selected = true;
+                }
+            }
 
+            @Html.DropDownList(Model.RegionName + "|" + Model.Key, selectList, new { @class = "form-control" })
+        }
+    }
+
+}

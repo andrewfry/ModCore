@@ -83,5 +83,5 @@ footer p { margin: 0px; padding: 4px; font-weight: bold; }
     .user-settings-container .welcome-user { font-size: 14px; }
     .user-settings-container .user-icon { font-size: 14px; }
 
-    .panel.panel-default { padding: 50px; }
+    .panel.panel-default .panel-body { padding: 50px; }
 }

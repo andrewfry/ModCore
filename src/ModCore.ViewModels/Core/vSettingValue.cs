@@ -14,5 +14,7 @@ namespace ModCore.ViewModels.Core
         public object Value { get; set; }
 
         public string TypeName { get; set; }
+
+        public string AssemblyQualifiedTypeName { get; set; }
     }
 }

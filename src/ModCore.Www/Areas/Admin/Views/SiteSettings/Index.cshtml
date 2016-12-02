@@ -7,31 +7,36 @@
 
 
 <form class="form-horizontal" id="frmSiteSettings">
-    @foreach (var region in regions)
-    {
-        <div class="panel panel-default">
-            <div class="panel-title">
-                @region
-            </div>
-            <div class="panel-body">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            @foreach (var region in regions)
+            {
+                <div class="row col-xs-12">
+                    <h4>
+                        @region
+                    </h4>
+                </div>
                 @foreach (var setting in Model.Settings.Where(a => a.RegionName == region).OrderBy(a => a.Key))
                 {
-                    <div class="form-group form-group-lg">
+                    <div class="form-group">
                         <label class="col-sm-3 control-label" for="@(region + "_" + setting.Key)">@setting.Key</label>
                         <div class="col-sm-9">
                             @await Html.PartialAsync("_settingEditor", setting)
                         </div>
                     </div>
                 }
+            }
+        </div>
+        <div class="panel-footer clearfix">
+            <div class="pull-right">
+
+                <button class="btn btn-success" id="btnSaveChanges">
+                    Save Changes
+                </button>
             </div>
         </div>
-    }
+    </div>
 </form>
-
-<button class="btn btn-success" id="btnSaveChanges">
-    Save Changes
-</button>
-
 
 @section scripts{
     <script>
