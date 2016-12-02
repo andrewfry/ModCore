@@ -9,6 +9,7 @@ using ModCore.Abstraction.DataAccess;
 using AutoMapper;
 using ModCore.Abstraction.Site;
 using ModCore.Specifications.Pages;
+using ModCore.ViewModels.Page;
 
 namespace ModCore.Services.PageService
 {
@@ -22,6 +23,19 @@ namespace ModCore.Services.PageService
         public async Task<Page> GetPageByURL(string requestUrl)
         {
             var page = await _repository.FindAsync(new PageByUrl(requestUrl));
+
+            return page;
+        }
+
+        public async Task<Page> CreatePage(PageViewModel newPage)
+        {
+            var page = _mapper.Map<Page>(newPage);
+
+            var existingPage = await _repository.FindAsync(new PageByUrl(page.FriendlyURL));
+            if (existingPage != null)
+                throw new Exception($"A page with url: {existingPage.FriendlyURL} already exists.");
+
+            await _repository.InsertAsync(page);
 
             return page;
         }

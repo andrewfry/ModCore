@@ -19,16 +19,24 @@ namespace ModCore.Core.Plugins
 
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
         {
-            
-
             string pluginName = null;
             if (context.Values.TryGetValue(PLUGIN_KEY, out pluginName))
             {
-                viewLocations = new[] {
+                if (context.AreaName != null)
+                {
+                    viewLocations = new[] {
+                    $"/Plugins/{pluginName}/{context.AreaName}/Views/{{0}}.cshtml"
+                    }.Concat(viewLocations);
+                }
+                else
+                {
+                    viewLocations = new[] {
+
+                $"/Plugins/{pluginName}/Views/{{0}}.cshtml",
                 $"/Plugins/{pluginName}/Views/{{1}}/{{0}}.cshtml",
                 $"/Plugins/{pluginName}/Views/Shared/{{0}}.cshtml",
-            }
-                .Concat(viewLocations);
+                     }.Concat(viewLocations);
+                }
             }
 
 

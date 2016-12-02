@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Internal;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -72,9 +73,9 @@ namespace ModCore.Core.HelperExtensions
             var pluginManager = app.ApplicationServices.GetService<IPluginManager>();
 
             configureRoutes(routes);
-
-            var cmsPage = app.ApplicationServices.GetService<IDataRepositoryAsync<Page>>();
-            routes.Routes.Add(new CmsPageRoute(cmsPage,routes.DefaultHandler));
+ 
+            //var cmsPage = app.ApplicationServices.GetService<IDataRepositoryAsync<Page>>();
+            //routes.Routes.Add(new CmsPageRoute(cmsPage,routes.DefaultHandler));
             //Disable for now.
             //routes.Routes.Insert(0, AttributeRouting.CreateAttributeMegaRoute(app.ApplicationServices));
 
@@ -98,6 +99,14 @@ namespace ModCore.Core.HelperExtensions
 
             return app;
         }
+        public static IApplicationBuilder RegisterActivePlugins(this IApplicationBuilder app)
+        {
+            var pluginManager = app.ApplicationServices.GetService<IPluginManager>();            
+            pluginManager.RegisterPluginList(pluginManager.ActivePlugins);
+       
+            return app;
+
+        }
 
         public static IServiceCollection AddPlugins(this IServiceCollection services, IMvcBuilder mvcBuilder)
         {
@@ -115,7 +124,6 @@ namespace ModCore.Core.HelperExtensions
 
 
             mvcBuilder.AddRazorOptions(a => a.ViewLocationExpanders.Add(new PluginViewLocationExpander()));
-
 
             return services;
         }
@@ -151,15 +159,15 @@ namespace ModCore.Core.HelperExtensions
             }
 
             var srvProvider = services.BuildServiceProvider();
-            var pluginMangager = srvProvider.GetRequiredService<IPluginManager>();
+            var pluginManager = srvProvider.GetRequiredService<IPluginManager>();
 
-            foreach(var srv in pluginMangager.ActivePluginServices)
+            foreach(var srv in pluginManager.ActivePluginServices)
             {
                 services.Add(srv);
             }
-                       
+                
             return services;
-        }
+        }      
 
         public static IServiceCollection AddThemeManager(this IServiceCollection services, IConfigurationRoot configRoot, IHostingEnvironment env)
         {
@@ -208,6 +216,7 @@ namespace ModCore.Core.HelperExtensions
 
             services.AddSingleton<IMapper>(sp => mapperConfiguration.CreateMapper());
         }
+
 
     }
 }

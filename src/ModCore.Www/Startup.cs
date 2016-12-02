@@ -78,6 +78,7 @@ namespace ModCore.Www
 
             //Adding the business logic Services
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IPageService, PageService>();
 
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
@@ -103,6 +104,7 @@ namespace ModCore.Www
 
             //TEST
             RunTestData(services);
+
         }
 
         public void RunTestData(IServiceCollection services)
@@ -149,11 +151,23 @@ namespace ModCore.Www
                     PluginVersion = "1.0"
                 });
             }
-            
+            if (repos1.Find(new ByAssemblyName("Pages.Plugin")) == null)
+            {
+                repos1.Insert(new InstalledPlugin
+                {
+                    Active = true,
+                    DateInstalled = DateTime.UtcNow,
+                    Installed = true,
+                    PluginAssemblyName = "Pages.Plugin",
+                    PluginName = "Pages",
+                    PluginVersion = "1.0"
+                });
+            }
+     
 
             var usrService = srcProvider.GetService<IUserService>();
             var user = usrService.GetByEmail("test@test.com");
-            if(user == null)
+            if(user.Result == null)
             {
                 var testUser = usrService.CreateNewUser(new ViewModels.Access.RegisterViewModel
                 {
@@ -226,8 +240,9 @@ namespace ModCore.Www
                     null,
                     new { Namespace = this.CurrentNameSpace });
             });
-
+            app.RegisterActivePlugins(); 
             app.UseDefaultSettings();
+
 
         }
 

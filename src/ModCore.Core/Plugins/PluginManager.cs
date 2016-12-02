@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Routing;
@@ -235,6 +236,7 @@ namespace ModCore.Core.Plugins
             {
                 throw new ArgumentNullException("pluginDir");
             }
+
         }
 
         public void ActivatePlugin(IPlugin plugin)
@@ -321,7 +323,18 @@ namespace ModCore.Core.Plugins
 
             return routes;
         }
-        
+
+        public void RegisterPluginList(IList<IPlugin> pluginList)
+        {
+            foreach (var plugin in pluginList)
+            {
+                RegisterAssemblyInPartManager(plugin);
+            }
+
+            if (pluginList.Count > 0) Refresh();
+
+        }
+
         private void RegisterAssemblyInPartManager(IPlugin plugin)
         {
             var pluginAssemblies = AvailablePluginAssemblies.FirstOrDefault(a => a.Item1.AssemblyName == plugin.AssemblyName)?.Item2;

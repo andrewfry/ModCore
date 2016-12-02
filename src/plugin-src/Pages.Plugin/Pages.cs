@@ -9,17 +9,18 @@ using Microsoft.Extensions.DependencyInjection;
 using ModCore.Models.Plugins;
 using ModCore.Core.Plugins;
 using Microsoft.AspNetCore.Mvc.Filters;
+using ModCore.Abstraction.Services.PageService;
+using Pages.Plugin.Services;
 
-namespace Blog.Plugin
+namespace Pages.Plugin
 {
-    public class Blog : BasePlugin, IPlugin
+    public class Pages : BasePlugin, IPlugin
     {
-
         public string Name
         {
             get
             {
-                return "ModBlog";
+                return "Pages";
             }
         }
 
@@ -35,7 +36,7 @@ namespace Blog.Plugin
         {
             get
             {
-                return "This plugin is used to post blogs and read them.";
+                return "This plugin provides the ability to create and edit HTML pages to display for user interaction.";
             }
         }
 
@@ -44,22 +45,29 @@ namespace Blog.Plugin
             get
             {
                 var routes = new List<IPluginRoute>();
+
                 routes.MapPluginRoute(
-                   name: "blogDefault",
-                    template: "Blog/{controller=Plugin}/{action=Index}/{id?}",
-                    plugin: new Blog());
+                name: "pageDefaultAdmin",
+                template: "{area=Admin}/{controller=Page}/{action=Index}/{id?}",
+                plugin: new Pages());
+
+                routes.MapPluginRoute(
+                name: "pageDefault",
+                template: "{controller=Page}/{action=Index}/{id?}",
+                plugin: new Pages());
 
 
                 return routes;
             }
         }
 
+
+
         public ICollection<ServiceDescriptor> Services
         {
             get
             {
                 var list = new List<ServiceDescriptor>();
-
                 return list;
             }
         }

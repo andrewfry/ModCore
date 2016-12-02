@@ -35,6 +35,8 @@ namespace ModCore.Abstraction.Plugins
 
         void DeactivatePlugin(IPlugin plugin);
 
+        void RegisterPluginList(IList<IPlugin> pluginList);
+
         ICollection<IRouter> GetActiveRoutesForPlugins(IRouter defaultHandler, IInlineConstraintResolver inlineConstraintResolver);
 
     }
