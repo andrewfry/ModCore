@@ -28,5 +28,7 @@ namespace ModCore.Models.Core
         public string StackTrace { get; set; }
 
         public SessionData Session { get; set; }
+
+        public DateTime InsertDate { get; set; }
     }
 }

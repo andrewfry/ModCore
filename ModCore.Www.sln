@@ -47,6 +47,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cmds", "cmds", "{4E5E6900-5
 		plugin-publish.cmd = plugin-publish.cmd
 	EndProjectSection
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ModCore.DataAccess", "src\ModCore.DataAccess\ModCore.DataAccess.xproj", "{FF1383CA-A745-492E-88F4-49511F29A191}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{2FA49D78-0DF3-48B5-91F3-C0758C4736E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FA49D78-0DF3-48B5-91F3-C0758C4736E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FA49D78-0DF3-48B5-91F3-C0758C4736E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF1383CA-A745-492E-88F4-49511F29A191}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF1383CA-A745-492E-88F4-49511F29A191}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF1383CA-A745-492E-88F4-49511F29A191}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF1383CA-A745-492E-88F4-49511F29A191}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -130,5 +136,6 @@ Global
 		{C008EB0E-378B-4CD2-B835-906950FA4320} = {CBA41F16-7012-4B6B-923C-406C9603B52C}
 		{2FA49D78-0DF3-48B5-91F3-C0758C4736E3} = {E95848E4-1302-43CF-AB1C-59B32943873D}
 		{4E5E6900-53DC-43FF-889D-590DDD3F2AD3} = {CBA41F16-7012-4B6B-923C-406C9603B52C}
+		{FF1383CA-A745-492E-88F4-49511F29A191} = {CBA41F16-7012-4B6B-923C-406C9603B52C}
 	EndGlobalSection
 EndGlobal
