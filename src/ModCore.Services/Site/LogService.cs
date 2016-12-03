@@ -29,7 +29,7 @@ namespace ModCore.Services.Site
         {
             ISpecification<Log> finalSpecification;
 
-            if (queries.Count == 1)
+            if (queries.Count == 0)
             {
                 throw new ArgumentException($"{nameof(queries)} must have at least one specification");
             }

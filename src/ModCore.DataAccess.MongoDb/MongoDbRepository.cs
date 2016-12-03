@@ -172,7 +172,7 @@ namespace ModCore.DataAccess.MongoDb
             result.PageSize = request.PageSize;
             result.CurrentPage = request.CurrentPage;
 
-            result.CurrentPageResults = await Task.Run<IList<T>>(() => this.collection.AsQueryable<T>().Skip<T>(request.CurrentPage - 1 * request.PageSize).Take<T>(request.PageSize).ToList());
+            result.CurrentPageResults = await Task.Run<IList<T>>(() => this.collection.AsQueryable<T>().Skip<T>((request.CurrentPage - 1) * request.PageSize).Take<T>(request.PageSize).ToList());
 
             return result;
         }

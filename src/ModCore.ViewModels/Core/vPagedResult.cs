@@ -1,12 +1,12 @@
-﻿using ModCore.Abstraction.DataAccess;
+﻿using ModCore.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ModCore.Core.DataAccess
+namespace ModCore.ViewModels.Core
 {
-    public class PagedResult<T> : IPagedResult<T>
+    public class vPagedResult<T> : BaseViewModel
     {
         public int TotalResults { get; set; }
 
@@ -14,9 +14,8 @@ namespace ModCore.Core.DataAccess
 
         public int CurrentPage { get; set; }
 
-        public int TotalPages { get { return (TotalResults / PageSize) + 1; } }
+        public int TotalPages { get; set; }
 
         public IList<T> CurrentPageResults { get; set; }
-
     }
 }

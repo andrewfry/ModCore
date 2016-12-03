@@ -14,30 +14,40 @@ using AutoMapper;
 using ModCore.Core.Site;
 using ModCore.ViewModels.Core;
 using Microsoft.AspNetCore.Http;
+using ModCore.Abstraction.Services.Site;
+using ModCore.Core.DataAccess;
+using ModCore.Specifications.Site;
+using ModCore.Abstraction.DataAccess;
+using ModCore.Models.Core;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class LogsController : BaseController
     {
-        private readonly ISiteSettingsManagerAsync _siteSettingsManager;
+        private readonly ILogService _logService;
 
         public LogsController(ILog log, ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IMapper mapper)
+            IBaseViewModelProvider baseModeProvider, IMapper mapper, ILogService logService)
             : base(log, siteSettingsManager, baseModeProvider, mapper)
         {
-            _siteSettingsManager = siteSettingsManager;
+            _logService = logService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var model = new vSettings();
-            model.Settings = _siteSettingsManager.GetAllAsync()
-                .Result
-                .Select(a => _mapper.Map<vSettingValue>(a)).ToList();
+            var pagedRequest = new PagedRequest();
+            pagedRequest.CurrentPage = 1;
+            pagedRequest.PageSize = 2;
 
+            var specs = new List<ISpecification<Log>>();
+            var spec = new AllLogs();
+            specs.Add(spec);
 
-            return View(model);
+            var result = await _logService.Filter(specs, pagedRequest);
+            var returnView = _mapper.Map<vPagedResult<vLog>>(result);
+
+            return View(returnView);
         }
 
       

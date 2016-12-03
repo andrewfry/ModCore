@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ModCore.Abstraction.Plugins;
+using ModCore.Core.DataAccess;
 using ModCore.Models.Access;
 using ModCore.Models.Core;
 using ModCore.Models.Page;
@@ -25,8 +26,10 @@ namespace ModCore.Services.Mappings
             CreateMap<LoginViewModel, User>();
             CreateMap<IPlugin, vPlugin>();
             CreateMap<Page, PageViewModel>().ReverseMap();
-
             CreateMap<SettingDescriptor, vSettingValue>();
+
+            CreateMap<Log, vLog>();
+            CreateMap<PagedResult<Log>, vPagedResult<vLog>>();
         }
     }
 }

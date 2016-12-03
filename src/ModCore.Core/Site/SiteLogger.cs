@@ -33,7 +33,7 @@ namespace ModCore.Core.Site
 
         public void LogError(string className, Exception exception, string message, params string[] messageVariables)
         {
-            LogError(className, null, exception,"", message, messageVariables);
+            LogError(className, null, exception, "", message, messageVariables);
         }
 
         public void LogError(string className, SessionData sessionData, Exception exception, string route, string message, params string[] messageVariables)
@@ -51,10 +51,10 @@ namespace ModCore.Core.Site
 
         public void LogWarning(string className, Exception exception, string message, params string[] messageVariables)
         {
-            LogWarning(className, null, exception,"", message, messageVariables);
+            LogWarning(className, null, exception, "", message, messageVariables);
         }
 
-        public void LogWarning(string className, SessionData sessionData,  Exception exception, string route, string message, params string[] messageVariables)
+        public void LogWarning(string className, SessionData sessionData, Exception exception, string route, string message, params string[] messageVariables)
         {
             message = string.Format(message, messageVariables);
 
@@ -69,7 +69,7 @@ namespace ModCore.Core.Site
 
         public void LogDebug(string className, string message, params string[] messageVariables)
         {
-            LogDebug(className, null,"", message, messageVariables);
+            LogDebug(className, null, "", message, messageVariables);
         }
 
         public void LogDebug(string className, SessionData sessionData, string route, string message, params string[] messageVariables)
@@ -90,7 +90,7 @@ namespace ModCore.Core.Site
             LogInfo(className, null, "", message, messageVariables);
         }
 
-        public void LogInfo(string className, SessionData sessionData,string route, string message, params string[] messageVariables)
+        public void LogInfo(string className, SessionData sessionData, string route, string message, params string[] messageVariables)
         {
             message = string.Format(message, messageVariables);
 
@@ -110,7 +110,8 @@ namespace ModCore.Core.Site
                 Message = message,
                 Session = sessionData,
                 StackTrace = stackTrace,
-                Route =route
+                Route = route,
+                InsertDate = DateTime.UtcNow
             };
 
 
@@ -130,7 +131,7 @@ namespace ModCore.Core.Site
 
         public void Log<T>(LogLevel logLevel, EventId eventId, T state, Exception exception, Func<T, Exception, string> formatter)
         {
-            ExecuteLogging(logLevel, typeof(T).FullName, formatter(state, exception), exception?.Message?.ToString(), exception?.InnerException?.ToString(), exception?.StackTrace?.ToString(), null,"");
+            ExecuteLogging(logLevel, typeof(T).FullName, formatter(state, exception), exception?.Message?.ToString(), exception?.InnerException?.ToString(), exception?.StackTrace?.ToString(), null, "");
         }
 
         public IDisposable BeginScope<TState>(TState state)

@@ -31,6 +31,8 @@ using ModCore.Services.Mappings;
 using ModCore.Specifications.Themes;
 using ModCore.Specifications.Plugins;
 using System.Threading.Tasks;
+using ModCore.Abstraction.Services.Site;
+using ModCore.Services.Site;
 
 namespace ModCore.Www
 {
@@ -79,6 +81,7 @@ namespace ModCore.Www
             //Adding the business logic Services
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IPageService, PageService>();
+            services.AddTransient<ILogService, LogService>();
 
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
