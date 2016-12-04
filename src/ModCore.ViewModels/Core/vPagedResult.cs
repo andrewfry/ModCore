@@ -6,16 +6,8 @@ using System.Threading.Tasks;
 
 namespace ModCore.ViewModels.Core
 {
-    public class vPagedResult<T> : BaseViewModel
+    public class vPagedResult<T> : vPagedInfo
     {
-        public int TotalResults { get; set; }
-
-        public int PageSize { get; set; }
-
-        public int CurrentPage { get; set; }
-
-        public int TotalPages { get; set; }
-
         public IList<T> CurrentPageResults { get; set; }
     }
 }

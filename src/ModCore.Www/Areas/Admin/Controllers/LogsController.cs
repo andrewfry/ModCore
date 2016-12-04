@@ -34,11 +34,11 @@ namespace ModCore.Www.Areas.Admin.Controllers
             _logService = logService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page =1, int pageSize = 50)
         {
             var pagedRequest = new PagedRequest();
-            pagedRequest.CurrentPage = 1;
-            pagedRequest.PageSize = 2;
+            pagedRequest.CurrentPage = page;
+            pagedRequest.PageSize = pageSize;
 
             var specs = new List<ISpecification<Log>>();
             var spec = new AllLogs();
