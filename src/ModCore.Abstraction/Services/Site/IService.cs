@@ -7,7 +7,7 @@ using ModCore.Models.Core;
 
 namespace ModCore.Abstraction.Services.Site
 {
-    public interface ILogService
+    public interface ILogService : IServiceAsync<Log>
     {
 
         Task<IPagedResult<Log>> Filter(List<ISpecification<Log>> queries, IPagedRequest request);

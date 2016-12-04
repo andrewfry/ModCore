@@ -4,8 +4,6 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
     ViewBag.Title = "Logs";
 }
-
-
 <div class="panel panel-default">
     <div class="panel-body">
         <div class="row">
@@ -60,7 +58,9 @@
                                 <td>
                                     @log.InsertDate
                                 </td>
-                                <td></td>
+                                <td>
+                                    <a class="btn btn-info btn-sm" data-toggle="modal" href="/Admin/Logs/Details?id=@log.Id" data-target="#defaultModal">Details</a>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -74,6 +74,25 @@
         </div>
     </div>
 </div>
+@await Html.PartialAsync("_DefaultModal")
 
 @section scripts{
+    <script>
+        $(document).ready(function () {
+            $(".btn-log-info").click(function (e) {
+                e.preventDefault();
+                var id = $(this).data("logid");
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Logs/Details",
+                    data: { id: id },
+                    dataType: "json",
+                    success: function (response) {
+
+                    }
+                });
+            });
+        });
+    </script>
 }

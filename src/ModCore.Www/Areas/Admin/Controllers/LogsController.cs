@@ -50,6 +50,13 @@ namespace ModCore.Www.Areas.Admin.Controllers
             return View(returnView);
         }
 
+        public async Task<IActionResult> Details(string id)
+        {
+            var log = await _logService.GetByIdAsync(id);
+            var model = _mapper.Map<vLog>(log);
+
+            return PartialView("_Details",model);
+        }
       
     }
 }

@@ -11,6 +11,8 @@ namespace ModCore.ViewModels.Core
 {
     public class vLog
     {
+        public string Id { get; set; }
+
         public string Route { get; set; }
 
         public string ClassName { get; set; }
