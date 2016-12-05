@@ -19,14 +19,12 @@ namespace ModCore.Www.Areas.Admin.Controllers
     public class AccountController : BaseController
     {
         private IUserService _userService;
-        private IAuthenticationService _authService;
 
         public AccountController(ILog log,  ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IMapper mapper, IUserService userService, IAuthenticationService authService)
+            IBaseViewModelProvider baseModeProvider, IMapper mapper, IUserService userService)
             : base(log,  siteSettingsManager, baseModeProvider, mapper)
         {
             _userService = userService;
-            _authService = authService;
         }
 
         [HttpGet]
@@ -52,14 +50,20 @@ namespace ModCore.Www.Areas.Admin.Controllers
                 return View(loginModel);
             }
 
+            //We have to do this becauser we are not sure if an auth service is present.
+            //TODO: clean up and decide if this should be a plugin. My guess is it should.
+            var authService = HttpContext.RequestServices.GetService(typeof(IAuthenticationService)) as IAuthenticationService;
+            if (authService == null)
+                throw new Exception("An IAuthenticationService is not registered");
+
             user = await _userService.GetByEmail(loginModel.EmailAddress);
             var authuser = _mapper.Map<AuthenticationUser>(user);
-            var validationResult = await _authService.ValidatePassword(authuser, loginModel.Password);
+            var validationResult = await authService.ValidatePassword(authuser, loginModel.Password);
             result = validationResult.Successful;
 
             if (result)
             {
-                var authResult = await _authService.SignIn(authuser, this);
+                var authResult = await authService.SignIn(authuser, this);
 
                 if (!string.IsNullOrEmpty(loginModel.ReturnUrl))
                 {
@@ -75,7 +79,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
                 }
                 else
                 {
-                    throw new Exception($"{_authService.CurrentPlugin().Name}'s AuthenticatioService does not have a return ActionResult.");
+                    throw new Exception($"{authService.CurrentPlugin().Name}'s AuthenticatioService does not have a return ActionResult.");
                 }
             }
 
@@ -108,8 +112,14 @@ namespace ModCore.Www.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> LogOut()
         {
+            //We have to do this becauser we are not sure if an auth service is present.
+            //TODO: clean up and decide if this should be a plugin. My guess is it should.
+            var authService = HttpContext.RequestServices.GetService(typeof(IAuthenticationService)) as IAuthenticationService;
+            if (authService == null)
+                throw new Exception("An IAuthenticationService is not registered");
+
             var authUser = _mapper.Map<AuthenticationUser>(this.CurrentSession.UserData);
-            var authResult = await _authService.SignOut(authUser, this);
+            var authResult = await authService.SignOut(authUser, this);
 
             if (authResult.HasResult)
             {

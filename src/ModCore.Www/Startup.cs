@@ -84,6 +84,12 @@ namespace ModCore.Www
             services.AddTransient<ILogService, LogService>();
             services.AddTransient<IUserActivityService, UserActivityService>();
 
+            //TODO - Double check if this is pulling profiles from the plugins
+            services.AddAutoMapper();
+
+            //TEST
+            RunTestData(services);
+
             var mvcBuilder = services.AddMvc(options =>
             {
                 var srvProvider = services.BuildServiceProvider();
@@ -110,11 +116,9 @@ namespace ModCore.Www
                 options.CookieName = ".Modcore-" + sessionGuid;
             });
 
-            //TODO - Double check if this is pulling profiles from the plugins
-            services.AddAutoMapper();
+          
 
-            //TEST
-            RunTestData(services);
+            
 
         }
 

@@ -1,0 +1,98 @@
+﻿@using ModCore.ViewModels.Core
+@model vPagedResult<vLog>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
+    ViewBag.Title = "User Activity";
+}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-12">
+                <table class="table table-bordered table-bordered table-hover table-log">
+                    <thead>
+                        <tr>
+                            <th>
+                                Level
+                            </th>
+                            <th class="col-message">
+                                Message
+                            </th>
+                            <th class="col-message">
+                                ErrorMessage
+                            </th>
+                            <th>
+                                Route
+                            </th>
+                            <th>
+                                Plugin Name
+                            </th>
+                            <th>
+                                Date
+                            </th>
+                            <th>
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model.CurrentPageResults)
+                        {
+                            var intError = ((int)log.ErrorLevel);
+                            var errorClass = intError >= 4 ? "danger" : intError == 3 ? "warning" : intError <= 2 ? "info" : "";
+                            <tr>
+                                <td class="@errorClass">
+                                    @log.ErrorLevel
+                                </td>
+                                <td class="col-message">
+                                    @log.Message
+                                </td>
+                                <td class="col-message">
+                                    @log.ErrorMessage
+                                </td>
+                                <td>
+                                    @log.Route
+                                </td>
+                                <td>
+                                    @log.PluginName
+                                </td>
+                                <td>
+                                    @log.InsertDate
+                                </td>
+                                <td>
+                                    <a class="btn btn-info btn-sm" data-toggle="modal" href="/Admin/Logs/Details?id=@log.Id" data-target="#defaultModal">Details</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                @await Html.PartialAsync("_Pagination")
+            </div>
+        </div>
+    </div>
+</div>
+@await Html.PartialAsync("_DefaultModal")
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $(".btn-log-info").click(function (e) {
+                e.preventDefault();
+                var id = $(this).data("logid");
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Logs/Details",
+                    data: { id: id },
+                    dataType: "json",
+                    success: function (response) {
+
+                    }
+                });
+            });
+        });
+    </script>
+}

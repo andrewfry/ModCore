@@ -13,5 +13,10 @@
     "netstandard1.6": {
       "imports": "dnxcore50"
     }
+  },
+  "scripts": {
+    "postcompile": [
+      "cmd /c %project:Directory%\\..\\..\\cmds\\plugin-publish.cmd \"%project:Name%\" \"%project:Name%\""
+    ]
   }
 }
