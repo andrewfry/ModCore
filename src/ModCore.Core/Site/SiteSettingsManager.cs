@@ -196,5 +196,9 @@ namespace ModCore.Core.Site
 
         public static SettingRegionPair SessionTimeOut => new SettingRegionPair("GENERAL", "SESSION_TIMEOUT");
 
+        public static SettingRegionPair UserActivityTracking => new SettingRegionPair("USER", "ACTIVITY_TRACKING");
+
+        public static SettingRegionPair UserActivityTrackingDetailed => new SettingRegionPair("USER", "ACTIVITY_TRACKING_DETAILED");
+
     }
 }
