@@ -96,6 +96,9 @@ namespace ModCore.Core.HelperExtensions
             siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.AuthenticationLockOut, 3);
             siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.SessionId, Guid.NewGuid().ToString());
             siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.SessionTimeOut, 20);
+            siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.UserActivityTracking, true);
+            siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.UserActivityTrackingDetailed, true);
+
 
             return app;
         }

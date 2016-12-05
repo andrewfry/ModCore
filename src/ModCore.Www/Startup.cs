@@ -31,6 +31,9 @@ using ModCore.Services.Mappings;
 using ModCore.Specifications.Themes;
 using ModCore.Specifications.Plugins;
 using System.Threading.Tasks;
+using ModCore.Abstraction.Services.Site;
+using ModCore.Services.Site;
+using ModCore.Core.Filters;
 
 namespace ModCore.Www
 {
@@ -59,8 +62,6 @@ namespace ModCore.Www
             //Configure Settings
             services.Configure<MongoDbSettings>(options => Configuration.GetSection("MongoDbSettings").Bind(options));
 
-            var mvcBuilder = services.AddMvc();
-
             services.AddTransient<ILogger, SiteLogger>();
             services.AddTransient<ILog, SiteLogger>();
             services.AddTransient<ISessionManager, SessionManager>();
@@ -75,24 +76,34 @@ namespace ModCore.Www
             services.AddTransient<IDataRepositoryAsync<User>, MongoDbRepository<User>>();
             services.AddTransient<IDataRepositoryAsync<Log>, MongoDbRepository<Log>>();
             services.AddTransient<IDataRepositoryAsync<SiteSetting>, MongoDbRepository<SiteSetting>>();
+            services.AddTransient<IDataRepositoryAsync<UserActivity>, MongoDbRepository<UserActivity>>();
 
             //Adding the business logic Services
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IPageService, PageService>();
+            services.AddTransient<ILogService, LogService>();
+            services.AddTransient<IUserActivityService, UserActivityService>();
+
+            var mvcBuilder = services.AddMvc(options =>
+            {
+                var srvProvider = services.BuildServiceProvider();
+
+                options.Filters.Add(new UserActivityFilter(srvProvider.GetRequiredService<ISiteSettingsManagerAsync>(), srvProvider.GetRequiredService<IUserActivityService>()));
+            });
 
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
             services.AddPluginManager(Configuration, _hostingEnvironment);
             services.AddActivePluginServices();
             services.AddThemeManager(Configuration, _hostingEnvironment);
-           
+
             //setting up the sesssion
             services.AddMemoryCache();
             services.AddSession(options =>
             {
                 var srvProvider = services.BuildServiceProvider();
                 var siteSettings = srvProvider.GetRequiredService<ISiteSettingsManagerAsync>();
-                var sessionGuid = GetSettingOrDefault<string>(siteSettings,BuiltInSettings.SessionId,"defaultId").Result;
+                var sessionGuid = GetSettingOrDefault<string>(siteSettings, BuiltInSettings.SessionId, "defaultId").Result;
                 var sessionTimeOut = GetSettingOrDefault<int>(siteSettings, BuiltInSettings.SessionTimeOut, 20).Result;
 
                 options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeOut);
@@ -139,7 +150,7 @@ namespace ModCore.Www
             //});
 
             var repos1 = srcProvider.GetService<IDataRepository<InstalledPlugin>>();
-            if(repos1.Find(new ByAssemblyName("BasicAuthentication.Plugin")) == null)
+            if (repos1.Find(new ByAssemblyName("BasicAuthentication.Plugin")) == null)
             {
                 repos1.Insert(new InstalledPlugin
                 {
@@ -163,11 +174,11 @@ namespace ModCore.Www
                     PluginVersion = "1.0"
                 });
             }
-     
+
 
             var usrService = srcProvider.GetService<IUserService>();
             var user = usrService.GetByEmail("test@test.com");
-            if(user.Result == null)
+            if (user.Result == null)
             {
                 var testUser = usrService.CreateNewUser(new ViewModels.Access.RegisterViewModel
                 {
@@ -178,7 +189,7 @@ namespace ModCore.Www
                     LastName = "Test",
                 });
             }
-            
+
 
             var themes = srcProvider.GetService<IDataRepository<SiteTheme>>();
             var theme = themes.FindAll(new ActiveSiteTheme());
@@ -240,7 +251,7 @@ namespace ModCore.Www
                     null,
                     new { Namespace = this.CurrentNameSpace });
             });
-            app.RegisterActivePlugins(); 
+            app.RegisterActivePlugins();
             app.UseDefaultSettings();
 
 

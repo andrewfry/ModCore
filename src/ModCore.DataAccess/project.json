@@ -3,10 +3,7 @@
 
   "dependencies": {
     "ModCore.Abstraction": "1.0.0-*",
-    "ModCore.DataAccess": "1.0.0-*",
-    "ModCore.Specifications": "1.0.0-*",
-    "MongoDB.Driver": "2.4.0",
-    "NETStandard.Library": "1.6.1"
+    "NETStandard.Library": "1.6.0"
   },
 
   "frameworks": {

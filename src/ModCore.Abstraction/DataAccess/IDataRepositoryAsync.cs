@@ -26,5 +26,7 @@ namespace ModCore.Abstraction.DataAccess
         Task<T> FindAsync(ISpecification<T> specification);
 
         Task<T> FindByIdAsync(string id);
+
+        Task<IPagedResult<T>> FindAllByPageAsync(ISpecification<T> specification, IPagedRequest request);
     }
 }

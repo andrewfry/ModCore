@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using ModCore.Abstraction.DataAccess;
+using ModCore.Core.DataAccess;
+using ModCore.DataAccess.MongoDb;
 using ModCore.Models.BaseEntities;
 using ModCore.Specifications.Base;
 using MongoDB.Bson;
@@ -153,6 +155,26 @@ namespace ModCore.DataAccess.MongoDb
         public virtual async Task DeleteByIdAsync(string id)
         {
              await DeleteAsync(new GetById<T>(id));
+        }
+
+        public virtual async Task<IPagedResult<T>> FindAllByPageAsync(ISpecification<T> specification, IPagedRequest request)
+        {
+            if (request.PageSize == 0)
+                throw new Exception("request.PageSize can not be zero.");
+
+            var result = new PagedResult<T>();
+
+            if (request.TotalResults == null || request.TotalResults == 0)
+            {
+                result.TotalResults = await Task.Run<int>(() => this.collection.AsQueryable<T>().Count<T>(specification.Predicate()));
+            }
+
+            result.PageSize = request.PageSize;
+            result.CurrentPage = request.CurrentPage;
+
+            result.CurrentPageResults = await Task.Run<IList<T>>(() => this.collection.AsQueryable<T>().Skip<T>((request.CurrentPage - 1) * request.PageSize).Take<T>(request.PageSize).ToList());
+
+            return result;
         }
 
         public virtual async Task<ICollection<T>> FindAllAsync(ISpecification<T> specification)

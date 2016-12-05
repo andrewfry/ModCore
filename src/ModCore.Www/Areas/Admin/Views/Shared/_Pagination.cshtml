@@ -1,0 +1,19 @@
+﻿@model ModCore.ViewModels.Core.vPagedInfo
+
+<ul class="pagination">
+    @foreach (var page in Enumerable.Range(1, Model.TotalPages))
+    {
+        <li class="@(page == Model.CurrentPage ? "active" : "")"><a class="lnkPage" data-page="@page" data-pagesize="@Model.PageSize" href="#">@page</a></li>
+    }
+</ul>
+<script>
+    $(document).ready(function () {
+        $(".lnkPage").click(function (e) {
+            e.preventDefault();
+            var page = $(this).data("page");
+            var pagesize = $(this).data("pagesize");
+            var pathname = window.location.pathname + "?page=" + page + "&pagesize=" + pagesize;
+            window.location = pathname;
+        });
+    });
+</script>

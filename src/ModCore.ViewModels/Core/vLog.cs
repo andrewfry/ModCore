@@ -7,10 +7,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace ModCore.Models.Core
+namespace ModCore.ViewModels.Core
 {
-    public class Log : BaseEntity
+    public class vLog
     {
+        public string Id { get; set; }
+
         public string Route { get; set; }
 
         public string ClassName { get; set; }
@@ -26,8 +28,6 @@ namespace ModCore.Models.Core
         public string InnerException { get; set; }
 
         public string StackTrace { get; set; }
-
-        public SessionData Session { get; set; }
 
         public DateTime InsertDate { get; set; }
     }

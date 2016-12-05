@@ -8,6 +8,7 @@ using ModCore.Specifications.Base;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Specifications.BuiltIns;
 using System.Linq.Expressions;
+using ModCore.Core.DataAccess;
 
 namespace ModCore.DataAccess.MongoDb.Test
 {
@@ -288,6 +289,33 @@ namespace ModCore.DataAccess.MongoDb.Test
             }
         }
 
+        [Test]
+        public async Task FilterAsyncTest()
+        {
+            var testList = new List<TestObject>();
+
+            foreach (var num in Enumerable.Range(0, 9))
+            {
+                var testObject = GenerateTestObject();
+                _repos.Insert(testObject);
+                testList.Add(testObject);
+            }
+
+            IPagedRequest filterRequest = new PagedRequest();
+            filterRequest.PageSize = 5;
+            filterRequest.CurrentPage = 1;
+
+            var specification = new NotBlankName();
+            var result = await _repos.FindAllByPageAsync(specification, filterRequest);
+
+            Assert.IsTrue(result.PageSize == 5);
+            Assert.IsTrue(result.CurrentPage == 1);
+            Assert.IsTrue(result.TotalPages == 2);
+            Assert.IsTrue(result.TotalResults == 10);
+            Assert.IsTrue(result.CurrentPageResults.Count == 5);
+
+        }
+
         private void PerformBasicAssert(TestObject testObject, TestObject fromDb)
         {
             Assert.IsTrue(testObject != fromDb);
@@ -307,8 +335,12 @@ namespace ModCore.DataAccess.MongoDb.Test
             };
         }
 
-        
-    }
+
+
+
+      
+
+}
 
     internal class TestWithName : Specification<TestObject>
     {
@@ -322,6 +354,19 @@ namespace ModCore.DataAccess.MongoDb.Test
         public override Expression<Func<TestObject, bool>> IsSatisifiedBy()
         {
             return x => x.Name == _name;
+        }
+    }
+
+    internal class NotBlankName : Specification<TestObject>
+    {
+
+        public NotBlankName()
+        {
+        }
+
+        public override Expression<Func<TestObject, bool>> IsSatisifiedBy()
+        {
+            return x => x.Name != null && x.Name != "";
         }
     }
 
