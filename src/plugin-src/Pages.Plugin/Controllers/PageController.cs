@@ -8,7 +8,7 @@ using ModCore.Abstraction.Site;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ModCore.ViewModels.Base;
-using Pages.Plugin.Models;
+using Pages.Plugin.ViewModels;
 using Pages.Plugin.Services;
 
 namespace Pages.Plugin.Controllers

@@ -13,6 +13,7 @@ using ModCore.ViewModels.Access;
 using ModCore.Services.Base;
 using ModCore.Core.Controllers;
 using Pages.Plugin.Models;
+using Pages.Plugin.ViewModels;
 using ModCore.Abstraction.DataAccess;
 using Pages.Plugin.Specifications;
 using Pages.Plugin.Mapping;

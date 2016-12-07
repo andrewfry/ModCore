@@ -37,7 +37,6 @@ namespace ModCore.Core.HelperExtensions
 {
     public static class MvcExtensions
     {
-
         public static IApplicationBuilder UseMvcWithPlugin(
          this IApplicationBuilder app,
          Action<IRouteBuilder> configureRoutes)
