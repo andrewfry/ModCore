@@ -42,14 +42,14 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ModCore.ActiveRecords", "sr
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "BasicAuthentication.Plugin", "src\plugin-src\BasicAuthentication.Plugin\BasicAuthentication.Plugin.xproj", "{2FA49D78-0DF3-48B5-91F3-C0758C4736E3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cmds", "cmds", "{4E5E6900-53DC-43FF-889D-590DDD3F2AD3}"
+	ProjectSection(SolutionItems) = preProject
+		plugin-publish.cmd = plugin-publish.cmd
+	EndProjectSection
+EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Pages.Plugin", "src\plugin-src\Pages.Plugin\Pages.Plugin.xproj", "{BD638607-EEA9-48E9-8526-F4F1E92E4E02}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ModCore.DataAccess", "src\ModCore.DataAccess\ModCore.DataAccess.xproj", "{FF1383CA-A745-492E-88F4-49511F29A191}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cmds", "cmds", "{B19ED325-AF7B-439F-BB3E-D3633578F909}"
-	ProjectSection(SolutionItems) = preProject
-		src\cmds\plugin-publish.cmd = src\cmds\plugin-publish.cmd
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -141,8 +141,8 @@ Global
 		{50519618-7CF7-4E5C-A352-CC52F4CE48B5} = {1EA92745-3787-43DD-8C1C-AEA46770A876}
 		{C008EB0E-378B-4CD2-B835-906950FA4320} = {CBA41F16-7012-4B6B-923C-406C9603B52C}
 		{2FA49D78-0DF3-48B5-91F3-C0758C4736E3} = {E95848E4-1302-43CF-AB1C-59B32943873D}
+		{4E5E6900-53DC-43FF-889D-590DDD3F2AD3} = {CBA41F16-7012-4B6B-923C-406C9603B52C}
 		{BD638607-EEA9-48E9-8526-F4F1E92E4E02} = {E95848E4-1302-43CF-AB1C-59B32943873D}
 		{FF1383CA-A745-492E-88F4-49511F29A191} = {CBA41F16-7012-4B6B-923C-406C9603B52C}
-		{B19ED325-AF7B-439F-BB3E-D3633578F909} = {CBA41F16-7012-4B6B-923C-406C9603B52C}
 	EndGlobalSection
 EndGlobal

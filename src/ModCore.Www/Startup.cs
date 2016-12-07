@@ -21,8 +21,6 @@ using ModCore.Models.Page;
 using System.Collections.Generic;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
-using ModCore.Services.PageService;
-using ModCore.Abstraction.Services.PageService;
 using ModCore.Services.Access;
 using ModCore.Abstraction.Services.Access;
 using ModCore.Models.Access;
@@ -72,7 +70,7 @@ namespace ModCore.Www
             services.AddTransient<IDataRepository<InstalledPlugin>, MongoDbRepository<InstalledPlugin>>();
             services.AddTransient<IDataRepository<SiteTheme>, MongoDbRepository<SiteTheme>>();
 
-            services.AddTransient<IDataRepositoryAsync<Page>, MongoDbRepository<Page>>();
+            //services.AddTransient<IDataRepositoryAsync<Page>, MongoDbRepository<Page>>();
             services.AddTransient<IDataRepositoryAsync<User>, MongoDbRepository<User>>();
             services.AddTransient<IDataRepositoryAsync<Log>, MongoDbRepository<Log>>();
             services.AddTransient<IDataRepositoryAsync<SiteSetting>, MongoDbRepository<SiteSetting>>();
@@ -80,7 +78,7 @@ namespace ModCore.Www
 
             //Adding the business logic Services
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IPageService, PageService>();
+            //services.AddTransient<IPageService, PageService>();
             services.AddTransient<ILogService, LogService>();
             services.AddTransient<IUserActivityService, UserActivityService>();
 
@@ -102,7 +100,7 @@ namespace ModCore.Www
             services.AddPluginManager(Configuration, _hostingEnvironment);
             services.AddActivePluginServices();
             services.AddThemeManager(Configuration, _hostingEnvironment);
-
+            services.AddAutoMapperClassesFromPlugin();
             //setting up the sesssion
             services.AddMemoryCache();
             services.AddSession(options =>
@@ -116,16 +114,15 @@ namespace ModCore.Www
                 options.CookieName = ".Modcore-" + sessionGuid;
             });
 
-          
 
-            
+
 
         }
 
         public void RunTestData(IServiceCollection services)
         {
             var srcProvider = services.BuildServiceProvider();
-            var repos = srcProvider.GetService<IDataRepository<Page>>();
+           /* var repos = srcProvider.GetService<IDataRepository<Page>>()*/;
 
             //repos.Insert(new Page
             //{

@@ -9,8 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using ModCore.Models.Plugins;
 using ModCore.Core.Plugins;
 using Microsoft.AspNetCore.Mvc.Filters;
-using ModCore.Abstraction.Services.PageService;
 using Pages.Plugin.Services;
+using ModCore.Abstraction.DataAccess;
+using ModCore.DataAccess.MongoDb;
+using Pages.Plugin.Models;
 
 namespace Pages.Plugin
 {
@@ -68,6 +70,9 @@ namespace Pages.Plugin
             get
             {
                 var list = new List<ServiceDescriptor>();
+                list.Add(ServiceDescriptor.Transient<IDataRepositoryAsync<Page>, MongoDbRepository<Page>>());
+                list.Add(ServiceDescriptor.Transient<IPageService, PageService>());
+                
                 return list;
             }
         }

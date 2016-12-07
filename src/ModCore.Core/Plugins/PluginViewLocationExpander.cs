@@ -25,7 +25,9 @@ namespace ModCore.Core.Plugins
                 if (context.AreaName != null)
                 {
                     viewLocations = new[] {
-                    $"/Plugins/{pluginName}/{context.AreaName}/Views/{{0}}.cshtml"
+                    $"/Plugins/{pluginName}.Plugin/{context.AreaName}/Views/{{0}}.cshtml",
+                    $"/Plugins/{pluginName}.Plugin/Views/{context.AreaName}/{{0}}.cshtml",
+                    $"/Plugins/{pluginName}.Plugin/{context.AreaName}/Views/{{0}}.cshtml"
                     }.Concat(viewLocations);
                 }
                 else
@@ -33,6 +35,7 @@ namespace ModCore.Core.Plugins
                     viewLocations = new[] {
 
                 $"/Plugins/{pluginName}/Views/{{0}}.cshtml",
+                $"/Plugins/{pluginName}.Plugin/Views/{{0}}.cshtml",
                 $"/Plugins/{pluginName}/Views/{{1}}/{{0}}.cshtml",
                 $"/Plugins/{pluginName}/Views/Shared/{{0}}.cshtml",
                      }.Concat(viewLocations);

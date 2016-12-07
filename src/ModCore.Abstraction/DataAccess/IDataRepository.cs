@@ -23,6 +23,8 @@ namespace ModCore.Abstraction.DataAccess
 
         ICollection<T> FindAll(ISpecification<T> specification) ;
 
+        ICollection<T> FindAll();
+
         T Find(ISpecification<T> specification);
     }
 }

@@ -101,6 +101,10 @@ namespace ModCore.DataAccess.MongoDb
             return this.collection.AsQueryable<T>().Where<T>(specification.Predicate()).ToList();
         }
 
+        public virtual ICollection<T> FindAll()
+        {
+            return this.collection.AsQueryable<T>().ToList();
+        }
         public virtual T Find(ISpecification<T> specification)
         {
             return this.collection.AsQueryable<T>().Where<T>(specification.Predicate()).SingleOrDefault();
@@ -183,7 +187,12 @@ namespace ModCore.DataAccess.MongoDb
             return await Task.Run<ICollection<T>>(() => this.collection.AsQueryable<T>().Where<T>(specification.Predicate()).ToList());
 
         }
+        public virtual async Task<ICollection<T>> FindAllAsync()
+        {
+            //return await this.collection.AsQueryable<T>().Where<T>(specification.Predicate()).ToListAsync();
+            return await Task.Run<ICollection<T>>(() => this.collection.AsQueryable<T>().ToList());
 
+        }
         public virtual async Task<T> FindAsync(ISpecification<T> specification)
         {
             //TODO: No SingleOrDefaultAsync() in .net core?

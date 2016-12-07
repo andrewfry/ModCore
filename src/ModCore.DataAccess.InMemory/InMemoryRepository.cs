@@ -64,6 +64,10 @@ namespace ModCore.DataAccess.InMemory
             return _dataStore.Where(specification.Predicate()).ToList();
         }
 
+        public ICollection<T> FindAll()
+        {
+            return _dataStore.ToList();
+        }
         public T Find(ISpecification<T> specification)
         {
             return _dataStore.FirstOrDefault(specification.Predicate());
