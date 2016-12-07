@@ -1,0 +1,12 @@
+﻿@model dynamic
+
+<h2>Page List</h2>
+@{
+    <ul>
+        @foreach (dynamic page in Model.PageList)
+        {
+            <li>@page.Active</li>
+
+        }
+    </ul>
+}
