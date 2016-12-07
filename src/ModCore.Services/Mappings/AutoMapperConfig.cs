@@ -8,7 +8,6 @@ using ModCore.Models.Sessions;
 using ModCore.ViewModels.Access;
 using ModCore.ViewModels.Admin.Plugin;
 using ModCore.ViewModels.Core;
-using ModCore.ViewModels.Page;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +24,7 @@ namespace ModCore.Services.Mappings
             CreateMap<User, RegisterViewModel>().ReverseMap();
             CreateMap<LoginViewModel, User>();
             CreateMap<IPlugin, vPlugin>();
-            CreateMap<Page, PageViewModel>().ReverseMap();
+            /*CreateMap<Page, PageViewModel>().ReverseMap()*/;
             CreateMap<SettingDescriptor, vSettingValue>();
 
             CreateMap<Log, vLog>();

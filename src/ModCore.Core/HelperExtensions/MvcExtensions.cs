@@ -171,7 +171,7 @@ namespace ModCore.Core.HelperExtensions
 
             foreach(var srv in pluginManager.ActivePluginServices)
             {
-                services.Add(srv);
+                services.Add(srv);            
             }
                 
             return services;
@@ -214,15 +214,38 @@ namespace ModCore.Core.HelperExtensions
         private static void AddAutoMapperClasses(IServiceCollection services, IEnumerable<Assembly> assembliesToScan)
         {
             assembliesToScan = assembliesToScan as Assembly[] ?? assembliesToScan.ToArray();
-
+           
             var mapperConfiguration = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfiles(assembliesToScan);
 
             });
-
-
+                       
             services.AddSingleton<IMapper>(sp => mapperConfiguration.CreateMapper());
+
+        }
+
+        public static void AddAutoMapperClassesFromPlugin(this IServiceCollection services)
+        {
+            var srvProvider = services.BuildServiceProvider();
+            var pluginManager = srvProvider.GetRequiredService<IPluginManager>();
+
+
+            var assemblyList = DependencyContext.Default.RuntimeLibraries
+                .SelectMany(lib => lib.GetDefaultAssemblyNames(DependencyContext.Default).Select(Assembly.Load)).ToList();
+
+            foreach (var plugin in pluginManager.ActiveAssemblies)
+            {
+                assemblyList.Add(plugin);
+            }
+            var mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfiles(assemblyList);
+
+            });
+
+            services.Replace(ServiceDescriptor.Singleton<IMapper>(sp => mapperConfiguration.CreateMapper()));
+
         }
 
 

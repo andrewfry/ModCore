@@ -12,36 +12,46 @@ using Microsoft.AspNetCore.Routing;
 using ModCore.ViewModels.Access;
 using ModCore.Services.Base;
 using ModCore.Core.Controllers;
-using ModCore.Models.Page;
-using ModCore.Abstraction.Plugins;
-using ModCore.Abstraction.Services.PageService;
-using ModCore.ViewModels.Page;
+using Pages.Plugin.Models;
+using ModCore.Abstraction.DataAccess;
+using Pages.Plugin.Specifications;
+using Pages.Plugin.Mapping;
 
 namespace Pages.Plugin.Services
 {
-    public class PageService : BaseService
+    public class PageService : BaseServiceAsync<Page>, IPageService
     {
-        private readonly IPageService _pageService;
-
-        public PageService(IPageService pageService, IMapper mapper, ILog logger) : base(mapper, logger)
+        public PageService(IDataRepositoryAsync<Page> repos, IMapper mapper, ILog logger) :
+            base(repos, mapper, logger)
         {
-            _pageService = pageService;
+
+        }
+       
+        public async Task<Page> GetPageByURL(string requestUrl)
+        {
+            var page = await _repository.FindAsync(new PageByUrl(requestUrl));
+           
+            return page;
         }
 
-        public IPlugin CurrentPlugin()
-        {
-            return new Pages();
-        }
-
-        public async Task<Page> GetPageByURL(string url)
-        {
-            return await _pageService.GetPageByURL(url);
-        }
         public async Task<Page> CreatePage(PageViewModel newPage)
         {
-            return await _pageService.CreatePage(newPage);
+            var page = _mapper.Map<Page>(newPage);
+
+            var existingPage = await _repository.FindAsync(new PageByUrl(page.Url));
+            if (existingPage != null)
+                throw new Exception($"A page with url: {existingPage.Url} already exists.");
+
+            await _repository.InsertAsync(page);
+
+            return page;
         }
 
-
+        public async Task<ICollection<PageViewModel>> PageList()
+        {
+            var pageList = await _repository.FindAllAsync();
+            var result = _mapper.Map<ICollection<PageViewModel>>(pageList);
+            return result;
+        }
     }
 }

@@ -8,6 +8,8 @@ using ModCore.Abstraction.Site;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ModCore.ViewModels.Base;
+using Pages.Plugin.Models;
+using Pages.Plugin.Services;
 
 namespace Pages.Plugin.Controllers
 {
@@ -20,17 +22,19 @@ namespace Pages.Plugin.Controllers
                 return new Pages();
             }
         }
-
+        private IPageService _pageService;
         public PageController(IPluginLog log,ISiteSettingsManagerAsync siteSettingsManager, IPluginSettingsManager pluginSettingsManager,
-            IBaseViewModelProvider baseViewModelProvider, IMapper mapper) :
+            IBaseViewModelProvider baseViewModelProvider, IMapper mapper, IPageService pageService) :
             base(log, siteSettingsManager, pluginSettingsManager, baseViewModelProvider, mapper)
         {
-
+            _pageService = pageService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var m = new BaseViewModel();
+            var m = new PageListViewModel();
+         
+            m.PageList = await _pageService.PageList();
             return View(m);
         }
 
