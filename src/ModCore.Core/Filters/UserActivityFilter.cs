@@ -17,7 +17,7 @@ namespace ModCore.Core.Filters
         private readonly ISiteSettingsManagerAsync _siteSettings;
         private readonly IUserActivityService _activityService;
 
-        public UserActivityFilter(ISiteSettingsManagerAsync siteSettings, IUserActivityService service )
+        public UserActivityFilter(ISiteSettingsManagerAsync siteSettings, IUserActivityService service)
         {
             _siteSettings = siteSettings;
             _activityService = service;
@@ -32,11 +32,11 @@ namespace ModCore.Core.Filters
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
-            var trackingActivity = _siteSettings.GetSettingAsync<bool>(BuiltInSettings.UserActivityTracking).Result;
+            var trackingActivity = _siteSettings.GetSettingAsync<bool>(BuiltInSettings.UsrActTrking).Result;
             if (!trackingActivity)
                 return;
 
-            var trackingActivityDetailed = _siteSettings.GetSettingAsync<bool>(BuiltInSettings.UserActivityTrackingDetailed).Result;
+            var trackingActivityDetailed = _siteSettings.GetSettingAsync<bool>(BuiltInSettings.UsrActTrkingDetailed).Result;
 
             var baseController = context.Controller as BaseController;
             var usrActivity = new UserActivity
@@ -65,11 +65,12 @@ namespace ModCore.Core.Filters
 
         public override void OnResultExecuted(ResultExecutedContext context)
         {
-            var trackingActivity = _siteSettings.GetSettingAsync<bool>(BuiltInSettings.UserActivityTracking).Result;
+            var trackingActivity = _siteSettings.GetSettingAsync<bool>(BuiltInSettings.UsrActTrking).Result;
             if (!trackingActivity)
                 return;
 
-            var trackingActivityDetailed = _siteSettings.GetSettingAsync<bool>(BuiltInSettings.UserActivityTrackingDetailed).Result;
+            var trackingActivityDetailed = _siteSettings.GetSettingAsync<bool>(BuiltInSettings.UsrActTrkingDetailed).Result;
+            var trackBaseModel = _siteSettings.GetSettingAsync<bool>(BuiltInSettings.UsrActTrkingBaseModelRecord).Result;
 
             var baseController = context.Controller as BaseController;
             var usrActivity = new UserActivity
@@ -80,7 +81,7 @@ namespace ModCore.Core.Filters
                 RouteValues = trackingActivityDetailed ? context.ActionDescriptor.RouteValues as Dictionary<string, string> : null,
                 SessionId = baseController.CurrentSession.SessionId,
                 UserId = baseController.CurrentSession.UserId,
-                Result = GetResultInfo(context, trackingActivityDetailed),
+                Result = GetResultInfo(context, trackingActivityDetailed, trackBaseModel),
             };
 
             _activityService.AddActivity(usrActivity);
@@ -89,35 +90,37 @@ namespace ModCore.Core.Filters
         }
 
 
-        private ResultInfo GetResultInfo(ResultExecutedContext context, bool detailedLogging)
+        private ResultInfo GetResultInfo(ResultExecutedContext context, bool detailedLogging, bool recordBaseModel)
         {
             var returnObj = new ResultInfo();
             var result = context.Result;
 
-            if(result as ViewResult != null)
+            if (result as ViewResult != null)
             {
                 var viewResult = result as ViewResult;
 
                 returnObj.ResultType = ResultType.View;
                 returnObj.ViewName = viewResult.ViewName;
-                if(detailedLogging)
+                if (detailedLogging && (recordBaseModel && returnObj.Model.GetType().Name != "BaseViewModel"))
                     returnObj.Model = viewResult.Model;
                 returnObj.StatusCode = viewResult.StatusCode;
                 returnObj.ModelType = viewResult.Model?.GetType().FullName;
-            }else if (result as JsonResult != null)
+            }
+            else if (result as JsonResult != null)
             {
                 var jsonResult = result as JsonResult;
                 returnObj.ResultType = ResultType.Json;
-                if (detailedLogging)
+                if (detailedLogging && (recordBaseModel && returnObj.Model.GetType().Name != "BaseViewModel"))
                     returnObj.Model = jsonResult.Value;
                 returnObj.StatusCode = jsonResult.StatusCode;
-            }else if (result as PartialViewResult != null)
+            }
+            else if (result as PartialViewResult != null)
             {
                 var viewResult = result as PartialViewResult;
 
                 returnObj.ResultType = ResultType.View;
                 returnObj.ViewName = viewResult.ViewName;
-                if (detailedLogging)
+                if (detailedLogging && (recordBaseModel && returnObj.Model.GetType().Name != "BaseViewModel"))
                     returnObj.Model = viewResult.Model;
                 returnObj.StatusCode = viewResult.StatusCode;
                 returnObj.ModelType = viewResult.Model?.GetType().FullName;
@@ -134,7 +137,7 @@ namespace ModCore.Core.Filters
                 returnObj.ResultType = ResultType.Other;
                 returnObj.AdditionalInfo = $"ResultType of {result.GetType().FullName}.";
             }
-            
+
 
             return returnObj;
         }
@@ -142,5 +145,5 @@ namespace ModCore.Core.Filters
     }
 
 
-   
+
 }

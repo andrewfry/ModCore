@@ -32,7 +32,29 @@ namespace ModCore.Services.Access
             await _repository.InsertAsync(userActivity);
         }
 
+        public async Task<IPagedResult<UserActivity>> Filter(List<ISpecification<UserActivity>> queries, IPagedRequest request)
+        {
+            ISpecification<UserActivity> finalSpecification;
 
+            if (queries.Count == 0)
+            {
+                throw new ArgumentException($"{nameof(queries)} must have at least one specification");
+            }
+
+            finalSpecification = queries[0];
+
+            if (queries.Count > 1)
+            {
+                for (int i = 1; i < queries.Count; i++)
+                {
+                    finalSpecification = finalSpecification.And<UserActivity>(queries[i]);
+                }
+            }
+
+            var result = await _repository.FindAllByPageAsync(finalSpecification, request);
+
+            return result;
+        }
 
     }
 }

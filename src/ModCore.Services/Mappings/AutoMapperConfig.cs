@@ -30,6 +30,9 @@ namespace ModCore.Services.Mappings
 
             CreateMap<Log, vLog>();
             CreateMap<PagedResult<Log>, vPagedResult<vLog>>();
+
+            CreateMap<UserActivity, vUserActivity>();
+            CreateMap<PagedResult<UserActivity>, vPagedResult<vUserActivity>>();
         }
     }
 }

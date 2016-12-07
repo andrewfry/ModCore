@@ -19,6 +19,8 @@ using ModCore.Core.DataAccess;
 using ModCore.Specifications.Site;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Models.Core;
+using ModCore.Models.Access;
+using ModCore.Abstraction.Services.Access;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
@@ -26,12 +28,14 @@ namespace ModCore.Www.Areas.Admin.Controllers
     public class LogsController : BaseController
     {
         private readonly ILogService _logService;
+        private readonly IUserActivityService _userActivity;
 
         public LogsController(ILog log, ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IMapper mapper, ILogService logService)
+            IBaseViewModelProvider baseModeProvider, IMapper mapper, ILogService logService, IUserActivityService userActivity)
             : base(log, siteSettingsManager, baseModeProvider, mapper)
         {
             _logService = logService;
+            _userActivity = userActivity;
         }
 
         public async Task<IActionResult> Index(int page =1, int pageSize = 50)
@@ -57,6 +61,23 @@ namespace ModCore.Www.Areas.Admin.Controllers
 
             return PartialView("_Details",model);
         }
-      
+
+        public async Task<IActionResult> UserActivity(int page = 1, int pageSize = 50)
+        {
+            var pagedRequest = new PagedRequest();
+            pagedRequest.CurrentPage = page;
+            pagedRequest.PageSize = pageSize;
+
+            var specs = new List<ISpecification<UserActivity>>();
+            var spec = new AllUserActivity();
+            specs.Add(spec);
+
+            var result = await _userActivity.Filter(specs, pagedRequest);
+            var returnView = _mapper.Map<vPagedResult<vUserActivity>>(result);
+
+            return View(returnView);
+        }
+
+
     }
 }

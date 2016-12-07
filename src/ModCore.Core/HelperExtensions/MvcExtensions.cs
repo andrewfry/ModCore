@@ -96,9 +96,9 @@ namespace ModCore.Core.HelperExtensions
             siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.AuthenticationLockOut, 3);
             siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.SessionId, Guid.NewGuid().ToString());
             siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.SessionTimeOut, 20);
-            siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.UserActivityTracking, true);
-            siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.UserActivityTrackingDetailed, true);
-
+            siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.UsrActTrking, true);
+            siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.UsrActTrkingDetailed, true);
+            siteSettings.EnsureDefaultSettingAsync(BuiltInSettings.UsrActTrkingBaseModelRecord, false);
 
             return app;
         }
@@ -163,6 +163,11 @@ namespace ModCore.Core.HelperExtensions
 
             var srvProvider = services.BuildServiceProvider();
             var pluginManager = srvProvider.GetRequiredService<IPluginManager>();
+
+            foreach (var plugin in pluginManager.ActivePlugins)
+            {
+                pluginManager.ActivatePlugin(plugin);
+            }
 
             foreach(var srv in pluginManager.ActivePluginServices)
             {

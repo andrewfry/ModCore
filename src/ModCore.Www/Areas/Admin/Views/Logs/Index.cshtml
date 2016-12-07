@@ -76,23 +76,3 @@
 </div>
 @await Html.PartialAsync("_DefaultModal")
 
-@section scripts{
-    <script>
-        $(document).ready(function () {
-            $(".btn-log-info").click(function (e) {
-                e.preventDefault();
-                var id = $(this).data("logid");
-
-                $.ajax({
-                    type: "POST",
-                    url: "/Admin/Logs/Details",
-                    data: { id: id },
-                    dataType: "json",
-                    success: function (response) {
-
-                    }
-                });
-            });
-        });
-    </script>
-}

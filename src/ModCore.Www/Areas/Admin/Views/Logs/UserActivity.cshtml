@@ -1,5 +1,5 @@
 ﻿@using ModCore.ViewModels.Core
-@model vPagedResult<vLog>
+@model vPagedResult<vUserActivity>
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
     ViewBag.Title = "User Activity";
@@ -12,22 +12,22 @@
                     <thead>
                         <tr>
                             <th>
-                                Level
+                                Session Id
                             </th>
                             <th class="col-message">
-                                Message
+                                User Id
                             </th>
                             <th class="col-message">
-                                ErrorMessage
-                            </th>
-                            <th>
                                 Route
                             </th>
                             <th>
-                                Plugin Name
+                                InsertDate
                             </th>
                             <th>
-                                Date
+                                Error Occured
+                            </th>
+                            <th>
+                                LifeCycle
                             </th>
                             <th>
 
@@ -35,31 +35,29 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var log in Model.CurrentPageResults)
+                        @foreach (var act in Model.CurrentPageResults)
                         {
-                            var intError = ((int)log.ErrorLevel);
-                            var errorClass = intError >= 4 ? "danger" : intError == 3 ? "warning" : intError <= 2 ? "info" : "";
                             <tr>
-                                <td class="@errorClass">
-                                    @log.ErrorLevel
+                                <td>
+                                    @act.SessionId
                                 </td>
-                                <td class="col-message">
-                                    @log.Message
+                                <td >
+                                    @act.UserId 
                                 </td>
-                                <td class="col-message">
-                                    @log.ErrorMessage
+                                <td >
+                                    @act.FullRoute
                                 </td>
                                 <td>
-                                    @log.Route
+                                    @act.InsertDate
                                 </td>
                                 <td>
-                                    @log.PluginName
+                                    @act.ErrorOccured
                                 </td>
                                 <td>
-                                    @log.InsertDate
+                                    @act.LifeCycle
                                 </td>
                                 <td>
-                                    <a class="btn btn-info btn-sm" data-toggle="modal" href="/Admin/Logs/Details?id=@log.Id" data-target="#defaultModal">Details</a>
+                                    <a class="btn btn-info btn-sm" data-toggle="modal" href="/Admin/Logs/UserActivityDetails?id=@act.Id" data-target="#defaultModal">Details</a>
                                 </td>
                             </tr>
                         }
@@ -75,24 +73,3 @@
     </div>
 </div>
 @await Html.PartialAsync("_DefaultModal")
-
-@section scripts{
-    <script>
-        $(document).ready(function () {
-            $(".btn-log-info").click(function (e) {
-                e.preventDefault();
-                var id = $(this).data("logid");
-
-                $.ajax({
-                    type: "POST",
-                    url: "/Admin/Logs/Details",
-                    data: { id: id },
-                    dataType: "json",
-                    success: function (response) {
-
-                    }
-                });
-            });
-        });
-    </script>
-}

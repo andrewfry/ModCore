@@ -252,12 +252,14 @@ namespace ModCore.Core.Plugins
                 installedPlugin.Installed = true;
 
                 _repository.Insert(installedPlugin);
-                //throw new NullReferenceException($"Can not find installed plugin for {plugin.Name}");
             }
 
-            installedPlugin.Active = true;
-            installedPlugin.DateActivated = DateTime.UtcNow;
-            _repository.Update(installedPlugin);
+            if (installedPlugin.Active == false)
+            {
+                installedPlugin.Active = true;
+                installedPlugin.DateActivated = DateTime.UtcNow;
+                _repository.Update(installedPlugin);
+            }
 
             RegisterAssemblyInPartManager(plugin);
 
