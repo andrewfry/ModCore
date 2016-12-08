@@ -40,7 +40,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index(int page =1, int pageSize = 50)
         {
-            var pagedRequest = new PagedRequest();
+            var pagedRequest = new PagedRequest<Log>();
             pagedRequest.CurrentPage = page;
             pagedRequest.PageSize = pageSize;
 
@@ -64,9 +64,10 @@ namespace ModCore.Www.Areas.Admin.Controllers
 
         public async Task<IActionResult> UserActivity(int page = 1, int pageSize = 50)
         {
-            var pagedRequest = new PagedRequest();
+            var pagedRequest = new PagedRequest<Log>();
             pagedRequest.CurrentPage = page;
             pagedRequest.PageSize = pageSize;
+            pagedRequest.OrderBy(a => a.InsertDate, false);
 
             var specs = new List<ISpecification<UserActivity>>();
             var spec = new AllUserActivity();
@@ -76,6 +77,15 @@ namespace ModCore.Www.Areas.Admin.Controllers
             var returnView = _mapper.Map<vPagedResult<vUserActivity>>(result);
 
             return View(returnView);
+        }
+
+
+        public async Task<IActionResult> UserActivityDetails(string id)
+        {
+            var act = await _userActivity.GetByIdAsync(id);
+            var model = _mapper.Map<vUserActivityDetailed>(act);
+
+            return PartialView("_UserActivityDetails", model);
         }
 
 

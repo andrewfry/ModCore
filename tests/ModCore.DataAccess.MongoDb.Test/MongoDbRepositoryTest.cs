@@ -301,7 +301,7 @@ namespace ModCore.DataAccess.MongoDb.Test
                 testList.Add(testObject);
             }
 
-            IPagedRequest filterRequest = new PagedRequest();
+            IPagedRequest filterRequest = new PagedRequest<TestObject>();
             filterRequest.PageSize = 5;
             filterRequest.CurrentPage = 1;
 

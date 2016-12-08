@@ -24,7 +24,7 @@ namespace ModCore.Services.Mappings
             CreateMap<User, RegisterViewModel>().ReverseMap();
             CreateMap<LoginViewModel, User>();
             CreateMap<IPlugin, vPlugin>();
-            /*CreateMap<Page, PageViewModel>().ReverseMap()*/;
+            /*CreateMap<Page, PageViewModel>().ReverseMap()*/
             CreateMap<SettingDescriptor, vSettingValue>();
 
             CreateMap<Log, vLog>();
@@ -32,6 +32,12 @@ namespace ModCore.Services.Mappings
 
             CreateMap<UserActivity, vUserActivity>();
             CreateMap<PagedResult<UserActivity>, vPagedResult<vUserActivity>>();
+            CreateMap<UserActivity, vUserActivityDetailed>()
+                .ForMember(dest => dest.ViewName, opts => opts.MapFrom(src => src.Result.ViewName))
+                .ForMember(dest => dest.ModelType, opts => opts.MapFrom(src => src.Result.ModelType))
+                .ForMember(dest => dest.ResultType, opts => opts.MapFrom(src => src.Result.ResultType.ToString()))
+                .ForMember(dest => dest.StatusCode, opts => opts.MapFrom(src => src.Result.StatusCode))
+                .ForMember(dest => dest.AdditionalInfo, opts => opts.MapFrom(src => src.Result.AdditionalInfo));
         }
     }
 }

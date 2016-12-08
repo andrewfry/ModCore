@@ -12,5 +12,6 @@ namespace ModCore.Abstraction.DataAccess
         int PageSize { get; set; }
 
         int CurrentPage { get; set; }
+
     }
 }

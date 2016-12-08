@@ -82,6 +82,7 @@ namespace ModCore.Core.Filters
                 SessionId = baseController.CurrentSession.SessionId,
                 UserId = baseController.CurrentSession.UserId,
                 Result = GetResultInfo(context, trackingActivityDetailed, trackBaseModel),
+                LifeCycle = LifeCycle.ResultExecuted
             };
 
             _activityService.AddActivity(usrActivity);

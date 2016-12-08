@@ -1,0 +1,86 @@
+﻿@model ModCore.ViewModels.Core.vUserActivityDetailed
+
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h4 class="modal-title">Log Details</h4>
+
+</div>
+<div class="modal-body">
+    <div class="row">
+        <label class="col-xs-12 col-sm-3">Date</label>
+        <div class="col-xs-12 col-sm-9">
+            @Model.InsertDate
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xs-12 col-sm-3">Route</label>
+        <div class="col-xs-12 col-sm-9">
+            @Model.FullRoute
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xs-12 col-sm-3">Session Id</label>
+        <div class="col-xs-12 col-sm-9">
+            @Model.SessionId
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xs-12 col-sm-3">User Id</label>
+        <div class="col-xs-12 col-sm-9">
+            @Model.UserId
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xs-12 col-sm-3">Insert Date</label>
+        <div class="col-xs-12 col-sm-9">
+            @Model.InsertDate
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xs-12 col-sm-3">Life Cycle</label>
+        <div class="col-xs-12 col-sm-9">
+            @Model.LifeCycle
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xs-12 col-sm-3">Error Occured</label>
+        <div class="col-xs-12 col-sm-9">
+            @Model.ErrorOccured
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xs-12 col-sm-3">Error Message</label>
+        <div class="col-xs-12 col-sm-9">
+            @Model.ErrorMessage
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xs-12 col-sm-3">Result Type</label>
+        <div class="col-xs-12 col-sm-9">
+            @Model.ResultType
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xs-12 col-sm-3">Status Code</label>
+        <div class="col-xs-12 col-sm-9">
+            @Model.StatusCode
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xs-12 col-sm-3">Model Type</label>
+        <div class="col-xs-12 col-sm-9">
+            @Model.ModelType
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xs-12 col-sm-3">Model State Valid</label>
+        <div class="col-xs-12 col-sm-9">
+            @Model.ModelStateIsValid
+        </div>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>
