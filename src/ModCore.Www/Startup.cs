@@ -98,7 +98,7 @@ namespace ModCore.Www
             //Adding the pluginservices 
             services.AddPlugins(mvcBuilder);
             services.AddPluginManager(Configuration, _hostingEnvironment);
-            services.AddActivePluginServices();
+            services.AddActivePluginServices(mvcBuilder);
             services.AddThemeManager(Configuration, _hostingEnvironment);
             services.AddAutoMapperClassesFromPlugin();
             //setting up the sesssion

@@ -8,12 +8,15 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
 using ModCore.Abstraction.Site;
@@ -153,7 +156,7 @@ namespace ModCore.Core.HelperExtensions
             return services;
         }
 
-        public static IServiceCollection AddActivePluginServices(this IServiceCollection services)
+        public static IServiceCollection AddActivePluginServices(this IServiceCollection services, IMvcBuilder mvcBuilder)
         {
             if (services == null)
             {
@@ -162,13 +165,47 @@ namespace ModCore.Core.HelperExtensions
 
             var srvProvider = services.BuildServiceProvider();
             var pluginManager = srvProvider.GetRequiredService<IPluginManager>();
+            //var accessor = srvProvider.GetRequiredService<IOptions<RazorViewEngineOptions>>();
+
+            //foreach (var assemblyTuple in pluginManager.ActivePluginAssemblies)
+            //{
+            //    foreach (var assembly in assemblyTuple.Item2)
+            //    {
+            //        // var metaReference = MetadataReference.CreateFromAssembly(assembly);
+            //        var metaReference = MetadataReference.CreateFromFile(assembly.Location);
+            //        accessor.Value.AdditionalCompilationReferences.Add(metaReference);
+            //    }
+            //}
+
+
+            mvcBuilder.ConfigureApplicationPartManager(manager =>
+            {
+                manager.FeatureProviders.Add(new PluginAssemblyMetadataReferenceFeatureProvider(pluginManager));
+            });
 
             foreach (var plugin in pluginManager.ActivePlugins)
             {
                 pluginManager.ActivatePlugin(plugin);
             }
 
-            foreach(var srv in pluginManager.ActivePluginServices)
+            //var accessor = srvProvider.GetRequiredService<IApplicationFeatureProvider<MetadataReferenceFeature>>();
+
+            //foreach (var assemblyTuple in pluginManager.ActivePluginAssemblies)
+            //{
+            //    var pluginAssembly = assemblyTuple.Item2.SingleOrDefault(a => a.GetType().Namespace == assemblyTuple.Item1.AssemblyName);
+            //    var dependencies = assemblyTuple.Item2.Where(a => a.GetType().Namespace != assemblyTuple.Item1.AssemblyName).ToList();
+            //    var assemblyPart = new AssemblyPart(pluginAssembly);
+            //    var metaDataRefFeature = new MetadataReferenceFeature();
+
+            //    foreach (var assembly in dependencies)
+            //    {
+            //        var metaReference = MetadataReference.CreateFromFile(assembly.Location);
+            //        metaDataRefFeature.MetadataReferences.Add(metaReference);
+            //    }
+            //}
+
+
+            foreach (var srv in pluginManager.ActivePluginServices)
             {
                 services.Add(srv);            
             }
