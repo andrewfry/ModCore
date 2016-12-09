@@ -79,13 +79,15 @@ namespace ModCore.Core.Controllers
             _baseClassProvider = baseClassProvider;
             _mapper = mapper;
         }
-
+        
+        [NonAction]
         public void DiscardSession()
         {
             _session.SetString("sessionData", null);
             _currentSession = null;
         }
 
+        [NonAction]
         public void CommitSession()
         {
             var jsonString = _currentSession.ToJson();
@@ -94,11 +96,13 @@ namespace ModCore.Core.Controllers
             _currentSession = null;
         }
 
+        [NonAction]
         public override ViewResult View(string viewName, object model)
         {
             return View(viewName, model, true);
         }
 
+        [NonAction]
         public ViewResult View(string viewName, object model, bool updateBaseViewModel)
         {
             var baseVm = model as BaseViewModel;
@@ -111,11 +115,13 @@ namespace ModCore.Core.Controllers
             return base.View(viewName, model);
         }
 
+        [NonAction]
         public string RenderViewAsString(string viewPath)
         {
             return RenderViewAsString(viewPath, "");
         }
 
+        [NonAction]
         public string RenderViewAsString<TModel>(string viewPath, TModel model)
         {
             var engine = ControllerContext.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
