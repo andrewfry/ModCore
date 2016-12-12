@@ -14,6 +14,7 @@ using ModCore.Core.Themes;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using ModCore.Abstraction.Themes;
 using AutoMapper;
+using ModCore.Abstraction.Services.Access;
 
 namespace ModCore.Www.Controllers
 {
@@ -21,8 +22,8 @@ namespace ModCore.Www.Controllers
     {
         private IThemeManager _themeManager;
         public HomeController(ILog log, ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IThemeManager themeManager, IMapper mapper)
-            : base(log,siteSettingsManager, baseModeProvider, mapper)
+            IBaseViewModelProvider baseModeProvider, IThemeManager themeManager, IMapper mapper, ISessionService sessionService)
+            : base(log,siteSettingsManager, baseModeProvider, mapper, sessionService)
         {
             _themeManager = themeManager;
         }

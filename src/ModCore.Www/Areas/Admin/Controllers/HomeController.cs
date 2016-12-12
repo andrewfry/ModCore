@@ -9,6 +9,7 @@ using ModCore.ViewModels.Base;
 using AutoMapper;
 using ModCore.Services.Access;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using ModCore.Abstraction.Services.Access;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
@@ -16,8 +17,8 @@ namespace ModCore.Www.Areas.Admin.Controllers
     public class HomeController : BaseController
     {
         public HomeController(ILog log, ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IMapper mapper)
-            : base(log, siteSettingsManager, baseModeProvider, mapper)
+            IBaseViewModelProvider baseModeProvider, IMapper mapper, ISessionService sessionService)
+            : base(log, siteSettingsManager, baseModeProvider, mapper, sessionService)
         {
 
         }

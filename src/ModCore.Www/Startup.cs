@@ -81,6 +81,7 @@ namespace ModCore.Www
             //services.AddTransient<IPageService, PageService>();
             services.AddTransient<ILogService, LogService>();
             services.AddTransient<IUserActivityService, UserActivityService>();
+            services.AddTransient<ISessionService, SessionService>();
 
             //TODO - Double check if this is pulling profiles from the plugins
             services.AddAutoMapper();

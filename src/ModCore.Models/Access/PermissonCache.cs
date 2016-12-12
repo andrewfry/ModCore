@@ -33,17 +33,16 @@ namespace ModCore.Models.Access
             Version = 0;
         }
 
-        public void AddToCache(string assemblyName, string areaName, string controllerName, string actionName, string roleId, bool accessAllowed)
+        public void AddToCache(string assemblyName, string areaName, string controllerName, string actionName, string roleId, PermissionExecutedResult permissionResult)
         {
             var key = GetKey(assemblyName, areaName, controllerName, actionName, roleId);
-            Cache.Add(key, accessAllowed);
+            Cache.Add(key, permissionResult);
         }
 
-        public bool? FromCache(string assemblyName, string areaName, string controllerName, string actionName, string roleId, bool accessAllowed)
+        public PermissionExecutedResult? FromCache(string assemblyName, string areaName, string controllerName, string actionName, string roleId)
         {
             var key = GetKey(assemblyName, areaName, controllerName, actionName, roleId);
-
-            return (bool?)Cache[key];
+            return Cache.ContainsKey(key) ? ((PermissionExecutedResult?)Cache[key]) : null;
         }
 
         private string GetKey(string assemblyName, string areaName, string controllerName, string actionName, string roleId)

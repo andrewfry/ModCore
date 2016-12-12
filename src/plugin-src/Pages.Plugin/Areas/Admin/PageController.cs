@@ -8,6 +8,7 @@ using ModCore.Abstraction.Site;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ModCore.ViewModels.Base;
+using ModCore.Abstraction.Services.Access;
 
 namespace Pages.Plugin.Areas.Admin
 {
@@ -23,8 +24,8 @@ namespace Pages.Plugin.Areas.Admin
         }
 
         public PageController(IPluginLog log, ISiteSettingsManagerAsync siteSettingsManager, IPluginSettingsManager pluginSettingsManager,
-            IBaseViewModelProvider baseViewModelProvider, IMapper mapper) :
-            base(log, siteSettingsManager, pluginSettingsManager, baseViewModelProvider, mapper)
+            IBaseViewModelProvider baseViewModelProvider, IMapper mapper, ISessionService sessionService) :
+            base(log, siteSettingsManager, pluginSettingsManager, baseViewModelProvider, mapper, sessionService)
         {
 
         }

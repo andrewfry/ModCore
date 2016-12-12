@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using AutoMapper;
+using ModCore.Utilities.HelperExtensions;
+using ModCore.Abstraction.Services.Access;
 
 namespace ModCore.Core.Controllers
 {
@@ -27,6 +29,7 @@ namespace ModCore.Core.Controllers
         private ISession _session => HttpContext.Session;
         private ISiteSettingsManagerAsync _siteSettingsManager;
         private IBaseViewModelProvider _baseClassProvider;
+        private ISessionService _sessionService;
         protected IMapper _mapper;
 
         public SessionData CurrentSession
@@ -40,22 +43,24 @@ namespace ModCore.Core.Controllers
 
                 if (_currentSession == null)
                 {
-                    var jsonString = _session.GetString("sessionData");
-                    if (string.IsNullOrEmpty(jsonString))
+                    //var jsonString = _session.GetString("sessionData");
+                    //if (string.IsNullOrEmpty(jsonString))
 
-                    {
-                        var newSession = new SessionData();
-                        newSession.SessionId = HttpContext.Session.Id;
+                    //{
+                    //    var newSession = new SessionData();
+                    //    newSession.SessionId = HttpContext.Session.Id;
 
-                        jsonString = newSession.ToJson();
-                        _session.SetString("sessionData", jsonString);
+                    //    jsonString = newSession.ToJson();
+                    //    _session.SetString("sessionData", jsonString);
 
-                        _currentSession = newSession;
+                    //    _currentSession = newSession;
 
-                        return _currentSession;
-                    }
+                    //    return _currentSession;
+                    //}
 
-                    _currentSession = jsonString.ToObject<SessionData>();
+                    //_currentSession = jsonString.ToObject<SessionData>();
+
+                    _currentSession = _sessionService.GetCurrentOrDefault();
                 }
 
                 return _currentSession;
@@ -72,27 +77,29 @@ namespace ModCore.Core.Controllers
         }
 
         public BaseController(ILog log, ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseClassProvider, IMapper mapper)
+            IBaseViewModelProvider baseClassProvider, IMapper mapper, ISessionService sessionService)
         {
             _logger = log;
             _siteSettingsManager = siteSettingsManager;
             _baseClassProvider = baseClassProvider;
             _mapper = mapper;
+            _sessionService = sessionService;
         }
-        
+
         [NonAction]
         public void DiscardSession()
         {
-            _session.SetString("sessionData", null);
+            // _session.SetString("sessionData", null);
+            _sessionService.Discard();
             _currentSession = null;
         }
 
         [NonAction]
         public void CommitSession()
         {
-            var jsonString = _currentSession.ToJson();
-            _session.SetString("sessionData", jsonString);
-
+            // var jsonString = _currentSession.ToJson();
+            //_session.SetString("sessionData", jsonString);
+            _sessionService.Commit(_currentSession);
             _currentSession = null;
         }
 

@@ -12,6 +12,7 @@ using ModCore.ViewModels.Admin.Plugin;
 using ModCore.Core.Plugins;
 using AutoMapper;
 using ModCore.Core.Site;
+using ModCore.Abstraction.Services.Access;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
@@ -21,8 +22,8 @@ namespace ModCore.Www.Areas.Admin.Controllers
         private IPluginManager _pluginManager;
 
         public PluginController(ILog log, ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IPluginManager pluginManager, IMapper mapper)
-            : base(log, siteSettingsManager, baseModeProvider, mapper)
+            IBaseViewModelProvider baseModeProvider, IPluginManager pluginManager, IMapper mapper, ISessionService sessionService)
+            : base(log, siteSettingsManager, baseModeProvider, mapper, sessionService)
         {
             _pluginManager = pluginManager;
         }

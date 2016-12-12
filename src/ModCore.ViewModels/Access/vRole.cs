@@ -1,14 +1,15 @@
-﻿using ModCore.Models.BaseEntities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ModCore.Models.Access
+namespace ModCore.ViewModels.Access
 {
-    public class Role : BaseEntity
+    public class vRole
     {
         public string Name { get; set; }
-        
+
+        public string RoleId { get; set; }
+
     }
 }

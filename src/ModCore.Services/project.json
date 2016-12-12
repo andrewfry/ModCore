@@ -13,7 +13,8 @@
     "ModCore.ViewModels": "1.0.0-*",
     "NETCore.MailKit": "1.0.1",
     "NETStandard.Library": "1.6.1",
-    "System.Linq": "4.3.0"
+    "System.Linq": "4.3.0",
+    "System.Linq.Parallel": "4.3.0"
   },
 
   "frameworks": {
