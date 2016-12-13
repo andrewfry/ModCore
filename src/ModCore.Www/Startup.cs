@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using ModCore.Abstraction.Services.Site;
 using ModCore.Services.Site;
 using ModCore.Core.Filters;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace ModCore.Www
 {
@@ -60,6 +61,7 @@ namespace ModCore.Www
             //Configure Settings
             services.Configure<MongoDbSettings>(options => Configuration.GetSection("MongoDbSettings").Bind(options));
 
+            
             services.AddTransient<ILogger, SiteLogger>();
             services.AddTransient<ILog, SiteLogger>();
             services.AddTransient<ISessionManager, SessionManager>();
@@ -114,9 +116,12 @@ namespace ModCore.Www
                 options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeOut);
                 options.CookieName = ".Modcore-" + sessionGuid;
             });
-
-
-
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient(typeof(ISession), serviceProvider =>
+            {
+                var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
+                return httpContextAccessor.HttpContext.Session;
+            });
 
         }
 

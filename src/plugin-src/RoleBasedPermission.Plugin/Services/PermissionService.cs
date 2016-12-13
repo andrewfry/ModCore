@@ -20,7 +20,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace ModCore.Services.Access
+namespace RoleBasedPermisison.Plugin.Services
 {
     public class PermissionService : BaseServiceAsync<Permission>, IPermissionService, IPermissionManagerService
     {
