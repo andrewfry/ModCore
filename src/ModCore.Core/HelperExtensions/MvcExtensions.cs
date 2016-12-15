@@ -74,6 +74,7 @@ namespace ModCore.Core.HelperExtensions
 
             var pluginManager = app.ApplicationServices.GetService<IPluginManager>();
 
+
             configureRoutes(routes);
  
             //var cmsPage = app.ApplicationServices.GetService<IDataRepositoryAsync<Page>>();

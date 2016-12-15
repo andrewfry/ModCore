@@ -1,10 +1,11 @@
-﻿using ModCore.Models.BaseEntities;
+﻿using ModCore.Models.Access;
+using ModCore.Models.BaseEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ModCore.Models.Access
+namespace RoleBasedPermisison.Plugin.Models
 {
     public class Permission : BaseEntity
     {

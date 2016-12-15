@@ -1,18 +1,13 @@
-﻿using System;
+﻿using ModCore.Models.Access;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ModCore.Models.Access
+namespace RoleBasedPermisison.Plugin.Models 
 {
-    public class PermissionResult
+    public class PermissionResult : BasePermissionResult
     {
-        public PermissionExecutedResult PermissionExecutedResult { get; set; }
-
-        public bool ErrorOccured { get; set; }
-
-        public Exception Exception { get; set; }
-
         public static PermissionResult Granted()
         {
             return new PermissionResult
@@ -49,7 +44,7 @@ namespace ModCore.Models.Access
 
         public static PermissionResult FromEnum(PermissionExecutedResult enumVal)
         {
-            switch(enumVal)
+            switch (enumVal)
             {
                 case PermissionExecutedResult.Granted:
                     return Granted();
@@ -58,17 +53,11 @@ namespace ModCore.Models.Access
                 case PermissionExecutedResult.NotDefined:
                     return NotDefined();
                 default:
-                    throw new NotSupportedException($"The enum value {enumVal.ToString()} is not supported.");   
+                    throw new NotSupportedException($"The enum value {enumVal.ToString()} is not supported.");
             }
         }
     }
 
-    public enum PermissionExecutedResult
-
-    {
-        Granted = 1,
-        Denied = 2,
-        NotDefined = 3
-    }
+   
 
 }

@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using ModCore.Abstraction.Plugins;
 using ModCore.Core.Plugins;
 using ModCore.Models.Plugins;
+using RoleBasedPermisison.Abstraction;
+using RoleBasedPermisison.Plugin.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +35,7 @@ namespace RoleBasedPermisison.Plugin
         {
             get
             {
-                return "";
+                return "Provide permissions to specific plugins, areas, controllers or actions. Permissions can be granted on a per user basis or based on roles.";
             }
         }
 
@@ -54,7 +56,8 @@ namespace RoleBasedPermisison.Plugin
             get
             {
                 var list = new List<ServiceDescriptor>();
-               // list.Add(ServiceDescriptor.Transient<IAuthenticationService, AuthenticationService>());
+                list.Add(ServiceDescriptor.Transient<IPermissionManagerService, PermissionService>());
+                list.Add(ServiceDescriptor.Transient<IPermissionService, PermissionService>());
                 return list;
             }
         }
