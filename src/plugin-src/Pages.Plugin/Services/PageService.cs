@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Routing;
 using ModCore.ViewModels.Access;
 using ModCore.Services.Base;
+using ModCore.Specifications.Base;
 using ModCore.Core.Controllers;
 using Pages.Plugin.Models;
 using Pages.Plugin.ViewModels;
@@ -53,6 +54,22 @@ namespace Pages.Plugin.Services
             var pageList = await _repository.FindAllAsync();
             var result = _mapper.Map<ICollection<PageViewModel>>(pageList);
             return result;
+        }
+
+        public async Task<Page> Update(PageViewModel model)
+        {
+            var result = await _repository.UpdateAsync(_mapper.Map<Page>(model));
+            return _mapper.Map<Page>(result);
+        }
+
+        public async Task Delete(string Id)
+        {
+            await _repository.DeleteAsync(new GetById<Page>(Id));
+        }
+
+        public async Task Delete(Page page)
+        {
+            await _repository.DeleteAsync(new GetById<Page>(page.Id));
         }
     }
 }

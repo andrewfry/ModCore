@@ -1,12 +1,8 @@
-﻿@model Pages.Plugin.ViewModels.PageListViewModel
-
-<h2>Page List</h2>
+﻿@model Pages.Plugin.ViewModels.PageViewModel
+@{ 
+    
+}
+<h2>@Model.PageName</h2>
 @{
-    <ul>
-        @foreach (var page in Model.PageList)
-        {
-            <li>@page.PageName</li>
-
-        }
-    </ul>
+    <div>@Html.Raw(Model.HTMLContent)</div>
 }

@@ -73,7 +73,7 @@ namespace BasicAuthentication.Plugin
                 return list;
             }
         }
-
+        
         public PluginInstallResult Install()
         {
             return new PluginInstallResult();

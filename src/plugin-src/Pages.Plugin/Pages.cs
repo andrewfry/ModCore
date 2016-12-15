@@ -13,6 +13,8 @@ using Pages.Plugin.Services;
 using ModCore.Abstraction.DataAccess;
 using ModCore.DataAccess.MongoDb;
 using Pages.Plugin.Models;
+using Pages.Plugin.Routers;
+using Microsoft.AspNetCore.Mvc.Internal;
 
 namespace Pages.Plugin
 {
@@ -47,7 +49,6 @@ namespace Pages.Plugin
             get
             {
                 var routes = new List<IPluginRoute>();
-
                 routes.MapPluginRoute(
                 name: "pageDefaultAdmin",
                 template: "{area=Admin}/{controller=Page}/{action=Index}/{id?}",
@@ -57,13 +58,10 @@ namespace Pages.Plugin
                 name: "pageDefault",
                 template: "{controller=Page}/{action=Index}/{id?}",
                 plugin: new Pages());
-
-
+                
                 return routes;
             }
         }
-
-
 
         public ICollection<ServiceDescriptor> Services
         {
@@ -72,7 +70,7 @@ namespace Pages.Plugin
                 var list = new List<ServiceDescriptor>();
                 list.Add(ServiceDescriptor.Transient<IDataRepositoryAsync<Page>, MongoDbRepository<Page>>());
                 list.Add(ServiceDescriptor.Transient<IPageService, PageService>());
-                
+                list.Add(ServiceDescriptor.Transient<IPluginRouter, CmsPageRouter>());
                 return list;
             }
         }

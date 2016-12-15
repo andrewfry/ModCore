@@ -293,7 +293,7 @@ namespace ModCore.Core.Plugins
         {
             foreach (var srv in plugin.Services)
             {
-                coreBuilder.Services.Remove(srv);
+                coreBuilder.Services.Add(srv);
             }
         }
 

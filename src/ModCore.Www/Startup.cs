@@ -91,7 +91,6 @@ namespace ModCore.Www
             var mvcBuilder = services.AddMvc(options =>
             {
                 var srvProvider = services.BuildServiceProvider();
-
                 options.Filters.Add(new UserActivityFilter(srvProvider.GetRequiredService<ISiteSettingsManagerAsync>(), srvProvider.GetRequiredService<IUserActivityService>()));
             });
 
@@ -234,8 +233,12 @@ namespace ModCore.Www
                 Path.Combine(Directory.GetCurrentDirectory(), @"Themes")),
                 RequestPath = new PathString("/Themes")
             });
-
-
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), @"Plugins")),
+                RequestPath = new PathString("/Plugins")
+            });
             app.UseMvcWithPlugin(routes =>
             {
                 routes.MapRoute(

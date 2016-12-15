@@ -14,7 +14,7 @@ namespace Pages.Plugin.Models
 
         public string HTMLContent { get; set; }
 
-        public bool Active { get; set; }
+        public PageStatus PageStatus { get; set; }
 
     }
 }

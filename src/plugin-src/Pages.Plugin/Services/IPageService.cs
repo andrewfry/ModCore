@@ -15,5 +15,11 @@ namespace Pages.Plugin.Services
         Task<Page> CreatePage(PageViewModel newPage);
 
         Task<ICollection<PageViewModel>> PageList();
+
+        Task<Page> Update(PageViewModel model);
+
+        Task Delete(string Id);
+
+        Task Delete(Page page);
     }
 }

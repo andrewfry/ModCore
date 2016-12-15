@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using ModCore.ViewModels.Base;
 using Pages.Plugin.ViewModels;
 using Pages.Plugin.Services;
+using ModCore.ViewModels.Theme;
 
 namespace Pages.Plugin.Controllers
 {
@@ -30,19 +31,14 @@ namespace Pages.Plugin.Controllers
             _pageService = pageService;
         }
 
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public IActionResult Index()
         {
-            var m = new PageListViewModel();
-         
-            m.PageList = await _pageService.PageList();
-            return View(m);
+            PageViewModel page = _mapper.Map<PageViewModel>(RouteData.Values["page"]);
+            
+            return View(page);
         }
 
-        public IActionResult Test()
-        {
-            var m = new BaseViewModel();
-            return View(m);
-        }
 
     }
 }

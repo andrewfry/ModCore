@@ -64,6 +64,15 @@ namespace Blog.Plugin
             }
         }
 
+
+        public ICollection<IRouter> Routers
+        {
+            get
+            {
+                return new List<IRouter>();
+            }
+        }
+
         public FilterCollection Filters
         {
             get

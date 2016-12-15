@@ -1,0 +1,78 @@
+﻿@model Pages.Plugin.ViewModels.PageViewModel
+@using Pages.Plugin.Models;
+@{
+    ViewBag.Title = "Edit Page";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
+}
+
+@if (!String.IsNullOrWhiteSpace(ViewBag.Message))
+{
+    <div class="alert alert-success" role="alert">@ViewBag.Message</div>
+}
+@using (Html.BeginForm("Edit", "Page", FormMethod.Post, new { @class = "form-vertical form-group", @role = "form" }))
+{
+    @Html.HiddenFor(a => a.Id)
+    <div asp-validation-summary="ValidationSummary.All" class="text-danger"></div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="col-md-12 form-group">
+                <label class="control-label form-field col-md-3">@Html.DisplayNameFor(a => a.PageName)</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(a => a.PageName, new { @class = "textfield form-control" })
+                    <span asp-validation-for="@Model.PageName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-12 form-group">
+                <label class="control-label form-field col-md-3">@Html.DisplayNameFor(a => a.Url)</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(a => a.Url, new { @class = "textfield form-control" })
+                    <span asp-validation-for="@Model.Url" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-12 form-group">
+                <label class="control-label form-field col-md-3">@Html.DisplayNameFor(a => a.HTMLContent)</label>
+                <div class="col-md-9">
+                    @Html.TextAreaFor(a => a.HTMLContent, new { @class = "textarea-editor form-control" })
+                    <span asp-validation-for="@Model.HTMLContent" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-12 form-group">
+                <label class="control-label form-field col-md-3">@Html.DisplayNameFor(a => a.PageStatus)</label>
+                <div class="radio-group col-md-9">
+                    <label class="field-label form-field">Active</label>
+                    @Html.RadioButtonFor(mod => mod.PageStatus, PageStatus.Active)
+
+                    <label class="field-label form-field">Draft</label>
+                    @Html.RadioButtonFor(mod => mod.PageStatus, PageStatus.Draft)
+
+                    <label class="field-label form-field">Inactive</label>
+                    @Html.RadioButtonFor(mod => mod.PageStatus, PageStatus.Inactive)
+
+                </div>
+                <span asp-validation-for="@Model.PageStatus" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="panel-footer clearfix">
+            <div class="pull-left">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default btn-success" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+@section scripts{
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
+    <script src="/Plugins/Pages.Plugin/Content/js/tinymce/js/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            tinymce.init({
+                selector: '.textarea-editor',
+            });
+        });
+    </script>
+
+}

@@ -1,0 +1,26 @@
+﻿@model Pages.Plugin.ViewModels.PageListViewModel
+@{Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
+    ViewBag.Title = "Page List";
+}
+<div class="col-md-12">
+    <div class="row">
+        @if (!String.IsNullOrWhiteSpace(ViewBag.Message))
+        {
+            <div class="alert alert-success" role="alert">@ViewBag.Message</div>
+        }
+    </div>
+    @{
+        <div class="pull-left ">
+            <a class="btn btn-default btn-success" href="/Admin/Page/Create">Create Page</a>
+        </div>
+        <div class="list-group">
+            <ul style="float:left;width:90%; margin:12px 0px;">
+                @foreach (var page in Model.PageList)
+            {
+                    <li class="list-group-item"><a href="Page\Edit\@page.Id">@page.PageName</a><span class="tag tag-success tag-sm pull-right">@page.PageStatus</span></li>
+
+                }
+            </ul>
+        </div>
+    }
+</div>
