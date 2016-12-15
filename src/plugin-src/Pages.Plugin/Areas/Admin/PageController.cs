@@ -11,6 +11,7 @@ using ModCore.ViewModels.Base;
 using Pages.Plugin.ViewModels;
 using Pages.Plugin.Services;
 using Pages.Plugin.Models;
+using ModCore.Abstraction.Services.Access;
 
 namespace Pages.Plugin.Areas.Admin
 {
@@ -26,8 +27,8 @@ namespace Pages.Plugin.Areas.Admin
         }
         private IPageService _pageService;
         public PageController(IPageService pageService, IPluginLog log, ISiteSettingsManagerAsync siteSettingsManager, IPluginSettingsManager pluginSettingsManager,
-            IBaseViewModelProvider baseViewModelProvider, IMapper mapper) :
-            base(log, siteSettingsManager, pluginSettingsManager, baseViewModelProvider, mapper)
+            IBaseViewModelProvider baseViewModelProvider, IMapper mapper, ISessionService sessionService) :
+            base(log, siteSettingsManager, pluginSettingsManager, baseViewModelProvider, mapper, sessionService)
         {
             _pageService = pageService;
         }

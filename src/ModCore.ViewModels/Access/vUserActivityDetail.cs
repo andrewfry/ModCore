@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using ModCore.Models.Access;
 using System.Text;
 
-namespace ModCore.ViewModels.Core
+namespace ModCore.ViewModels.Access
 {
     public class vUserActivityDetailed : vUserActivity
     {

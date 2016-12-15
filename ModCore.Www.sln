@@ -51,6 +51,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Pages.Plugin", "src\plugin-
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ModCore.DataAccess", "src\ModCore.DataAccess\ModCore.DataAccess.xproj", "{FF1383CA-A745-492E-88F4-49511F29A191}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RoleBasedPermission.Plugin", "src\plugin-src\RoleBasedPermission.Plugin\RoleBasedPermission.Plugin.xproj", "{3FAD849D-0D42-4EBD-BCD4-18496DCDFA01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,6 +123,10 @@ Global
 		{FF1383CA-A745-492E-88F4-49511F29A191}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF1383CA-A745-492E-88F4-49511F29A191}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF1383CA-A745-492E-88F4-49511F29A191}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FAD849D-0D42-4EBD-BCD4-18496DCDFA01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FAD849D-0D42-4EBD-BCD4-18496DCDFA01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FAD849D-0D42-4EBD-BCD4-18496DCDFA01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FAD849D-0D42-4EBD-BCD4-18496DCDFA01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -144,5 +150,6 @@ Global
 		{4E5E6900-53DC-43FF-889D-590DDD3F2AD3} = {CBA41F16-7012-4B6B-923C-406C9603B52C}
 		{BD638607-EEA9-48E9-8526-F4F1E92E4E02} = {E95848E4-1302-43CF-AB1C-59B32943873D}
 		{FF1383CA-A745-492E-88F4-49511F29A191} = {CBA41F16-7012-4B6B-923C-406C9603B52C}
+		{3FAD849D-0D42-4EBD-BCD4-18496DCDFA01} = {E95848E4-1302-43CF-AB1C-59B32943873D}
 	EndGlobalSection
 EndGlobal

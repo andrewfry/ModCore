@@ -21,8 +21,8 @@ namespace ModCore.Www.Areas.Admin.Controllers
         private IUserService _userService;
 
         public AccountController(ILog log,  ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IMapper mapper, IUserService userService)
-            : base(log,  siteSettingsManager, baseModeProvider, mapper)
+            IBaseViewModelProvider baseModeProvider, IMapper mapper, IUserService userService, ISessionService sessionService)
+            : base(log,  siteSettingsManager, baseModeProvider, mapper, sessionService)
         {
             _userService = userService;
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Reflection;
 
-namespace ModCore.Core.HelperExtensions
+namespace ModCore.Utilities.HelperExtensions
 {
     public static class AssemblyExtensions
     {

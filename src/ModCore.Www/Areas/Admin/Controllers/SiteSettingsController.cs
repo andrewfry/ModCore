@@ -14,6 +14,7 @@ using AutoMapper;
 using ModCore.Core.Site;
 using ModCore.ViewModels.Core;
 using Microsoft.AspNetCore.Http;
+using ModCore.Abstraction.Services.Access;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
@@ -23,8 +24,8 @@ namespace ModCore.Www.Areas.Admin.Controllers
         private readonly ISiteSettingsManagerAsync _siteSettingsManager;
 
         public SiteSettingsController(ILog log, ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IMapper mapper)
-            : base(log, siteSettingsManager, baseModeProvider, mapper)
+            IBaseViewModelProvider baseModeProvider, IMapper mapper, ISessionService sessionService)
+            : base(log, siteSettingsManager, baseModeProvider, mapper, sessionService)
         {
             _siteSettingsManager = siteSettingsManager;
         }

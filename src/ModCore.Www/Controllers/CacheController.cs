@@ -8,14 +8,15 @@ using ModCore.Abstraction.Site;
 using Microsoft.Extensions.Logging;
 using ModCore.ViewModels.Base;
 using AutoMapper;
+using ModCore.Abstraction.Services.Access;
 
 namespace ModCore.Www.Controllers
 {
     public class CacheController : BaseController
     {
         public CacheController(ILog log,  ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IMapper mapper)
-            : base(log,siteSettingsManager, baseModeProvider, mapper)
+            IBaseViewModelProvider baseModeProvider, IMapper mapper, ISessionService sessionService)
+            : base(log,siteSettingsManager, baseModeProvider, mapper, sessionService)
         {
 
         }

@@ -21,6 +21,7 @@ using ModCore.Abstraction.DataAccess;
 using ModCore.Models.Core;
 using ModCore.Models.Access;
 using ModCore.Abstraction.Services.Access;
+using ModCore.ViewModels.Access;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
@@ -31,8 +32,8 @@ namespace ModCore.Www.Areas.Admin.Controllers
         private readonly IUserActivityService _userActivity;
 
         public LogsController(ILog log, ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IMapper mapper, ILogService logService, IUserActivityService userActivity)
-            : base(log, siteSettingsManager, baseModeProvider, mapper)
+            IBaseViewModelProvider baseModeProvider, IMapper mapper, ILogService logService, IUserActivityService userActivity, ISessionService sessionService)
+            : base(log, siteSettingsManager, baseModeProvider, mapper, sessionService)
         {
             _logService = logService;
             _userActivity = userActivity;

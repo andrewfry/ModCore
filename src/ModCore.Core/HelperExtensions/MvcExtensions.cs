@@ -66,6 +66,7 @@ namespace ModCore.Core.HelperExtensions
                 DefaultHandler = app.ApplicationServices.GetRequiredService<MvcRouteHandler>(),
                 PluginManager = app.ApplicationServices.GetRequiredService<IPluginManager>(),
             };
+
             if (app.ApplicationServices.GetService(typeof(IPluginManager)) == null)
             {
                 throw new InvalidOperationException("Plugin manager was not set up correctly, missing IPluginManager service.");
@@ -78,13 +79,13 @@ namespace ModCore.Core.HelperExtensions
             {
                 routes.Routes.Add(tempRouter);
             }
-
             configureRoutes(routes);
-               
-            //var cmsPage = app.ApplicationServices.GetService<IPageService>();
-            // routes.Routes.Add(new CmsPageRoute(cmsPage,routes.DefaultHandler));
+ 
+            //var cmsPage = app.ApplicationServices.GetService<IDataRepositoryAsync<Page>>();
+            //routes.Routes.Add(new CmsPageRoute(cmsPage,routes.DefaultHandler));
             //Disable for now.
             //routes.Routes.Insert(0, AttributeRouting.CreateAttributeMegaRoute(app.ApplicationServices));
+
             return app.UseRouter(routes.Build());
         }
 
@@ -108,11 +109,11 @@ namespace ModCore.Core.HelperExtensions
 
             return app;
         }
-
         public static IApplicationBuilder RegisterActivePlugins(this IApplicationBuilder app)
         {
-            var pluginManager = app.ApplicationServices.GetService<IPluginManager>();
+            var pluginManager = app.ApplicationServices.GetService<IPluginManager>();            
             pluginManager.RegisterPluginList(pluginManager.ActivePlugins);
+       
             return app;
 
         }
@@ -181,6 +182,7 @@ namespace ModCore.Core.HelperExtensions
             //    }
             //}
 
+
             mvcBuilder.ConfigureApplicationPartManager(manager =>
             {
                 manager.FeatureProviders.Add(new PluginAssemblyMetadataReferenceFeatureProvider(pluginManager));
@@ -188,7 +190,7 @@ namespace ModCore.Core.HelperExtensions
 
             foreach (var plugin in pluginManager.ActivePlugins)
             {
-                pluginManager.ActivatePlugin(plugin);               
+                pluginManager.ActivatePlugin(plugin);
             }
 
             //var accessor = srvProvider.GetRequiredService<IApplicationFeatureProvider<MetadataReferenceFeature>>();
@@ -210,17 +212,11 @@ namespace ModCore.Core.HelperExtensions
 
             foreach (var srv in pluginManager.ActivePluginServices)
             {
-                if (srv.ServiceType == typeof(IPluginRouter))
-                {
-                    services.TryAddEnumerable(srv);
-                    continue;
-                }
-                services.Add(srv);
- 
+                services.Add(srv);            
             }
-
+                
             return services;
-        }
+        }      
 
         public static IServiceCollection AddThemeManager(this IServiceCollection services, IConfigurationRoot configRoot, IHostingEnvironment env)
         {
@@ -259,13 +255,13 @@ namespace ModCore.Core.HelperExtensions
         private static void AddAutoMapperClasses(IServiceCollection services, IEnumerable<Assembly> assembliesToScan)
         {
             assembliesToScan = assembliesToScan as Assembly[] ?? assembliesToScan.ToArray();
-
+           
             var mapperConfiguration = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfiles(assembliesToScan);
 
             });
-
+                       
             services.AddSingleton<IMapper>(sp => mapperConfiguration.CreateMapper());
 
         }

@@ -8,6 +8,7 @@ using ModCore.Abstraction.Plugins;
 using System.Runtime.Loader;
 using ModCore.Core.HelperExtensions;
 using Microsoft.Extensions.Logging;
+using ModCore.Utilities.HelperExtensions;
 
 namespace ModCore.Core.Plugins
 {

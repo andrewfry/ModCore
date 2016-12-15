@@ -23,6 +23,6 @@ namespace ModCore.Models.Sessions
             IsLoggedIn = false;
             UserData = null;
         }
-                
+
     }
 }

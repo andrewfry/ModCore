@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
 using ModCore.Abstraction.Plugins;
+using ModCore.Abstraction.Services.Access;
 using ModCore.Abstraction.Site;
 using ModCore.Core.Constraints;
 using System;
@@ -28,8 +29,8 @@ namespace ModCore.Core.Controllers
 
 
         public BasePluginController(IPluginLog log, ISiteSettingsManagerAsync siteSettingsManager, IPluginSettingsManager pluginSettingsManager,
-            IBaseViewModelProvider baseModelProvider, IMapper mapper) :
-            base(log, siteSettingsManager, baseModelProvider, mapper)
+            IBaseViewModelProvider baseModelProvider, IMapper mapper, ISessionService sessionService) :
+            base(log, siteSettingsManager, baseModelProvider, mapper, sessionService)
         {
             log.SetPlugin(this.Plugin);
             _pluginSettingsManager = pluginSettingsManager;

@@ -11,6 +11,7 @@ using ModCore.ViewModels.Base;
 using Pages.Plugin.ViewModels;
 using Pages.Plugin.Services;
 using ModCore.ViewModels.Theme;
+using ModCore.Abstraction.Services.Access;
 
 namespace Pages.Plugin.Controllers
 {
@@ -25,8 +26,8 @@ namespace Pages.Plugin.Controllers
         }
         private IPageService _pageService;
         public PageController(IPluginLog log,ISiteSettingsManagerAsync siteSettingsManager, IPluginSettingsManager pluginSettingsManager,
-            IBaseViewModelProvider baseViewModelProvider, IMapper mapper, IPageService pageService) :
-            base(log, siteSettingsManager, pluginSettingsManager, baseViewModelProvider, mapper)
+            IBaseViewModelProvider baseViewModelProvider, IMapper mapper, ISessionService sessionService, IPageService pageService) :
+            base(log, siteSettingsManager, pluginSettingsManager, baseViewModelProvider, mapper, sessionService)
         {
             _pageService = pageService;
         }
@@ -35,10 +36,9 @@ namespace Pages.Plugin.Controllers
         public IActionResult Index()
         {
             PageViewModel page = _mapper.Map<PageViewModel>(RouteData.Values["page"]);
-            
+
             return View(page);
         }
-
 
     }
 }
