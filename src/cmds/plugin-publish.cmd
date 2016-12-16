@@ -16,18 +16,21 @@ cd
 @echo COMMAND TO RUN
 
 REM Copy all of the assemblies to the plugin folder in the ModCore.www project
-@echo xcopy "plugin-src\%1%binLoc%" "%pluginLoc%%2%" /c /i /s /e /y
+@echo COPY DLLs
+@echo xcopy "plugin-src\%1%%binLoc%" "%pluginLoc%%2%" /c /i /s /e /y
 xcopy  /c /i /s /e /y /v  "plugin-src\%1%binLoc%" "%pluginLoc%%2%"
 
-REM If there is a Views folder in the plugin then copy it as well
-IF EXIST "plugin-src\%1%ViewLoc%" (
-@echo xcopy "plugin-src\%1%ViewLoc%" "%pluginLoc%%2%ViewLoc%" /c /i /s /e /y
-xcopy  /c /i /s /e /y /v  "plugin-src\%1%ViewLoc%" "%pluginLoc%%2%\Views"
+
+IF EXIST "plugin-src\%1%viewLoc%" (
+@echo COPY VIEWS Folder
+@echo xcopy "plugin-src\%1%viewLoc%" "%pluginLoc%%2%viewLoc%" /c /i /s /e /y
+xcopy  /c /i /s /e /y /v  "plugin-src\%1%viewLoc%" "%pluginLoc%%2%\Views"
 )
-REM If there is a Views folder in the plugin then copy it as well
-IF EXIST "plugin-src\%1%aminLoc%" (
+
+IF EXIST "plugin-src\%1%adminLoc%" (
+@echo COPY ADMIN Folder
 @echo xcopy "plugin-src\%1%adminLoc%" "%pluginLoc%%2%adminLoc%" /c /i /s /e /y
-xcopy  /c /i /s /e /y /v  "plugin-src\%1%AdminLoc%" "%pluginLoc%%2%\Admin"
+xcopy  /c /i /s /e /y /v  "plugin-src\%1%adminLoc%" "%pluginLoc%%2%\Admin"
 )
 REM Delete any ModCore specific assembilies as they will be rejected by the plugin manager and do not need to be copied.
 del "%pluginLoc%%2%\ModCore*.*"

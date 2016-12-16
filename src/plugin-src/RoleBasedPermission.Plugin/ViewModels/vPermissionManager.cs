@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using ModCore.Models.Access;
 using System.Text;
+using ModCore.ViewModels.Access;
 
-namespace ModCore.ViewModels.Access
+namespace RoleBasedPermisison.ViewModels
 {
     public class vPermissionManager
     {
@@ -11,12 +12,10 @@ namespace ModCore.ViewModels.Access
 
         public string SelectedRoleId { get; set; }
 
-        public List<vPermissionDiscriptor> AvailablePermissions { get; set; }
 
         public vPermissionManager()
         {
             Roles = new List<vRole>();
-            AvailablePermissions = new List<vPermissionDiscriptor>();
         }
     }
 }
