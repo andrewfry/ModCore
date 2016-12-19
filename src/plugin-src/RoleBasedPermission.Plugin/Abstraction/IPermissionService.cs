@@ -2,13 +2,10 @@
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using ModCore.Abstraction.Services.Access;
 using ModCore.Models.Access;
-using RoleBasedPermisison.Plugin.Models;
-using System;
+using RoleBasedPermission.Plugin.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace RoleBasedPermisison.Abstraction
+namespace RoleBasedPermission.Plugin.Abstraction
 {
     public interface IPermissionService : IBasePermissionService
     {

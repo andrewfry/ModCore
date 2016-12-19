@@ -43,24 +43,7 @@ namespace ModCore.Core.Controllers
 
                 if (_currentSession == null)
                 {
-                    //var jsonString = _session.GetString("sessionData");
-                    //if (string.IsNullOrEmpty(jsonString))
-
-                    //{
-                    //    var newSession = new SessionData();
-                    //    newSession.SessionId = HttpContext.Session.Id;
-
-                    //    jsonString = newSession.ToJson();
-                    //    _session.SetString("sessionData", jsonString);
-
-                    //    _currentSession = newSession;
-
-                    //    return _currentSession;
-                    //}
-
-                    //_currentSession = jsonString.ToObject<SessionData>();
-
-                    _currentSession = _sessionService.GetCurrentOrDefault();
+                     _currentSession = _sessionService.GetCurrentOrDefault();
                 }
 
                 return _currentSession;
@@ -113,8 +96,8 @@ namespace ModCore.Core.Controllers
         public ViewResult View(string viewName, object model, bool updateBaseViewModel)
         {
             var baseVm = model as BaseViewModel;
-            if (model == null)
-                throw new ArgumentNullException("You must provide a model to every view that inherits from BaseViewModel");
+            if (baseVm == null)
+                throw new ArgumentNullException(nameof(model),"You must provide a model to every view that inherits from BaseViewModel");
 
             if (updateBaseViewModel)
                 _baseClassProvider.Update(this, baseVm);
@@ -131,6 +114,10 @@ namespace ModCore.Core.Controllers
         [NonAction]
         public string RenderViewAsString<TModel>(string viewPath, TModel model)
         {
+            var baseVm = model as BaseViewModel;
+            if (baseVm == null)
+                throw new ArgumentNullException(nameof(model), "You must provide a model to every view that inherits from BaseViewModel");
+
             var engine = ControllerContext.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
             var viewEngineResult = engine.GetView("~/", viewPath, false);
 

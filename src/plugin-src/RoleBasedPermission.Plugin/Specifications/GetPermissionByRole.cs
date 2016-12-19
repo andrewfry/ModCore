@@ -11,16 +11,19 @@ using System.Threading.Tasks;
 
 namespace RoleBasedPermission.Plugin.Specifications
 {
-    public class GetAllPermissions : Specification<Permission>
+    public class GetPermissionByRole : Specification<Permission>
     {
 
-        public GetAllPermissions()
+        private string _roleId;
+
+        public GetPermissionByRole(string roleId)
         {
+            this._roleId = roleId;
         }
 
         public override Expression<Func<Permission, bool>> IsSatisifiedBy()
         {
-            return a => a != null ;
+            return a => a.GrantedRoles.Any(r => r == _roleId);
         }
     }
 }

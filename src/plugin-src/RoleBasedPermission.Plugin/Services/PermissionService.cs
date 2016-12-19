@@ -14,16 +14,16 @@ using ModCore.Models.Enum;
 using ModCore.Services.Base;
 using ModCore.Specifications.Access;
 using ModCore.Utilities.HelperExtensions;
-using RoleBasedPermisison.Abstraction;
-using RoleBasedPermisison.Plugin.Models;
-using RoleBasedPermission.Specifications;
+using RoleBasedPermission.Plugin.Abstraction;
+using RoleBasedPermission.Plugin.Models;
+using RoleBasedPermission.Plugin.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace RoleBasedPermisison.Plugin.Services
+namespace RoleBasedPermission.Plugin.Services
 {
     public class PermissionService : BaseServiceAsync<Permission>, IPermissionService, IPermissionManagerService
     {
@@ -45,11 +45,21 @@ namespace RoleBasedPermisison.Plugin.Services
             }
         }
 
+        public PermissonCache Cache
+        {
+            get
+            {
+                if (this._permissonCache == null)
+                    this._permissonCache = new PermissonCache();
+                return this._permissonCache;
+            }
+        }
+
         public PermissionService(IDataRepositoryAsync<Permission> repos, IMapper mapper, ILog logger, IActionDescriptorCollectionProvider actionDescriptorProvider) :
             base(repos, mapper, logger)
         {
             _actionDescriptorProvider = actionDescriptorProvider;
-            _permissonCache = new PermissonCache();
+            _permissonCache = null;
         }
 
         public List<PermissionDiscriptor> GetControllerDiscriptor()
@@ -154,7 +164,7 @@ namespace RoleBasedPermisison.Plugin.Services
 
             foreach (var roleId in userRoleIds)
             {
-                var cachedResult = _permissonCache.FromCache(assemblyName, areaName, controllerName, actionName, roleId);
+                var cachedResult = Cache.FromCache(assemblyName, areaName, controllerName, actionName, roleId);
                 if (cachedResult.HasValue && (cachedResult.Value == PermissionExecutedResult.Denied ||
                     cachedResult.Value == PermissionExecutedResult.Granted))
                 {
@@ -166,7 +176,7 @@ namespace RoleBasedPermisison.Plugin.Services
                     if (dbCheck.ErrorOccured)
                         return dbCheck;
 
-                    _permissonCache.AddToCache(assemblyName, areaName, controllerName, actionName, roleId, dbCheck.PermissionExecutedResult);
+                    Cache.AddToCache(assemblyName, areaName, controllerName, actionName, roleId, dbCheck.PermissionExecutedResult);
 
                     if (dbCheck.PermissionExecutedResult == PermissionExecutedResult.Denied ||
                             dbCheck.PermissionExecutedResult == PermissionExecutedResult.Granted)

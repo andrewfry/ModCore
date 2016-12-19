@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
 using ModCore.Core.Plugins;
+using ModCore.DataAccess.MongoDb;
 using ModCore.Models.Plugins;
-using RoleBasedPermisison.Abstraction;
-using RoleBasedPermisison.Plugin.Services;
+using RoleBasedPermission.Plugin.Abstraction;
+using RoleBasedPermission.Plugin.Models;
+using RoleBasedPermission.Plugin.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RoleBasedPermisison.Plugin
+namespace RoleBasedPermission.Plugin
 {
     public class RoleBasedPermisison : BasePlugin, IPlugin
     {
@@ -44,6 +47,11 @@ namespace RoleBasedPermisison.Plugin
             get
             {
                 var routes = new List<IPluginRoute>();
+                routes.MapPluginRoute(
+                name: "rolePermissionDefaultAdmin",
+                template: "{area=Admin}/{controller=RolePermission}/{action=Index}/{id?}",
+                plugin: new RoleBasedPermisison());
+
 
                 return routes;
             }
@@ -56,6 +64,8 @@ namespace RoleBasedPermisison.Plugin
             get
             {
                 var list = new List<ServiceDescriptor>();
+                list.Add(ServiceDescriptor.Transient<IDataRepositoryAsync<Permission>, MongoDbRepository<Permission>>());
+
                 list.Add(ServiceDescriptor.Transient<IPermissionManagerService, PermissionService>());
                 list.Add(ServiceDescriptor.Transient<IPermissionService, PermissionService>());
                 return list;

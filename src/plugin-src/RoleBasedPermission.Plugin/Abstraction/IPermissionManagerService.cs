@@ -1,13 +1,15 @@
-﻿using RoleBasedPermisison.Plugin.Models;
-using System;
+﻿using RoleBasedPermission.Plugin.Models;
+using RoleBasedPermission.Plugin.ViewModels;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace RoleBasedPermisison.Abstraction
+namespace RoleBasedPermission.Plugin.Abstraction
 {
     public interface IPermissionManagerService
     {
         List<PermissionDiscriptor> GetControllerDiscriptor();
+
+        List<vPermissionDiscriptor> GetDiscriptorsForRole(string roleId);
+
+        void UpdateDiscriptors(List<vPermissionDiscriptor> discriptors);
     }
 }

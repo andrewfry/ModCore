@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ModCore.Models.Enum;
 
-namespace RoleBasedPermisison.ViewModels
+namespace RoleBasedPermission.Plugin.ViewModels
 {
     public class vPermissionDiscriptor : vPermission
     {

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using ModCore.Models.Access;
 using System.Text;
 using ModCore.ViewModels.Access;
+using ModCore.ViewModels.Base;
 
-namespace RoleBasedPermisison.ViewModels
+namespace RoleBasedPermission.Plugin.ViewModels
 {
-    public class vPermissionManager
+    public class vPermissionManager : BaseViewModel
     {
         public List<vRole> Roles { get; set; }
 
