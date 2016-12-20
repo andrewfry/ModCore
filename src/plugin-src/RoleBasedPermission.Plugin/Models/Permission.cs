@@ -6,8 +6,8 @@ namespace RoleBasedPermission.Plugin.Models
 {
     public class Permission : BaseEntity
     {
-        public List<Role> GrantedRoles { get; set; }
+        public List<string> GrantedRoles { get; set; }
 
-        public List<Role> DeniedRoles { get; set; }
+        public List<string> DeniedRoles { get; set; }
     }
 }

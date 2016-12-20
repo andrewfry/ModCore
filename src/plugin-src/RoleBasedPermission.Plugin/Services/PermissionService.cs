@@ -17,6 +17,7 @@ using ModCore.Utilities.HelperExtensions;
 using RoleBasedPermission.Plugin.Abstraction;
 using RoleBasedPermission.Plugin.Models;
 using RoleBasedPermission.Plugin.Specifications;
+using RoleBasedPermission.Plugin.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -189,6 +190,84 @@ namespace RoleBasedPermission.Plugin.Services
             return result;
         }
 
+        public List<vPermissionDiscriptor> GetDiscriptorsForRole(string roleId)
+        {
+            var assemblyPermissions = CurrentPermissions.Where(a => a is PermissionAssembly).Select(a => a as PermissionAssembly).ToList();
+            var vmPermisisons = _mapper.Map<List<vPermissionDiscriptor>>(assemblyPermissions);
+
+            foreach (var ap in assemblyPermissions)
+            {
+                var apVm = vmPermisisons.Single(a => a.AssemblyName == ap.AssemblyName);
+                apVm.AccessGranted = ap.GrantedRoles.Any(a => a == roleId);
+
+                foreach (var areaP in ap.AreaPermissions)
+                {
+                    var areaVm = apVm.AreaPermissons.Single(a => a.Name == areaP.AreaName);
+                    areaVm.AccessGranted = areaP.GrantedRoles.Any(a => a == roleId);
+
+                    foreach (var contP in areaP.ControllerPermissons)
+                    {
+                        var contVm = areaVm.ControllerPermissons.Single(a => a.Name == contP.ControllerName);
+                        contVm.AccessGranted = contP.GrantedRoles.Any(a => a == roleId);
+
+                        foreach (var actionP in contP.ActionPermissons)
+                        {
+                            var actionVm = contVm.ActionPermissons.Single(a => a.Name == actionP.ActionName
+                                            && a.Method == actionP.Method);
+                            actionVm.AccessGranted = actionP.GrantedRoles.Any(a => a == roleId);
+                        }
+                    }
+                }
+            }
+
+            return vmPermisisons;
+        }
+
+        public void UpdateDiscriptors(List<vPermissionDiscriptor> discriptors, string roleId)
+        {
+            var permToUpdate = CurrentPermissions.ToList();
+            var toUpdate = permToUpdate.Where(a => a is PermissionAssembly).Select(a => a as PermissionAssembly).ToList();
+
+            foreach (var vmAssembly in discriptors)
+            {
+                var p = toUpdate.Single(a => a.AssemblyName == vmAssembly.AssemblyName);
+
+                if (vmAssembly.AccessGranted)
+                    p.GrantedRoles.Add(roleId);
+
+                foreach(var vmArea in vmAssembly.AreaPermissons)
+                {
+                    var pArea = p.AreaPermissions.Single(a => a.AreaName == vmArea.Name);
+
+                    if (vmArea.AccessGranted)
+                        pArea.GrantedRoles.Add(roleId);
+
+                    foreach(var vmCont in vmArea.ControllerPermissons)
+                    {
+                        var pCont = pArea.ControllerPermissons.Single(a => a.ControllerName == vmCont.Name);
+
+                        if (vmCont.AccessGranted)
+                            pCont.GrantedRoles.Add(roleId);
+
+                        foreach (var vmAction in vmCont.ActionPermissons)
+                        {
+                            var pAction = pCont.ActionPermissons.Single(a => a.ActionName == vmAction.Name &&
+                                            a.Method == vmAction.Method);
+
+                            if (vmAction.AccessGranted)
+                                pAction.GrantedRoles.Add(roleId);
+                        }
+                    }
+                }
+            }
+
+            _repository.UpdateAsync(permToUpdate);
+            _currentPermissions = null;
+            _permissonCache = null;
+        }
+
+
+
         private PermissionResult GetCheckedPermission(Controller controller, ActionDescriptor action, string roleId)
         {
             var assemblyName = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.Assembly.FullName.ToUpper();
@@ -239,10 +318,10 @@ namespace RoleBasedPermission.Plugin.Services
 
         private PermissionExecutedResult GetPermissionResult(Permission permission, string roleId)
         {
-            if (permission.DeniedRoles.Any(a => a.Id == roleId))
+            if (permission.DeniedRoles.Any(a => a == roleId))
                 return PermissionExecutedResult.Denied;
 
-            if (permission.GrantedRoles.Any(a => a.Id == roleId))
+            if (permission.GrantedRoles.Any(a => a == roleId))
                 return PermissionExecutedResult.Granted;
 
             return PermissionExecutedResult.NotDefined;

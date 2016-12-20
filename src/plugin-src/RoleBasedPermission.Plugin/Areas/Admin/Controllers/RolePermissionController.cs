@@ -10,9 +10,9 @@ using ModCore.Abstraction.Plugins;
 using ModCore.Abstraction.Services.Access;
 using ModCore.Abstraction.Site;
 using ModCore.Core.Controllers;
-using RoleBasedPermission.Abstraction;
 using RoleBasedPermission.Plugin;
-using RoleBasedPermission.ViewModels;
+using RoleBasedPermission.Plugin.Abstraction;
+using RoleBasedPermission.Plugin.ViewModels;
 using System.Threading.Tasks;
 
 namespace RoleBasedPermission.Areas.Admin.Controllers

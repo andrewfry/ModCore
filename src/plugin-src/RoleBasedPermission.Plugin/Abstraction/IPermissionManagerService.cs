@@ -10,6 +10,6 @@ namespace RoleBasedPermission.Plugin.Abstraction
 
         List<vPermissionDiscriptor> GetDiscriptorsForRole(string roleId);
 
-        void UpdateDiscriptors(List<vPermissionDiscriptor> discriptors);
+        void UpdateDiscriptors(List<vPermissionDiscriptor> discriptors, string roleId);
     }
 }
