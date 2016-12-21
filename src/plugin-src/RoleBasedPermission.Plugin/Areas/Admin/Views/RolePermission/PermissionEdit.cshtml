@@ -1,0 +1,58 @@
+﻿@model RoleBasedPermission.Plugin.ViewModels.vPermissionDiscriptorEdit
+
+<div class="row">
+    <div class="col-xs-12">
+        <form id="permissionForm">
+            <ul class="perm-main-wrapper">
+                @foreach (var topPerm in Model.Permissons)
+            {
+                    @Html.Partial("PermissionEditItem", topPerm)
+                    <ul class="perm-area-wrapper perm-child-wrapper">
+                        @foreach (var areaPerm in topPerm.AreaPermissons)
+                        {
+                            @Html.Partial("PermissionEditItem", areaPerm)
+                            <ul class="perm-cont-wrapper perm-child-wrapper">
+                                @foreach (var contPerm in areaPerm.ControllerPermissons)
+                                {
+                                    @Html.Partial("PermissionEditItem", contPerm)
+                                    <ul class="perm-act-wrapper perm-child-wrapper">
+                                        @foreach (var actPerm in contPerm.ActionPermissons)
+                                        {
+                                            @Html.Partial("PermissionEditItem", actPerm)
+                                        }
+                                    </ul>
+                                }
+                            </ul>
+                        }
+                    </ul>
+                }
+            </ul>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <button id="savePermissionChanges" class="btn btn-success">
+            Save Changes
+        </button>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        $("#savePermissionChanges").change(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "/Admin/RolePermission/PermissionSave",
+                type: "POST",
+                data: { selectedRoleId: $(this).val() },
+                success: function (data, textStatus, jqXHR) {
+                },
+            });
+        });
+    });
+
+</script>

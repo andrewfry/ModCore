@@ -33,6 +33,7 @@ using ModCore.Abstraction.Services.Site;
 using ModCore.Services.Site;
 using ModCore.Core.Filters;
 using Microsoft.AspNetCore.Http.Features;
+using ModCore.Specifications.Access;
 
 namespace ModCore.Www
 {
@@ -61,7 +62,7 @@ namespace ModCore.Www
             //Configure Settings
             services.Configure<MongoDbSettings>(options => Configuration.GetSection("MongoDbSettings").Bind(options));
 
-            
+
             services.AddTransient<ILogger, SiteLogger>();
             services.AddTransient<ILog, SiteLogger>();
             services.AddTransient<ISessionManager, SessionManager>();
@@ -71,19 +72,18 @@ namespace ModCore.Www
             //Persistent Data Repositories
             services.AddTransient<IDataRepository<InstalledPlugin>, MongoDbRepository<InstalledPlugin>>();
             services.AddTransient<IDataRepository<SiteTheme>, MongoDbRepository<SiteTheme>>();
-
-            //services.AddTransient<IDataRepositoryAsync<Page>, MongoDbRepository<Page>>();
             services.AddTransient<IDataRepositoryAsync<User>, MongoDbRepository<User>>();
             services.AddTransient<IDataRepositoryAsync<Log>, MongoDbRepository<Log>>();
             services.AddTransient<IDataRepositoryAsync<SiteSetting>, MongoDbRepository<SiteSetting>>();
             services.AddTransient<IDataRepositoryAsync<UserActivity>, MongoDbRepository<UserActivity>>();
+            services.AddTransient<IDataRepositoryAsync<Role>, MongoDbRepository<Role>>();
 
             //Adding the business logic Services
             services.AddTransient<IUserService, UserService>();
-            //services.AddTransient<IPageService, PageService>();
             services.AddTransient<ILogService, LogService>();
             services.AddTransient<IUserActivityService, UserActivityService>();
             services.AddTransient<ISessionService, SessionService>();
+            services.AddTransient<IRoleService, RoleService>();
 
             //TODO - Double check if this is pulling profiles from the plugins
             services.AddAutoMapper();
@@ -127,7 +127,8 @@ namespace ModCore.Www
         public void RunTestData(IServiceCollection services)
         {
             var srcProvider = services.BuildServiceProvider();
-           /* var repos = srcProvider.GetService<IDataRepository<Page>>()*/;
+            /* var repos = srcProvider.GetService<IDataRepository<Page>>()*/
+            ;
 
             //repos.Insert(new Page
             //{
@@ -209,6 +210,20 @@ namespace ModCore.Www
                     ThemeVersion = "1.0",
                     Active = true,
 
+                });
+            }
+
+            var roleservice = srcProvider.GetService<IDataRepositoryAsync<Role>>();
+            var roles = roleservice.FindAllAsync(new GetAllRoles()).Result;
+            if (roles.Count == 0)
+            {
+                roleservice.InsertAsync(new Role
+                {
+                    Name = "Admin"
+                });
+                roleservice.InsertAsync(new Role
+                {
+                    Name = "Bloggers"
                 });
             }
 

@@ -15,14 +15,14 @@ using System.Threading.Tasks;
 
 namespace RoleBasedPermission.Plugin
 {
-    public class RoleBasedPermisison : BasePlugin, IPlugin
+    public class RoleBasedPermission : BasePlugin, IPlugin
     {
 
         public string Name
         {
             get
             {
-                return "RoleBasedPermisison";
+                return "RoleBasedPermission";
             }
         }
 
@@ -50,7 +50,7 @@ namespace RoleBasedPermission.Plugin
                 routes.MapPluginRoute(
                 name: "rolePermissionDefaultAdmin",
                 template: "{area=Admin}/{controller=RolePermission}/{action=Index}/{id?}",
-                plugin: new RoleBasedPermisison());
+                plugin: new RoleBasedPermission());
 
 
                 return routes;

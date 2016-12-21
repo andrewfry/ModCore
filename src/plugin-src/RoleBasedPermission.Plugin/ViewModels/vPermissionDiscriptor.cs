@@ -8,13 +8,14 @@ namespace RoleBasedPermission.Plugin.ViewModels
 {
     public class vPermissionDiscriptor : vPermission
     {
-        public string Name { get; set; }
 
         public string Description { get; set; }
 
         public string AssemblyName { get; set; }
 
         public bool IsPlugin { get; set; }
+
+        public override bool HasChildren { get { return AreaPermissons.Any(); } }
 
         public List<vPermissionAreaDiscriptor> AreaPermissons { get; set; }
 
@@ -26,9 +27,9 @@ namespace RoleBasedPermission.Plugin.ViewModels
 
     public class vPermissionAreaDiscriptor : vPermission
     {
-        public string Name { get; set; }
-
         public List<vPermissionControllerDiscriptor> ControllerPermissons { get; set; }
+
+        public override bool HasChildren { get { return ControllerPermissons.Any(); } }
 
         public vPermissionAreaDiscriptor()
         {
@@ -39,9 +40,9 @@ namespace RoleBasedPermission.Plugin.ViewModels
 
     public class vPermissionControllerDiscriptor : vPermission
     {
-        public string Name { get; set; }
-
         public List<vPermissionActionDiscriptor> ActionPermissons { get; set; }
+
+        public override bool HasChildren { get { return ActionPermissons.Any(); } }
 
         public vPermissionControllerDiscriptor()
         {
@@ -51,19 +52,23 @@ namespace RoleBasedPermission.Plugin.ViewModels
 
     public class vPermissionActionDiscriptor : vPermission
     {
-        public string Name { get; set; }
-
         public string Route { get; set; }
 
         public HttpMethod? Method { get; set; }
 
+        public override bool HasChildren { get { return false; } }
+
     }
 
-   public class vPermission
+    public class vPermission
     {
+        public string Name { get; set; }
+
         public string RoleId { get; set; }
 
         public bool AccessGranted { get; set; }
+
+        public virtual bool HasChildren { get; }
     }
 
 }

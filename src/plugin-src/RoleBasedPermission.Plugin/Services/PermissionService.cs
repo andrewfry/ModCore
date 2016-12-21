@@ -193,11 +193,11 @@ namespace RoleBasedPermission.Plugin.Services
         public List<vPermissionDiscriptor> GetDiscriptorsForRole(string roleId)
         {
             var assemblyPermissions = CurrentPermissions.Where(a => a is PermissionAssembly).Select(a => a as PermissionAssembly).ToList();
-            var vmPermisisons = _mapper.Map<List<vPermissionDiscriptor>>(assemblyPermissions);
+            var vmPermissions = _mapper.Map<List<vPermissionDiscriptor>>(assemblyPermissions);
 
             foreach (var ap in assemblyPermissions)
             {
-                var apVm = vmPermisisons.Single(a => a.AssemblyName == ap.AssemblyName);
+                var apVm = vmPermissions.Single(a => a.AssemblyName == ap.AssemblyName);
                 apVm.AccessGranted = ap.GrantedRoles.Any(a => a == roleId);
 
                 foreach (var areaP in ap.AreaPermissions)
@@ -220,7 +220,7 @@ namespace RoleBasedPermission.Plugin.Services
                 }
             }
 
-            return vmPermisisons;
+            return vmPermissions;
         }
 
         public void UpdateDiscriptors(List<vPermissionDiscriptor> discriptors, string roleId)
