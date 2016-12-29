@@ -48,6 +48,8 @@ namespace RoleBasedPermission.Areas.Admin.Controllers
         {
             vPermissionDiscriptorEdit m = new vPermissionDiscriptorEdit();
 
+            m.Permissons = _permissionManagerService.GetDiscriptorsForRole(selectedRoleId);
+
             return base.Json(new
             {
                 status = "success",

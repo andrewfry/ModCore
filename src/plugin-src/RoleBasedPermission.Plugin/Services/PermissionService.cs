@@ -32,6 +32,7 @@ namespace RoleBasedPermission.Plugin.Services
         private readonly IActionDescriptorCollectionProvider _actionDescriptorProvider;
         private List<Permission> _currentPermissions;
         private PermissonCache _permissonCache;
+        private List<PermissionDiscriptor> _availablePermissions;
 
         public List<Permission> CurrentPermissions
         {
@@ -43,6 +44,19 @@ namespace RoleBasedPermission.Plugin.Services
                 }
 
                 return _currentPermissions;
+            }
+        }
+
+        public List<PermissionDiscriptor> AvailablePermissions
+        {
+            get
+            {
+                if (_availablePermissions == null)
+                {
+                    _availablePermissions = GetControllerDiscriptor();
+                }
+
+                return _availablePermissions;
             }
         }
 
@@ -192,8 +206,8 @@ namespace RoleBasedPermission.Plugin.Services
 
         public List<vPermissionDiscriptor> GetDiscriptorsForRole(string roleId)
         {
+            var vmPermissions = _mapper.Map<List<vPermissionDiscriptor>>(AvailablePermissions);
             var assemblyPermissions = CurrentPermissions.Where(a => a is PermissionAssembly).Select(a => a as PermissionAssembly).ToList();
-            var vmPermissions = _mapper.Map<List<vPermissionDiscriptor>>(assemblyPermissions);
 
             foreach (var ap in assemblyPermissions)
             {

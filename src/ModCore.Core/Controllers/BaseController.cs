@@ -107,7 +107,7 @@ namespace ModCore.Core.Controllers
         }
 
         [NonAction]
-        public string RenderViewAsString(string viewPath)
+        public Task<string> RenderViewAsString(string viewPath)
         {
             return RenderViewAsString(viewPath, "");
         }
