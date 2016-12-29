@@ -27,7 +27,7 @@ namespace RoleBasedPermission.Areas.Admin.Controllers
             }
         }
 
-        public RolePermissionController(IPluginLog log, ISiteSettingsManagerAsync siteSettingsManager, IRoleService roleService,  IPluginSettingsManager pluginSettingsManager, IBaseViewModelProvider baseViewModelProvider, IMapper mapper, IPermissionManagerService permissionManagerService, ISessionService sessionService)
+        public RolePermissionController(IPluginLog log, ISiteSettingsManagerAsync siteSettingsManager, IRoleService roleService, IPluginSettingsManager pluginSettingsManager, IBaseViewModelProvider baseViewModelProvider, IMapper mapper, IPermissionManagerService permissionManagerService, ISessionService sessionService)
           : base(log, siteSettingsManager, pluginSettingsManager, baseViewModelProvider, mapper, sessionService)
         {
             _permissionManagerService = permissionManagerService;
@@ -37,7 +37,7 @@ namespace RoleBasedPermission.Areas.Admin.Controllers
         public async Task<IActionResult> Index(string selectedRoleId)
         {
             vPermissionManager m = new vPermissionManager();
-            var roles =  await _roleService.GetAllRolesAsync();
+            var roles = await _roleService.GetAllRolesAsync();
             m.Roles = roles.Select(a => _mapper.Map<vRole>(a)).ToList();
             m.SelectedRoleId = selectedRoleId;
 
@@ -47,7 +47,12 @@ namespace RoleBasedPermission.Areas.Admin.Controllers
         public async Task<IActionResult> PermissionEdit(string selectedRoleId)
         {
             vPermissionDiscriptorEdit m = new vPermissionDiscriptorEdit();
-            return this.View(m);
+
+            return base.Json(new
+            {
+                status = "success",
+                html = await this.RenderViewAsString("PermissionEdit", (object)m)
+            });
         }
 
         public async Task<IActionResult> PermissionSave(string selectedRoleId)

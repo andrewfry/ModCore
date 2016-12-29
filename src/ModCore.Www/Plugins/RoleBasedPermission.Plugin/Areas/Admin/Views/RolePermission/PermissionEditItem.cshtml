@@ -1,0 +1,10 @@
+﻿@model RoleBasedPermission.Plugin.ViewModels.vPermission
+
+<li class="perm-wrapper @(Model.HasChildren ? "has-children" : "")">
+    <span class="perm-chkbox">
+        @Html.CheckBoxFor(a => a.AccessGranted)
+    </span>
+    <span class="perm-name">
+        @Html.DisplayFor(a => a.Name)
+    </span>
+</li>

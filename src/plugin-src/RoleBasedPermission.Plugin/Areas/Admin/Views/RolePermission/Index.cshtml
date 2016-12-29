@@ -29,6 +29,10 @@
                     type: "POST",
                     data: { selectedRoleId: $(this).val() },
                     success: function (data, textStatus, jqXHR) {
+                        if(data.status=="success")
+                        {
+                            $("#permissionContent").html(data.html);
+                        }
                     },
                 });
             });

@@ -34,7 +34,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
             return View(themeList);
         }
 
-        public JsonResult SetTheme(string themeName)
+        public async Task<JsonResult> SetTheme(string themeName)
         {
             var theme = _themeManager.AvailableThemes.Where(a => a.ThemeName.ToLower() == themeName.ToLower()).SingleOrDefault();
             if (theme != null)
@@ -44,7 +44,8 @@ namespace ModCore.Www.Areas.Admin.Controllers
 
             var themeList = GetThemeList().ThemeList;
 
-            string view = this.RenderViewAsString("Areas/Admin/Views/Theme/_ThemeList.cshtml", themeList);
+            //string view = this.RenderViewAsString("Areas/Admin/Views/Theme/_ThemeList.cshtml", themeList);
+            string view = await this.RenderViewAsString("_ThemeList.cshtml", themeList);
             return Json(new { html = view });
         }
 

@@ -3,6 +3,8 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
     ViewBag.Title = "Manage Permissions";
 }
+
+
 <div class="row">
     <div class="col-xs-12 col-md-4">
         <select id="roleSelect" multiple class="form-control">
@@ -11,18 +13,14 @@
                 <option value="@role.RoleId" @(role.RoleId == Model.SelectedRoleId ? "selected" : "")>@role.Name</option>
             }
         </select>
-
-
     </div>
     <div id="permissionContent" class="col-xs-12 col-md-8">
 
     </div>
 </div>
 
-
 @section scripts{
     <script>
-
         $(document).ready(function () {
             $("#roleSelect").change(function (e) {
                 e.preventDefault();
@@ -31,6 +29,10 @@
                     type: "POST",
                     data: { selectedRoleId: $(this).val() },
                     success: function (data, textStatus, jqXHR) {
+                        if(data.status=="success")
+                        {
+                            $("#permissionContent").html(data.html);
+                        }
                     },
                 });
             });

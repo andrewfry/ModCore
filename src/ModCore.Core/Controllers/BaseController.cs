@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using AutoMapper;
 using ModCore.Utilities.HelperExtensions;
 using ModCore.Abstraction.Services.Access;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 
 namespace ModCore.Core.Controllers
 {
@@ -111,38 +112,73 @@ namespace ModCore.Core.Controllers
             return RenderViewAsString(viewPath, "");
         }
 
+        //[NonAction]
+        //public string RenderViewAsString<TModel>(string viewPath, TModel model)
+        //{
+        //    var baseVm = model as BaseViewModel;
+        //    if (baseVm == null)
+        //        throw new ArgumentNullException(nameof(model), "You must provide a model to every view that inherits from BaseViewModel");
+
+        //    var engine = ControllerContext.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
+        //    var viewEngineResult = engine.GetView("~/", viewPath, false);
+
+        //    if (!viewEngineResult.Success)
+        //    {
+        //        throw new InvalidOperationException($"Could not find view {viewPath}");
+        //    }
+
+        //    var view = viewEngineResult.View;
+        //    var result = "";
+        //    using (var output = new StringWriter())
+        //    {
+        //        var viewContext = new ViewContext();
+        //        viewContext.HttpContext = ControllerContext.HttpContext; // _httpContextAccessor.HttpContext;
+        //        viewContext.ViewData = new ViewDataDictionary<TModel>(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+        //        { Model = model };
+        //        viewContext.Writer = output;
+
+        //        view.RenderAsync(viewContext).GetAwaiter().GetResult();
+
+        //        result = output.GetStringBuilder().Replace("\"", "'").ToString();
+
+        //    }
+
+        //    return result;
+        //}
+
         [NonAction]
-        public string RenderViewAsString<TModel>(string viewPath, TModel model)
+        public async Task<string> RenderViewAsString(string viewName, object model)
         {
-            var baseVm = model as BaseViewModel;
-            if (baseVm == null)
-                throw new ArgumentNullException(nameof(model), "You must provide a model to every view that inherits from BaseViewModel");
-
             var engine = ControllerContext.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
-            var viewEngineResult = engine.GetView("~/", viewPath, false);
+            var tempDataProvider = ControllerContext.HttpContext.RequestServices.GetService(typeof(ITempDataProvider)) as ITempDataProvider;
+            var actionContext = new ActionContext(HttpContext, RouteData, new ActionDescriptor());
 
-            if (!viewEngineResult.Success)
+            using (var sw = new StringWriter())
             {
-                throw new InvalidOperationException($"Could not find view {viewPath}");
+                var viewResult = engine.FindView(actionContext, viewName, false);
+
+                if (viewResult.View == null)
+                {
+                    throw new ArgumentNullException($"{viewName} does not match any available view");
+                }
+
+                var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                {
+                    Model = model
+                };
+
+                var viewContext = new ViewContext(
+                    actionContext,
+                    viewResult.View,
+                    viewDictionary,
+                    new TempDataDictionary(actionContext.HttpContext, tempDataProvider),
+                    sw,
+                    new HtmlHelperOptions()
+                );
+
+                await viewResult.View.RenderAsync(viewContext);
+                return sw.ToString();
             }
-
-            var view = viewEngineResult.View;
-            var result = "";
-            using (var output = new StringWriter())
-            {
-                var viewContext = new ViewContext();
-                viewContext.HttpContext = ControllerContext.HttpContext; // _httpContextAccessor.HttpContext;
-                viewContext.ViewData = new ViewDataDictionary<TModel>(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                { Model = model };
-                viewContext.Writer = output;
-
-                view.RenderAsync(viewContext).GetAwaiter().GetResult();
-
-                result = output.GetStringBuilder().Replace("\"", "'").ToString();
-
-            }
-
-            return result;
         }
     }
 }
