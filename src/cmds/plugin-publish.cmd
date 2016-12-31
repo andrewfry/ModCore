@@ -6,6 +6,7 @@ SET "pluginLoc=ModCore.Www\Plugins\"
 SET "viewLoc=\Views"
 SET "adminLoc=\Admin"
 SET "areaLoc=\Areas"
+SET "contentLoc=\Content"
 REM @echo "%binLoc%"
 REM @echo "%pluginLoc%"
 REM @echo "%pluginLoc%%2%"
@@ -39,6 +40,14 @@ IF EXIST "plugin-src\%1%areaLoc%" (
 @echo xcopy "plugin-src\%1%areaLoc%" "%pluginLoc%%2%areaLoc%" /c /i /s /e /y
 xcopy  /c /i /s /e /y /v  "plugin-src\%1%areaLoc%\*.cshtml" "%pluginLoc%%2%\Areas"
 )
+
+IF EXIST "plugin-src\%1%contentLoc%" (
+@echo COPY CONTENT Folder
+@echo xcopy "plugin-src\%1%contentLoc%" "%pluginLoc%%2%contentLoc%" /c /i /s /e /y
+xcopy  /c /i /s /e /y /v  "plugin-src\%1%contentLoc%" "%pluginLoc%%2%\Content"
+)
+
+
 
 REM Delete any ModCore specific assembilies as they will be rejected by the plugin manager and do not need to be copied.
 del "%pluginLoc%%2%\ModCore*.*"

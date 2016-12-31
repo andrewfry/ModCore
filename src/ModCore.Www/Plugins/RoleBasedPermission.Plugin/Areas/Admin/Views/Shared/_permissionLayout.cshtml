@@ -1,0 +1,14 @@
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
+}
+@section head{
+    <link href="~/Plugins/RoleBasedPermission.Plugin/Content/css/permissions.css" rel="stylesheet" />
+}
+
+
+@RenderBody()
+
+
+@section scripts{
+    @RenderSection("scripts", required: false)
+}

@@ -134,7 +134,6 @@ namespace ModCore.Core.HelperExtensions
 
 
             mvcBuilder.AddRazorOptions(a => a.ViewLocationExpanders.Add(new PluginViewLocationExpander()));
-
             return services;
         }
 

@@ -1,0 +1,11 @@
+.perm-wrapper:first-child { border-top: 1px solid #d1d1d1; }
+.perm-wrapper:hover { background-color: #f1f1f1; }
+.perm-wrapper { background-color: #FFF; list-style: none; border-left: 1px solid #d1d1d1; border-right: 1px solid #d1d1d1; border-bottom: 1px solid #d1d1d1; border-left: 5px #ffa047 solid; cursor: pointer; box-shadow: 6px 3px 182px -12px rgba(194,188,194,1); padding: 8px; }
+
+.perm-child-wrapper { background-color: #FFF; display: none; list-style: none; padding-left: 15px; }
+.perm-child-wrapper .perm-wrapper:first-child { border-top: none; border-bottom: 1px solid #d1d1d1; }
+.perm-child-wrapper .perm-wrapper:last-child { border-bottom: 1px solid #d1d1d1; }
+
+.perm-area-wrapper .perm-wrapper { border-left: 3px #07A0D9 solid; }
+.perm-cont-wrapper .perm-wrapper { border-left: 3px #1C427C solid; }
+.perm-act-wrapper .perm-wrapper { border-left: 3px #088637 solid; }

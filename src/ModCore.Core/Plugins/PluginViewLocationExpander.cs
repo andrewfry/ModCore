@@ -22,22 +22,21 @@ namespace ModCore.Core.Plugins
             string pluginName = null;
             if (context.Values.TryGetValue(PLUGIN_KEY, out pluginName))
             {
-                if (context.AreaName != null)
-                {
-                    viewLocations = new[] {
-                    $"/Plugins/{pluginName}.Plugin/Areas/{context.AreaName}/Views/{context.ControllerName}/{{0}}.cshtml",
-                    $"/Plugins/{pluginName}.Plugin/{context.AreaName}/Views/{context.ControllerName}/{{0}}.cshtml",
-                    $"/Plugins/{pluginName}.Plugin/{context.AreaName}/Views/{{0}}.cshtml",
-                    $"/Plugins/{pluginName}.Plugin/Views/{context.AreaName}/{context.ControllerName}/{{0}}.cshtml",
-                    }.Concat(viewLocations);
-                }
-                else
-                {
-                    viewLocations = new[] {
+                viewLocations = new[] {
                 $"/Plugins/{pluginName}.Plugin/Views/{{0}}.cshtml",
                 $"/Plugins/{pluginName}.Plugin/Views/{{1}}/{{0}}.cshtml",
                 $"/Plugins/{pluginName}.Plugin/Views/Shared/{{0}}.cshtml",
                      }.Concat(viewLocations);
+
+                if (context.AreaName != null)
+                {
+                    viewLocations = new[] {
+                    $"/Plugins/{pluginName}.Plugin/Areas/{context.AreaName}/Views/{context.ControllerName}/{{0}}.cshtml",
+                    $"/Plugins/{pluginName}.Plugin/Areas/{context.AreaName}/Views/Shared/{{0}}.cshtml",
+                    //$"/Plugins/{pluginName}.Plugin/{context.AreaName}/Views/{context.ControllerName}/{{0}}.cshtml",
+                    //$"/Plugins/{pluginName}.Plugin/{context.AreaName}/Views/{{0}}.cshtml",
+                    //$"/Plugins/{pluginName}.Plugin/Views/{context.AreaName}/{context.ControllerName}/{{0}}.cshtml",
+                    }.Concat(viewLocations);
                 }
             }
 

@@ -41,8 +41,18 @@
 
 
 <script>
-
     $(document).ready(function () {
+        $(".perm-wrapper.has-children").click(function () {
+            $(this).next(".perm-child-wrapper").slideToggle(200);
+        })
+        $(".perm-wrapper.has-children input").click(function (e) {
+            e.stopPropagation();
+            var action = false;
+            if ($(this).prop('checked') === true) {
+                action = true;
+            }
+            var parent = $(this).parents(".perm-wrapper").next(".perm-child-wrapper").find("input").prop('checked', action);
+        })
         $("#savePermissionChanges").change(function (e) {
             e.preventDefault();
             $.ajax({
@@ -54,5 +64,4 @@
             });
         });
     });
-
 </script>

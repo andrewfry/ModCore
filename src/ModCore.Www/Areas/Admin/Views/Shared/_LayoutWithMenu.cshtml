@@ -1,6 +1,10 @@
 ﻿@{
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+@section head{
+    @RenderSection("head", required: false)
+}
+
 
 
 @RenderBody()
