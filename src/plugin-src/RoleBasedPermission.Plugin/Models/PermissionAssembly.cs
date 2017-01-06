@@ -10,5 +10,10 @@ namespace RoleBasedPermission.Plugin.Models
         public string AssemblyName { get; set; }
 
         public List<PermissionArea> AreaPermissions { get; set; }
+        
+        public PermissionAssembly() : base()
+        {
+            this.AreaPermissions = new List<PermissionArea>();
+        }
     }
 }

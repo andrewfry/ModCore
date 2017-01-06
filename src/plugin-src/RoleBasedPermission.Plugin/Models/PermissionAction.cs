@@ -8,6 +8,11 @@ namespace RoleBasedPermission.Plugin.Models
     {
         public string ActionName { get; set; }
 
-        public HttpMethod Method { get; set; }
+        public HttpMethod? Method { get; set; }
+
+        public PermissionAction() : base()
+        {
+
+        }
     }
 }

@@ -26,15 +26,15 @@ using System.Threading.Tasks;
 
 namespace RoleBasedPermission.Plugin.Services
 {
-    public class PermissionService : BaseServiceAsync<Permission>, IPermissionService, IPermissionManagerService
+    public class PermissionService : BaseServiceAsync<PermissionAssembly>, IPermissionService, IPermissionManagerService
     {
 
         private readonly IActionDescriptorCollectionProvider _actionDescriptorProvider;
-        private List<Permission> _currentPermissions;
+        private List<PermissionAssembly> _currentPermissions;
         private PermissonCache _permissonCache;
         private List<PermissionDiscriptor> _availablePermissions;
 
-        public List<Permission> CurrentPermissions
+        public List<PermissionAssembly> CurrentPermissions
         {
             get
             {
@@ -70,7 +70,7 @@ namespace RoleBasedPermission.Plugin.Services
             }
         }
 
-        public PermissionService(IDataRepositoryAsync<Permission> repos, IMapper mapper, ILog logger, IActionDescriptorCollectionProvider actionDescriptorProvider) :
+        public PermissionService(IDataRepositoryAsync<PermissionAssembly> repos, IMapper mapper, ILog logger, IActionDescriptorCollectionProvider actionDescriptorProvider) :
             base(repos, mapper, logger)
         {
             _actionDescriptorProvider = actionDescriptorProvider;
@@ -99,7 +99,7 @@ namespace RoleBasedPermission.Plugin.Services
                     var assemblyIsPlugin = pluginType != null;
                     var controllerName = controllerDesc.ControllerName;
                     var actionName = controllerDesc.ActionName;
-                    var areaName = controllerDesc.RouteValues["area"] == null ? "" : controllerDesc.RouteValues["area"].ToUpper();
+                    var areaName = controllerDesc.RouteValues["area"] == null ? "" : controllerDesc.RouteValues["area"];
 
                     var assemblyPerm = assemblyPermission.SingleOrDefault(a => a.AssemblyName == assemblyName);
                     if (assemblyPerm == null)
@@ -213,22 +213,27 @@ namespace RoleBasedPermission.Plugin.Services
             {
                 var apVm = vmPermissions.Single(a => a.AssemblyName == ap.AssemblyName);
                 apVm.AccessGranted = ap.GrantedRoles.Any(a => a == roleId);
+                apVm.Id = ap.Id;
 
                 foreach (var areaP in ap.AreaPermissions)
                 {
-                    var areaVm = apVm.AreaPermissons.Single(a => a.Name == areaP.AreaName);
-                    areaVm.AccessGranted = areaP.GrantedRoles.Any(a => a == roleId);
+                    areaP.AreaName = areaP.AreaName == null ? "" : areaP.AreaName;
+                    var areaVm = apVm.AreaPermissons.Single(a => a.Name.ToUpper() == areaP.AreaName.ToUpper());
+                    areaVm.AccessGranted = areaP.GrantedRoles.Any(a => a == roleId) || apVm.AccessGranted;
+                    areaVm.Id = areaP.Id;
 
                     foreach (var contP in areaP.ControllerPermissons)
                     {
-                        var contVm = areaVm.ControllerPermissons.Single(a => a.Name == contP.ControllerName);
-                        contVm.AccessGranted = contP.GrantedRoles.Any(a => a == roleId);
+                        var contVm = areaVm.ControllerPermissons.Single(a => a.Name.ToUpper() == contP.ControllerName.ToUpper());
+                        contVm.AccessGranted = contP.GrantedRoles.Any(a => a == roleId) || areaVm.AccessGranted;
+                        contVm.Id = contVm.Id;
 
                         foreach (var actionP in contP.ActionPermissons)
                         {
-                            var actionVm = contVm.ActionPermissons.Single(a => a.Name == actionP.ActionName
+                            var actionVm = contVm.ActionPermissons.Single(a => a.Name.ToUpper() == actionP.ActionName.ToUpper()
                                             && a.Method == actionP.Method);
-                            actionVm.AccessGranted = actionP.GrantedRoles.Any(a => a == roleId);
+                            actionVm.AccessGranted = actionP.GrantedRoles.Any(a => a == roleId) || contVm.AccessGranted;
+                            actionVm.Id = actionVm.Id;
                         }
                     }
                 }
@@ -237,50 +242,115 @@ namespace RoleBasedPermission.Plugin.Services
             return vmPermissions;
         }
 
-        public void UpdateDiscriptors(List<vPermissionDiscriptor> discriptors, string roleId)
+        public async Task UpdateDiscriptorsAsync(List<vPermissionDiscriptor> discriptors, string roleId)
         {
-            var permToUpdate = CurrentPermissions.ToList();
-            var toUpdate = permToUpdate.Where(a => a is PermissionAssembly).Select(a => a as PermissionAssembly).ToList();
+            var toUpdate = CurrentPermissions.ToList();
 
             foreach (var vmAssembly in discriptors)
             {
-                var p = toUpdate.Single(a => a.AssemblyName == vmAssembly.AssemblyName);
-
-                if (vmAssembly.AccessGranted)
-                    p.GrantedRoles.Add(roleId);
-
-                foreach(var vmArea in vmAssembly.AreaPermissons)
+                var p = toUpdate.SingleOrDefault(a => a.AssemblyName.ToUpper() == vmAssembly.AssemblyName.ToUpper());
+                if (p == null)
                 {
-                    var pArea = p.AreaPermissions.Single(a => a.AreaName == vmArea.Name);
+                    //if(!vmAssembly.AccessGranted && !vmAssembly.AnyChildrenEnabled)
+                    //{
+                    //    continue;
+                    //}
 
-                    if (vmArea.AccessGranted)
-                        pArea.GrantedRoles.Add(roleId);
+                    p = new PermissionAssembly();
+                    p.AssemblyName = vmAssembly.AssemblyName;
 
-                    foreach(var vmCont in vmArea.ControllerPermissons)
+                    await _repository.InsertAsync(p);
+                    toUpdate.Add(p);
+                }
+
+                if (vmAssembly.AccessGranted && vmAssembly.AllChildrenEnabled)
+                {
+                    p.GrantedRoles.Add(roleId);
+                    //continue;
+                }
+                else
+                    p.GrantedRoles.Remove(roleId);
+
+                foreach (var vmArea in vmAssembly.AreaPermissons)
+                {
+                    vmArea.Name = vmArea.Name == null ? "" : vmArea.Name;
+                    var pArea = p.AreaPermissions.SingleOrDefault(a => a.AreaName.ToUpper() == vmArea.Name.ToUpper());
+                    if (pArea == null)
                     {
-                        var pCont = pArea.ControllerPermissons.Single(a => a.ControllerName == vmCont.Name);
+                        //if (!vmArea.AccessGranted && !vmArea.AnyChildrenEnabled)
+                        //{
+                        //    continue;
+                        //}
 
-                        if (vmCont.AccessGranted)
+                        pArea = new PermissionArea();
+                        pArea.AreaName = vmArea.Name;
+                        p.AreaPermissions.Add(pArea);
+                    }
+
+                    if (vmArea.AccessGranted && vmArea.AllChildrenEnabled)
+                    {
+                        pArea.GrantedRoles.Add(roleId);
+                        //continue;
+                    }
+                    else
+                        pArea.GrantedRoles.Remove(roleId);
+
+                    foreach (var vmCont in vmArea.ControllerPermissons)
+                    {
+                        var pCont = pArea.ControllerPermissons.SingleOrDefault(a => a.ControllerName.ToUpper() == vmCont.Name.ToUpper());
+                        if (pCont == null)
+                        {
+                            //if (!vmCont.AccessGranted && !vmCont.AnyChildrenEnabled)
+                            //{
+                            //    continue;
+                            //}
+
+                            pCont = new PermissionController();
+                            pCont.ControllerName = vmCont.Name;
+                            pArea.ControllerPermissons.Add(pCont);
+                        }
+
+                        if (vmCont.AccessGranted && vmCont.AllChildrenEnabled)
+                        {
                             pCont.GrantedRoles.Add(roleId);
+                            //continue;
+                        }
+                        else
+                            pCont.GrantedRoles.Remove(roleId);
 
                         foreach (var vmAction in vmCont.ActionPermissons)
                         {
-                            var pAction = pCont.ActionPermissons.Single(a => a.ActionName == vmAction.Name &&
+                            var pAction = pCont.ActionPermissons.SingleOrDefault(a => a.ActionName.ToUpper() == vmAction.Name.ToUpper() &&
                                             a.Method == vmAction.Method);
+                            if (pAction == null)
+                            {
+                                //if (!vmAction.AccessGranted && !vmAction.AnyChildrenEnabled)
+                                //{
+                                //    continue;
+                                //}
 
-                            if (vmAction.AccessGranted)
+                                pAction = new PermissionAction();
+                                pAction.ActionName = vmAction.Name;
+                                pAction.Method = vmAction.Method;
+                                pCont.ActionPermissons.Add(pAction);
+                            }
+
+                            if (vmAction.AccessGranted && vmAction.AllChildrenEnabled)
+                            {
                                 pAction.GrantedRoles.Add(roleId);
+                               // continue;
+                            }
+                            else
+                                pAction.GrantedRoles.Remove(roleId);
                         }
                     }
                 }
             }
 
-            _repository.UpdateAsync(permToUpdate);
+            await _repository.UpdateAsync(toUpdate);
             _currentPermissions = null;
             _permissonCache = null;
         }
-
-
 
         private PermissionResult GetCheckedPermission(Controller controller, ActionDescriptor action, string roleId)
         {
@@ -341,7 +411,7 @@ namespace RoleBasedPermission.Plugin.Services
             return PermissionExecutedResult.NotDefined;
         }
 
-        private async Task<List<Permission>> GetCurrentPermissions()
+        private async Task<List<PermissionAssembly>> GetCurrentPermissions()
         {
             var returnVal = await _repository.FindAllAsync(new GetAllPermissions());
 

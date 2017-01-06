@@ -9,6 +9,11 @@ namespace RoleBasedPermission.Plugin.Models
     {
         public string AreaName { get; set; }
 
-        public List<PermissionController> ControllerPermissons { get; set; } 
+        public List<PermissionController> ControllerPermissons { get; set; }
+
+        public PermissionArea() : base()
+        {
+            this.ControllerPermissons = new List<PermissionController>();
+        }
     }
 }

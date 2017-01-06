@@ -7,10 +7,12 @@
 
 <div class="row">
     <div class="col-xs-12 col-md-4">
-        <select id="roleSelect" multiple class="form-control">
+        <select id="roleSelect" class="form-control">
+            <option value="" @(Model.SelectedRoleId == "" ? "selected" : "")></option>
+
             @foreach (var role in Model.Roles)
             {
-                <option value="@role.RoleId" @(role.RoleId == Model.SelectedRoleId ? "selected" : "")>@role.Name</option>
+                <option value="@role.Id" @(role.Id == Model.SelectedRoleId ? "selected" : "")>@role.Name</option>
             }
         </select>
     </div>

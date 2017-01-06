@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace RoleBasedPermission.Plugin.Specifications
 {
-    public class GetAllPermissions : Specification<Permission>
+    public class GetAllPermissions : Specification<PermissionAssembly>
     {
 
         public GetAllPermissions()
         {
         }
 
-        public override Expression<Func<Permission, bool>> IsSatisifiedBy()
+        public override Expression<Func<PermissionAssembly, bool>> IsSatisifiedBy()
         {
             return a => a != null ;
         }

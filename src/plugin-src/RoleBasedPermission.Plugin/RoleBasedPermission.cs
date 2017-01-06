@@ -64,7 +64,7 @@ namespace RoleBasedPermission.Plugin
             get
             {
                 var list = new List<ServiceDescriptor>();
-                list.Add(ServiceDescriptor.Transient<IDataRepositoryAsync<Permission>, MongoDbRepository<Permission>>());
+                list.Add(ServiceDescriptor.Transient<IDataRepositoryAsync<PermissionAssembly>, MongoDbRepository<PermissionAssembly>>());
 
                 list.Add(ServiceDescriptor.Transient<IPermissionManagerService, PermissionService>());
                 list.Add(ServiceDescriptor.Transient<IPermissionService, PermissionService>());

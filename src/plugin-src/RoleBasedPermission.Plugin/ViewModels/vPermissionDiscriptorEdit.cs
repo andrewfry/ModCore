@@ -11,6 +11,8 @@ namespace RoleBasedPermission.Plugin.ViewModels
     {
         public List<vPermissionDiscriptor> Permissons { get; set; }
 
+        public string SelectedRoleId { get; set; }
+
         public vPermissionDiscriptorEdit()
         {
             Permissons = new List<vPermissionDiscriptor>();

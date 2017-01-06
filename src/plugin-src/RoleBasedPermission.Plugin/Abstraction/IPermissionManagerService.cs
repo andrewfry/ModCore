@@ -1,6 +1,7 @@
 ﻿using RoleBasedPermission.Plugin.Models;
 using RoleBasedPermission.Plugin.ViewModels;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RoleBasedPermission.Plugin.Abstraction
 {
@@ -10,6 +11,6 @@ namespace RoleBasedPermission.Plugin.Abstraction
 
         List<vPermissionDiscriptor> GetDiscriptorsForRole(string roleId);
 
-        void UpdateDiscriptors(List<vPermissionDiscriptor> discriptors, string roleId);
+        Task UpdateDiscriptorsAsync(List<vPermissionDiscriptor> discriptors, string roleId);
     }
 }

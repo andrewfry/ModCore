@@ -10,5 +10,10 @@ namespace RoleBasedPermission.Plugin.Models
         public string ControllerName { get; set; }
 
         public List<PermissionAction> ActionPermissons { get; set; }
+
+        public PermissionController() : base()
+        {
+            this.ActionPermissons = new List<PermissionAction>();
+        }
     }
 }

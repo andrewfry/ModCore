@@ -1,0 +1,20 @@
+﻿@using RoleBasedPermission.Plugin.ViewModels
+@using ModCore.Utilities.HelperExtensions
+@model vPermission
+
+@Html.HiddenFor(a=>a.Name)
+@Html.HiddenFor(a=>a.RoleId)
+@Html.HiddenFor(a=>a.Id)
+@if(Model is vPermissionActionDiscriptor)
+{
+    @Html.HiddenFor(a => ((vPermissionActionDiscriptor)a).Method);
+}
+
+<li class="perm-wrapper @(Model.HasChildren ? "has-children" : "")">
+    <span class="perm-chkbox">
+        @Html.CheckBoxFor(m => m.AccessGranted)
+    </span>
+    <span class="perm-name">
+        @(string.IsNullOrEmpty(Model.Name) ? "(Default)" : Model.Name.ToTitleCase())
+    </span>
+</li>

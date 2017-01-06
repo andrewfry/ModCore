@@ -9,7 +9,7 @@ namespace ModCore.ViewModels.Access
     {
         public string Name { get; set; }
 
-        public string RoleId { get; set; }
+        public string Id { get; set; }
 
     }
 }

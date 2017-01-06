@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ModCore.Abstraction.Plugins;
 using ModCore.Abstraction.Services.Access;
@@ -8,6 +9,7 @@ using ModCore.ViewModels.Access;
 using RoleBasedPermission.Plugin;
 using RoleBasedPermission.Plugin.Abstraction;
 using RoleBasedPermission.Plugin.ViewModels;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -49,6 +51,7 @@ namespace RoleBasedPermission.Areas.Admin.Controllers
             vPermissionDiscriptorEdit m = new vPermissionDiscriptorEdit();
 
             m.Permissons = _permissionManagerService.GetDiscriptorsForRole(selectedRoleId);
+            m.SelectedRoleId = selectedRoleId;
 
             return base.Json(new
             {
@@ -57,10 +60,14 @@ namespace RoleBasedPermission.Areas.Admin.Controllers
             });
         }
 
-        public async Task<IActionResult> PermissionSave(string selectedRoleId)
+        public async Task<IActionResult> PermissionSave(vPermissionDiscriptorEdit editModel)
         {
-            vPermissionDiscriptorEdit m = new vPermissionDiscriptorEdit();
-            return this.View(m);
+            await _permissionManagerService.UpdateDiscriptorsAsync(editModel.Permissons, editModel.SelectedRoleId);
+
+            return base.Json(new
+            {
+                status = "success",
+            });
         }
     }
 }

@@ -1,24 +1,26 @@
 ﻿@model RoleBasedPermission.Plugin.ViewModels.vPermissionDiscriptorEdit
-
 <div class="row">
     <div class="col-xs-12">
         <form id="permissionForm">
+            @Html.HiddenFor(a => a.SelectedRoleId)
+
             <ul class="perm-main-wrapper">
-                @foreach (var topPerm in Model.Permissons)
-            {
-                    @Html.Partial("PermissionEditItem", topPerm)
+                @for (int p = 0; p < Model.Permissons.Count; p++)
+                {
+                    @Html.HiddenFor(m => Model.Permissons[p].AssemblyName)
+                    @Html.EditorFor(m => Model.Permissons[p], "PermissionEditItem")
                     <ul class="perm-area-wrapper perm-child-wrapper">
-                        @foreach (var areaPerm in topPerm.AreaPermissons)
+                        @for (int a = 0; a < Model.Permissons[p].AreaPermissons.Count; a++)
                         {
-                            @Html.Partial("PermissionEditItem", areaPerm)
+                            @Html.EditorFor(m => Model.Permissons[p].AreaPermissons[a], "PermissionEditItem")
                             <ul class="perm-cont-wrapper perm-child-wrapper">
-                                @foreach (var contPerm in areaPerm.ControllerPermissons)
+                                @for (int b = 0; b < Model.Permissons[p].AreaPermissons[a].ControllerPermissons.Count; b++)
                                 {
-                                    @Html.Partial("PermissionEditItem", contPerm)
+                                    @Html.EditorFor(m => Model.Permissons[p].AreaPermissons[a].ControllerPermissons[b], "PermissionEditItem")
                                     <ul class="perm-act-wrapper perm-child-wrapper">
-                                        @foreach (var actPerm in contPerm.ActionPermissons)
+                                        @for (int i = 0; i < Model.Permissons[p].AreaPermissons[a].ControllerPermissons[b].ActionPermissons.Count; i++)
                                         {
-                                            @Html.Partial("PermissionEditItem", actPerm)
+                                            @Html.EditorFor(m => Model.Permissons[p].AreaPermissons[a].ControllerPermissons[b].ActionPermissons[i], "PermissionEditItem")
                                         }
                                     </ul>
                                 }
@@ -53,12 +55,18 @@
             }
             var parent = $(this).parents(".perm-wrapper").next(".perm-child-wrapper").find("input").prop('checked', action);
         })
-        $("#savePermissionChanges").change(function (e) {
+        $("#savePermissionChanges").click(function (e) {
             e.preventDefault();
+
+            var data = JSON.stringify({
+                SelectedRoleId: $("#roleSelect").val(),
+                Permissions: $("#permissionForm").serialize()
+            });
+
             $.ajax({
                 url: "/Admin/RolePermission/PermissionSave",
                 type: "POST",
-                data: { selectedRoleId: $(this).val() },
+                data: $("#permissionForm").serialize(),
                 success: function (data, textStatus, jqXHR) {
                 },
             });
