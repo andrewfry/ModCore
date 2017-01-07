@@ -6,6 +6,7 @@ using ModCore.Core.Plugins;
 using ModCore.DataAccess.MongoDb;
 using ModCore.Models.Plugins;
 using RoleBasedPermission.Plugin.Abstraction;
+using RoleBasedPermission.Plugin.Filters;
 using RoleBasedPermission.Plugin.Models;
 using RoleBasedPermission.Plugin.Services;
 using System;
@@ -56,9 +57,7 @@ namespace RoleBasedPermission.Plugin
                 return routes;
             }
         }
-
-
-
+                
         public ICollection<ServiceDescriptor> Services
         {
             get
@@ -77,7 +76,7 @@ namespace RoleBasedPermission.Plugin
             get
             {
                 var list = new FilterCollection();
-                //list.Add(typeof(AdminAuthFilter));
+                list.Add(typeof(PermissionFilter));
                 return list;
             }
         }
@@ -91,5 +90,6 @@ namespace RoleBasedPermission.Plugin
         {
             return new PluginInstallResult();
         }
+               
     }
 }

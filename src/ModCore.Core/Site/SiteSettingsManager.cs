@@ -13,171 +13,73 @@ namespace ModCore.Core.Site
     {
 
         private readonly IDataRepositoryAsync<SiteSetting> _repository;
-        private readonly SiteSetting _settings;
+        private readonly SettingsManager _settingManager;
         private const string settingName = "MAIN_SITE_SETTINGS";
 
         public SiteSettingsManager(IDataRepositoryAsync<SiteSetting> repository)
         {
             _repository = repository;
+            _settingManager = new SettingsManager(_repository, settingName);
 
-            var siteSetting = repository.FindAsync(new GetSettingByName(settingName)).Result;
-            if (siteSetting == null)
-            {
-                siteSetting = new SiteSetting()
-                {
-                    Name = settingName
-                };
-
-                repository.InsertAsync(siteSetting);
-            }
-
-            _settings = siteSetting;
         }
-
         public async Task UpsertSettingAsync(string key, string regionName, object value)
         {
-            await UpsertSettingAsync(new SettingRegionPair(regionName, key), value);
+            await _settingManager.UpsertSettingAsync(key, regionName, value);
         }
 
         public async Task UpsertSettingAsync(SettingRegionPair pair, object value)
         {
-            var key = GenerateKey(pair.Region, pair.Key);
-            var nameOfType = value.GetType().FullName;
-            var qualifiedNameOfType = value.GetType().AssemblyQualifiedName;
-            var settingExists = _settings.Settings.ContainsKey(key.ToUpper());
-            SettingValue setting = null;
-
-            if (settingExists)
-            {
-                setting = _settings.Settings[key.ToUpper()];
-                setting.Value = value;
-                //setting.TypeName = nameOfType; - I dont think we should change the type on an upsert
-            }
-            else
-            {
-                setting = new SettingValue()
-                {
-                    TypeName = nameOfType,
-                    AssemblyQualifiedTypeName = qualifiedNameOfType,
-                    Value = value,
-                };
-
-                _settings.Settings.Add(key, setting);
-            }
-
-            await _repository.UpdateAsync(_settings);
-        }
-
-        public async Task<object> GetSettingAsync(string key, string regionName)
-        {
-            return await GetSettingAsync(new SettingRegionPair(key, regionName));
-        }
-
-        public async Task<object> GetSettingAsync(SettingRegionPair pair)
-        {
-            var key = GenerateKey(pair.Region, pair.Key);
-            return await GetSettingAsync(key);
-        }
-
-        public async Task<object> GetSettingAsync(string key)
-        {
-            return await GetSettingValueAsync(key);
-        }
-
-        public async Task<T> GetSettingAsync<T>(string key, string regionName)
-        {
-            return await GetSettingAsync<T>(new SettingRegionPair(key, regionName));
-        }
-
-        public async Task<T> GetSettingAsync<T>(SettingRegionPair pair)
-        {
-            var key = GenerateKey(pair.Region, pair.Key);
-            return await GetSettingAsync<T>(key);
-        }
-
-
-        public async Task<bool> ContainsSettingAsync(SettingRegionPair pair)
-        {
-            var key = GenerateKey(pair.Region, pair.Key);
-            var exists = _settings.Settings.ContainsKey(key.ToUpper());
-
-            return exists;
-        }
-
-        public async Task EnsureDefaultSettingAsync(SettingRegionPair pair, object value)
-        {
-            var exists = await ContainsSettingAsync(pair);
-            if (exists)
-                return;
-
-            await UpsertSettingAsync(pair, value);
+            await _settingManager.UpsertSettingAsync(pair, value);
         }
 
         public async Task<T> GetSettingAsync<T>(string key)
         {
-            var setting = await GetSettingValueAsync(key);
-            var nameOfType = setting.Value.GetType().FullName;
+            return await _settingManager.GetSettingAsync<T>(key);
+        }
 
-            if (setting.TypeName != nameOfType)
-            {
-                throw new Exception($"The Key: {key} expected a type of {nameOfType} but got a type of {setting.TypeName}.");
-            }
+        public async Task<object> GetSettingAsync(string key, string regionName)
+        {
+            return await _settingManager.GetSettingAsync(key, regionName);
+        }
 
-            return (T)setting.Value;
+        public async Task<object> GetSettingAsync(string key)
+        {
+            return await _settingManager.GetSettingAsync(key);
+        }
+
+        public async Task<object> GetSettingAsync(SettingRegionPair pair)
+        {
+            return await _settingManager.GetSettingAsync(pair);
+        }
+
+        public async Task<T> GetSettingAsync<T>(string key, string regionName)
+        {
+            return await _settingManager.GetSettingAsync<T>(key, regionName);
+        }
+
+        public async Task<T> GetSettingAsync<T>(SettingRegionPair pair)
+        {
+            return await _settingManager.GetSettingAsync<T>(pair);
+        }
+
+        public async Task<bool> ContainsSettingAsync(SettingRegionPair pair)
+        {
+            return await _settingManager.ContainsSettingAsync(pair);
+        }
+
+        public async Task EnsureDefaultSettingAsync(SettingRegionPair pair, object value)
+        {
+            await _settingManager.EnsureDefaultSettingAsync(pair, value);
         }
 
         public async Task<List<SettingDescriptor>> GetAllAsync()
         {
-            var returnValue = new List<SettingDescriptor>();
-
-            foreach (var setting in _settings.Settings)
-            {
-                returnValue.Add(GetSettingDescriptor(setting));
-            }
-
-            return returnValue;
+            return await _settingManager.GetAllAsync();
         }
 
         public SettingRegionPair GetSettingRegionPair(string rawKey)
         {
-            var split = rawKey.Split('|');
-            var region = split.Length > 1 ? split[0] : "";
-            var key = split.Length > 1 ? split[1] : split[0];
-
-            return new SettingRegionPair(region, key);
-        }
-
-        private string GenerateKey(string region, string key)
-        {
-            key = key.Replace("|", "");
-
-            return string.Concat(region, "|", key).ToUpper();
-        }
-
-        private SettingDescriptor GetSettingDescriptor(KeyValuePair<string, SettingValue> setting)
-        {
-            var settingPair = GetSettingRegionPair(setting.Key);
-
-            return new SettingDescriptor
-            {
-                Key = settingPair.Key,
-                RegionName = settingPair.Region,
-                Value = setting.Value.Value,
-                TypeName = setting.Value.TypeName,
-                 AssemblyQualifiedTypeName = setting.Value.AssemblyQualifiedTypeName
-            };
-        }
-
-        private async Task<SettingValue> GetSettingValueAsync(string key)
-        {
-            var exists = _settings.Settings.ContainsKey(key.ToUpper());
-
-            if (exists == false)
-            {
-                throw new KeyNotFoundException(key);
-            }
-
-            return _settings.Settings[key.ToUpper()];
+            return _settingManager.GetSettingRegionPair(rawKey);
         }
 
 

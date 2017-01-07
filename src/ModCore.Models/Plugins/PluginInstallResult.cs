@@ -1,7 +1,11 @@
-﻿namespace ModCore.Models.Plugins
+﻿using System.Collections.Generic;
+
+namespace ModCore.Models.Plugins
 {
     public class PluginInstallResult
     {
-        bool WasSuccessful { get; }
+        public bool WasSuccessful { get; set; }
+
+        public List<string> Errors { get; set; }
     }
 }

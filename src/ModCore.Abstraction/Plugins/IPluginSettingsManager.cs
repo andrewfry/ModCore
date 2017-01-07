@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ModCore.Models.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,9 +8,31 @@ namespace ModCore.Abstraction.Plugins
 {
     public interface IPluginSettingsManager
     {
-        bool AddSettings(string key, object value, IPlugin plugin);
+        void SetPlugin(IPlugin plugin);
 
-        T GetSetting<T>(string key, IPlugin plugin);
+        Task UpsertSettingAsync(string key, string regionName, object value);
+
+        Task UpsertSettingAsync(SettingRegionPair pair, object value);
+
+        Task<T> GetSettingAsync<T>(string key);
+
+        Task<object> GetSettingAsync(string key, string regionName);
+
+        Task<object> GetSettingAsync(string key);
+
+        Task<object> GetSettingAsync(SettingRegionPair pair);
+
+        Task<T> GetSettingAsync<T>(string key, string regionName);
+
+        Task<T> GetSettingAsync<T>(SettingRegionPair pair);
+
+        Task<bool> ContainsSettingAsync(SettingRegionPair pair);
+
+        Task EnsureDefaultSettingAsync(SettingRegionPair pair, object value);
+
+        Task<List<SettingDescriptor>> GetAllAsync();
+
+        SettingRegionPair GetSettingRegionPair(string rawKey);
 
     }
 }

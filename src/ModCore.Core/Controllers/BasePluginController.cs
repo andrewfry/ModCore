@@ -21,6 +21,7 @@ namespace ModCore.Core.Controllers
         {
             get
             {
+                _pluginSettingsManager.SetPlugin(this.Plugin);
                 return _pluginSettingsManager;
             }
         }

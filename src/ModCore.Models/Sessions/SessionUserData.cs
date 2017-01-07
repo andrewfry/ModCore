@@ -34,5 +34,12 @@ namespace ModCore.Models.Sessions
         public int FailedLoginAttempts { get; set; }
 
         public bool LockedOut { get; set; }
+
+        public List<string> RoleIds { get; set; }
+
+        public SessionUserData()
+        {
+            this.RoleIds = new List<string>();
+        }
     }
 }
