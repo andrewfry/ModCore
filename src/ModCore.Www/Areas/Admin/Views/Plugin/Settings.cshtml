@@ -2,49 +2,61 @@
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
     var regions = Model.Settings.GroupBy(a => a.RegionName).Select(a => a.Key).OrderBy(a => a).ToList();
-    ViewBag.Title = "Settings";
+    ViewBag.Title = Model.Name + "'s" + " Settings";
 }
 
+@if (Model.Settings.Any())
+{
+    <form class="form-horizontal" id="frmSiteSettings">
+        @Html.Hidden("plugin_assembly", Model.AssemblyName)
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="message">
 
-<form class="form-horizontal" id="frmSiteSettings">
-    @Html.Hidden("plugin_assembly", Model.AssemblyName)
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div id="message">
-
-                    </div>
-                </div>
-            </div>
-            @foreach (var region in regions)
-            {
-                <div class="row col-xs-12">
-                    <h4>
-                        @region
-                    </h4>
-                </div>
-                @foreach (var setting in Model.Settings.Where(a => a.RegionName == region).OrderBy(a => a.Key))
-                {
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label" for="@(region + "_" + setting.Key)">@setting.Key</label>
-                        <div class="col-sm-9">
-                            @await Html.PartialAsync("_settingEditor", setting)
                         </div>
                     </div>
+                </div>
+                @foreach (var region in regions)
+            {
+            <div class="row col-xs-12">
+                <h4>
+                    @region
+                </h4>
+            </div>
+            @foreach (var setting in Model.Settings.Where(a => a.RegionName == region).OrderBy(a => a.Key))
+                {
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="@(region + "_" + setting.Key)">@setting.Key</label>
+                <div class="col-sm-9">
+                    @await Html.PartialAsync("_settingEditor", setting)
+                </div>
+            </div>
                 }
             }
-        </div>
-        <div class="panel-footer clearfix">
-            <div class="pull-right">
+            </div>
+            <div class="panel-footer clearfix">
+                <div class="pull-right">
 
-                <button class="btn btn-success" id="btnSaveChanges">
-                    Save Changes
-                </button>
+                    <button class="btn btn-success" id="btnSaveChanges">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+}
+else
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="alert alert-info">
+                There are currently no settings configured for this plugin.
             </div>
         </div>
     </div>
-</form>
+}
 
 @section scripts{
     <script>

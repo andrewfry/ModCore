@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ModCore.Utilities.Reflection
@@ -39,6 +40,28 @@ namespace ModCore.Utilities.Reflection
             }
 
             return Convert.ChangeType(value, t);
+        }
+
+        public static object ChangeTypeWithEnumConversion(this object value, Type conversion)
+        {
+
+            if (conversion.IsConstructedGenericType && conversion.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            {
+                if (value == null)
+                {
+                    return null;
+                }
+
+                conversion = Nullable.GetUnderlyingType(conversion);
+            }
+
+            if(conversion.GetTypeInfo().IsEnum)
+            {
+                value = Convert.ChangeType(value, typeof(System.Int32));
+                return Enum.ToObject(conversion, value);
+            }
+
+            return Convert.ChangeType(value, conversion);
         }
     }
 }

@@ -94,6 +94,8 @@ namespace ModCore.Www.Areas.Admin.Controllers
             _pluginSettingsManager.SetPlugin(plugin);
 
             var model = new vSettings();
+            model.AssemblyName = plugin.AssemblyName;
+            model.Name = plugin.Name;
             model.Settings = _pluginSettingsManager.GetAllAsync()
                 .Result
                 .Select(a => _mapper.Map<vSettingValue>(a)).ToList();

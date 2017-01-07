@@ -2,6 +2,7 @@
 using ModCore.Abstraction.Site;
 using ModCore.Models.Core;
 using ModCore.Specifications.Site;
+using ModCore.Utilities.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,8 +50,9 @@ namespace ModCore.Core.Site
             if (settingExists)
             {
                 setting = _settings.Settings[key.ToUpper()];
-                setting.Value = value;
-                //setting.TypeName = nameOfType; - I dont think we should change the type on an upsert
+                //setting.Value = Convert.ChangeType(value, Type.GetType(setting.AssemblyQualifiedTypeName));
+                var curType = Type.GetType(setting.AssemblyQualifiedTypeName);
+                setting.Value = value.ChangeTypeWithEnumConversion(curType);
             }
             else
             {

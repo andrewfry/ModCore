@@ -6910,6 +6910,16 @@
   visibility: hidden;
 }
 
+.mdi-set.mdi-14px,
+.mdi.mdi-14px:before {
+  font-size: 14px;
+}
+
+.mdi-set.mdi-16px,
+.mdi.mdi-16px:before {
+  font-size: 16px;
+}
+
 .mdi-set.mdi-18px,
 .mdi.mdi-18px:before {
   font-size: 18px;
