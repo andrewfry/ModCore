@@ -10,5 +10,6 @@ namespace ModCore.ViewModels.Core
     {
         public List<vSettingValue> Settings { get; set; }
 
+        public string AssemblyName { get; set; }
     }
 }

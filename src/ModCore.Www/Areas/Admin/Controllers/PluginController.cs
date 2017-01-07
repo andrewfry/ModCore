@@ -14,6 +14,8 @@ using AutoMapper;
 using ModCore.Core.Site;
 using ModCore.Abstraction.Services.Access;
 using ModCore.Models.Plugins;
+using Microsoft.AspNetCore.Http;
+using ModCore.ViewModels.Core;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
@@ -21,14 +23,17 @@ namespace ModCore.Www.Areas.Admin.Controllers
     public class PluginController : BaseController
     {
         private IPluginManager _pluginManager;
+        private IPluginSettingsManager _pluginSettingsManager;
 
-        public PluginController(ILog log, ISiteSettingsManagerAsync siteSettingsManager,
-            IBaseViewModelProvider baseModeProvider, IPluginManager pluginManager, IMapper mapper, ISessionService sessionService)
+        public PluginController(ILog log, ISiteSettingsManagerAsync siteSettingsManager, IBaseViewModelProvider baseModeProvider,
+            IPluginManager pluginManager, IMapper mapper, ISessionService sessionService, IPluginSettingsManager pluginSettingsManager)
             : base(log, siteSettingsManager, baseModeProvider, mapper, sessionService)
         {
             _pluginManager = pluginManager;
+            _pluginSettingsManager = pluginSettingsManager;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
 
@@ -50,9 +55,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
             return View(m);
         }
 
-
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public IActionResult EnabledPlugin(string pluginAssembly)
         {
             var plugin = _pluginManager.AvailablePlugins.FirstOrDefault(a => a.AssemblyName == pluginAssembly);
@@ -68,9 +71,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
             return JsonSuccess();
         }
 
-
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public IActionResult DisablePlugin(string pluginAssembly)
         {
             var plugin = _pluginManager.InstalledPlugins.FirstOrDefault(a => a.AssemblyName == pluginAssembly);
@@ -84,6 +85,47 @@ namespace ModCore.Www.Areas.Admin.Controllers
             appManager.Restart();
 
             return JsonSuccess();
+        }
+
+        [HttpGet]
+        public IActionResult Settings(string pluginAssembly)
+        {
+            var plugin = _pluginManager.InstalledPlugins.FirstOrDefault(a => a.AssemblyName == pluginAssembly);
+            _pluginSettingsManager.SetPlugin(plugin);
+
+            var model = new vSettings();
+            model.Settings = _pluginSettingsManager.GetAllAsync()
+                .Result
+                .Select(a => _mapper.Map<vSettingValue>(a)).ToList();
+
+            return View(model);
+        }
+
+
+        public async Task<IActionResult> SaveSettingChanges(IFormCollection form)
+        {
+            var pluginAssembly = form["plugin_assembly"].ToString();
+            var plugin = _pluginManager.InstalledPlugins.FirstOrDefault(a => a.AssemblyName.ToLower() == pluginAssembly.ToLower());
+            _pluginSettingsManager.SetPlugin(plugin);
+
+            try
+            {
+                foreach (var item in form)
+                {
+                    var settingPair = _pluginSettingsManager.GetSettingRegionPair(item.Key);
+                    var contains = await _pluginSettingsManager.ContainsSettingAsync(settingPair);
+                    if (contains)
+                    {
+                        await _pluginSettingsManager.UpsertSettingAsync(settingPair, item.Value[0]);
+                    }
+                }
+
+                return JsonSuccess();
+            }
+            catch (Exception ex)
+            {
+                return JsonFail(ex.Message);
+            }
         }
     }
 }

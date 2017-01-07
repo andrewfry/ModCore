@@ -2,11 +2,12 @@
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
     var regions = Model.Settings.GroupBy(a => a.RegionName).Select(a => a.Key).OrderBy(a => a).ToList();
-    ViewBag.Title = "Site Settings";
+    ViewBag.Title = "Settings";
 }
 
 
 <form class="form-horizontal" id="frmSiteSettings">
+    @Html.Hidden("plugin_assembly", Model.AssemblyName)
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="row">
@@ -52,7 +53,7 @@
             var form = $("#frmSiteSettings").serialize();
             $.ajax({
                 type: "POST",
-                url: "/Admin/SiteSettings/SaveChanges",
+                url: "/Admin/Plugin/SaveSettingChanges",
                 data: form,
                 dataType: "json",
                 success: function (response) {

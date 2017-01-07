@@ -37,24 +37,29 @@ namespace ModCore.Www.Areas.Admin.Controllers
                 .Result
                 .Select(a => _mapper.Map<vSettingValue>(a)).ToList();
 
-
-
             return View(model);
         }
 
         public async Task<IActionResult> SaveChanges(IFormCollection form)
         {
-            foreach (var item in form)
+            try
             {
-                var settingPair = _siteSettingsManager.GetSettingRegionPair(item.Key);
-                var contains = await _siteSettingsManager.ContainsSettingAsync(settingPair);
-                if (contains)
+                foreach (var item in form)
                 {
-                  await _siteSettingsManager.UpsertSettingAsync(settingPair, item.Value[0]);
+                    var settingPair = _siteSettingsManager.GetSettingRegionPair(item.Key);
+                    var contains = await _siteSettingsManager.ContainsSettingAsync(settingPair);
+                    if (contains)
+                    {
+                        await _siteSettingsManager.UpsertSettingAsync(settingPair, item.Value[0]);
+                    }
                 }
-            }
 
-            return null;
+                return JsonSuccess();
+            }
+            catch (Exception ex)
+            {
+                return JsonFail(ex.Message);
+            }
         }
 
     }

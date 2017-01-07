@@ -1,0 +1,1 @@
+﻿$.getScript('/js/controls/message.js');
