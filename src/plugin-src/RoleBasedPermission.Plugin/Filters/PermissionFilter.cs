@@ -47,12 +47,15 @@ namespace RoleBasedPermission.Plugin.Filters
                 {
                     logger.LogDebug<PermissionFilter>("User denied access. User id {0} for controller '{1}' and action '{2}'", controller.CurrentSession.UserId, controller.ControllerContext.ActionDescriptor.ControllerName, context.ActionDescriptor.DisplayName);
                     context.Result = controller.RedirectToAction("Error", new { id = "404" });
+                    return;
                 }
 
                 await next();
                 return;
             }
 
+            await next();
+            return;
         }
     }
 }
