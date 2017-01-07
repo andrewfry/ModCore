@@ -19,6 +19,8 @@ using AutoMapper;
 using ModCore.Utilities.HelperExtensions;
 using ModCore.Abstraction.Services.Access;
 using Microsoft.AspNetCore.Mvc.Abstractions;
+using ModCore.Core.Site;
+using Newtonsoft.Json;
 
 namespace ModCore.Core.Controllers
 {
@@ -44,7 +46,7 @@ namespace ModCore.Core.Controllers
 
                 if (_currentSession == null)
                 {
-                     _currentSession = _sessionService.GetCurrentOrDefault();
+                    _currentSession = _sessionService.GetCurrentOrDefault();
                 }
 
                 return _currentSession;
@@ -98,7 +100,7 @@ namespace ModCore.Core.Controllers
         {
             var baseVm = model as BaseViewModel;
             if (baseVm == null)
-                throw new ArgumentNullException(nameof(model),"You must provide a model to every view that inherits from BaseViewModel");
+                throw new ArgumentNullException(nameof(model), "You must provide a model to every view that inherits from BaseViewModel");
 
             if (updateBaseViewModel)
                 _baseClassProvider.Update(this, baseVm);
@@ -110,6 +112,48 @@ namespace ModCore.Core.Controllers
         public Task<string> RenderViewAsString(string viewPath)
         {
             return RenderViewAsString(viewPath, "");
+        }
+
+        [NonAction]
+        public JsonResult JsonSuccess(object value, JsonSerializerSettings settings)
+        {
+            return Json(new JsonSuccessResult(value), settings);
+        }
+
+        [NonAction]
+        public JsonResult JsonSuccess(object value)
+        {
+            return Json(new JsonSuccessResult(value));
+        }
+
+        [NonAction]
+        public JsonResult JsonSuccess()
+        {
+            return Json(new JsonSuccessResult(null));
+        }
+
+        [NonAction]
+        public JsonResult JsonFail(object value, JsonSerializerSettings settings)
+        {
+            return Json(new JsonFailResult(value), settings);
+        }
+
+        [NonAction]
+        public JsonResult JsonFail(object value)
+        {
+            return Json(new JsonFailResult(value));
+        }
+
+        [NonAction]
+        public JsonResult JsonFail(params string[] errorMessages)
+        {
+            return Json(new JsonFailResult(null, errorMessages));
+        }
+
+        [NonAction]
+        public JsonResult JsonFail()
+        {
+            return Json(new JsonFailResult(null));
         }
 
         //[NonAction]

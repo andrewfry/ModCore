@@ -4,6 +4,37 @@
     ViewBag.Title = "Manage Plugins";
 }
 
+<div class="row">
+    <div class="col-xs-12">
+        @if (Model.PluginErrors.Any())
+        {
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach (var error in Model.PluginErrors)
+                    {
+                        <li>@error.ErrorMessage (@error.PluginName)</li>
+                    }
+                </ul>
+            </div>
+        }
+        @if (Model.PluginErrors.Any() && Model.PluginWarnings.Any())
+        {
+            <br />
+        }
+        @if (Model.PluginWarnings.Any())
+        {
+            <div class="alert alert-warning">
+                <ul>
+                    @foreach (var warn in Model.PluginWarnings)
+                    {
+                        <li>@warn.ErrorMessage (@warn.PluginName)</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+</div>
+
 <div class="list-group">
     @foreach (var plug in Model.Plugins.OrderBy(a => a.Active))
     {

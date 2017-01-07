@@ -28,6 +28,7 @@ namespace ModCore.Core.Plugins
         private IHostingEnvironment _hostingEnvironment;
         private IDataRepository<InstalledPlugin> _repository;
         private ApplicationPartManager _appPartManager;
+        private List<PluginError> _errors;
 
         private IList<IPlugin> _availablePlugins;
         private IList<IPlugin> _installedPlugins;
@@ -43,6 +44,17 @@ namespace ModCore.Core.Plugins
             get
             {
                 return ActivePlugins.GetHashCode();
+            }
+        }
+
+        public List<PluginError> Errors
+        {
+            get
+            {
+                if (_errors == null)
+                    _errors = new List<PluginError>();
+
+                return _errors;
             }
         }
 
@@ -92,6 +104,7 @@ namespace ModCore.Core.Plugins
                 if (_availablePluginAssemnies == null)
                 {
                     _availablePluginAssemnies = _assemblyManager.GetPluginAndAssemblies(_pluginDirPath);
+                    this.Errors.AddRange(_assemblyManager.PluginErrors);
                 }
 
                 return _availablePluginAssemnies;

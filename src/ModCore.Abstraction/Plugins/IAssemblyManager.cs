@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyModel;
+using ModCore.Models.Plugins;
 
 namespace ModCore.Abstraction.Plugins
 {
@@ -20,6 +21,6 @@ namespace ModCore.Abstraction.Plugins
 
         IList<Tuple<IPlugin, IList<Assembly>>> GetPluginAndAssemblies(string path);
 
-
+        IList<PluginError> PluginErrors { get; }
     }
 }

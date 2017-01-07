@@ -9,6 +9,7 @@ using System.Runtime.Loader;
 using ModCore.Core.HelperExtensions;
 using Microsoft.Extensions.Logging;
 using ModCore.Utilities.HelperExtensions;
+using ModCore.Models.Plugins;
 
 namespace ModCore.Core.Plugins
 {
@@ -29,6 +30,20 @@ namespace ModCore.Core.Plugins
 
         private List<Assembly> _coreApplicationAssemblies;
         private List<Dependency> _dependencies;
+        private List<PluginError> _errors;
+
+        public IList<PluginError> PluginErrors
+        {
+            get
+            {
+                if (_errors == null)
+                {
+                    _errors = new List<PluginError>();
+                }
+
+                return _errors;
+            }
+        }
 
         public IEnumerable<Assembly> CoreApplicationAssemblies
         {
@@ -72,17 +87,18 @@ namespace ModCore.Core.Plugins
             var dependencies = DependencyContext.Default.RuntimeLibraries;
             foreach (var library in dependencies)
             {
-                if (IsCandidateLibrary(library, assemblyNameStartsWith))
+                try
                 {
-                    try
+                    if (IsCandidateLibrary(library, assemblyNameStartsWith))
                     {
                         var assembly = Assembly.Load(new AssemblyName(library.Name));
                         assemblies.Add(assembly);
                     }
-                    catch(Exception ex)
-                    {
-                        _logger.LogError(new EventId(), ex, "Failed to load the library {0}.", library.Name);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(new EventId(), ex, "Failed to load the library {0}.", library?.Name);
+                    PluginErrors.Add(new PluginError(PluginErrorLevel.Error, PluginErrorType.AssemblyLoad, library?.Name, "Failed to load a reference library."));
                 }
             }
             return assemblies;
@@ -104,12 +120,24 @@ namespace ModCore.Core.Plugins
                 var dllsToAdd = Directory.EnumerateFiles(folder, "*.dll");
                 foreach (string dllPath in dllsToAdd)
                 {
-                    var assemblyName = FromPath(dllPath);
-
-                    if (!AlreadyLoaded(assemblyName))
+                    try
                     {
-                        Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(dllPath);
-                        assemblies.Add(assembly);
+                        var assemblyName = FromPath(dllPath);
+                        if (!AlreadyLoaded(assemblyName))
+                        {
+                            Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(dllPath);
+                            assemblies.Add(assembly);
+                        }
+                        else
+                        {
+                            _logger.LogWarning(new EventId(), "This DLL is already loaded.", dllPath);
+                            PluginErrors.Add(new PluginError(PluginErrorLevel.Warning, PluginErrorType.AssemblyLoad, dllPath, "This DLL is already loaded."));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(new EventId(), ex, "The dll {0} did not load the DLL correctly.", dllPath);
+                        PluginErrors.Add(new PluginError(PluginErrorLevel.Error, PluginErrorType.AssemblyLoad, dllPath, ex.Message));
                     }
                 }
             }
@@ -134,13 +162,19 @@ namespace ModCore.Core.Plugins
                 IPlugin pluginInstance = null;
 
                 var dllsToAdd = Directory.EnumerateFiles(folder, "*.dll");
+                if (!dllsToAdd.Any())
+                {
+                    _logger.LogWarning(new EventId(), "There are no plugins found in the Plugin location.", folder);
+                    PluginErrors.Add(new PluginError(PluginErrorLevel.Warning, PluginErrorType.AssemblyLoad, folder, "There are no plugins found in the Plugin location."));
+                }
+
                 foreach (string dllPath in dllsToAdd)
                 {
-                    var assemblyName = FromPath(dllPath);
-
-                    if (!AlreadyLoaded(assemblyName))
+                    try
                     {
-                        try
+                        var assemblyName = FromPath(dllPath);
+
+                        if (!AlreadyLoaded(assemblyName))
                         {
                             Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(dllPath);
                             assemblies.Add(assembly);
@@ -150,11 +184,22 @@ namespace ModCore.Core.Plugins
                             {
                                 pluginInstance = assembly.GetInstance<IPlugin>();
                             }
+                            else
+                            {
+                                _logger.LogWarning(new EventId(), "This DLL does not contain an IPlugin class.", dllPath);
+                                PluginErrors.Add(new PluginError(PluginErrorLevel.Warning, PluginErrorType.AssemblyLoad, dllPath, "This DLL does not contain an IPlugin class."));
+                            }
                         }
-                        catch(Exception ex)
+                        else
                         {
-                            _logger.LogError(new EventId(), ex, "The dll {0} did not load the instance of IPlugin correctly.", dllPath);
+                            _logger.LogWarning(new EventId(), "This DLL is already loaded.", dllPath);
+                            PluginErrors.Add(new PluginError(PluginErrorLevel.Warning, PluginErrorType.AssemblyLoad, dllPath, "This DLL is already loaded."));
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(new EventId(), ex, "The dll {0} did not load the DLL correctly.", dllPath);
+                        PluginErrors.Add(new PluginError(PluginErrorLevel.Error, PluginErrorType.AssemblyLoad, dllPath, ex.Message));
                     }
                 }
 
@@ -176,7 +221,6 @@ namespace ModCore.Core.Plugins
                     ))
                     .ToList();
         }
-
 
         private AssemblyName FromPath(string dllPath)
         {

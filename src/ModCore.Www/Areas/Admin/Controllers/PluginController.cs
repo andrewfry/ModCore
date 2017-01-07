@@ -13,6 +13,7 @@ using ModCore.Core.Plugins;
 using AutoMapper;
 using ModCore.Core.Site;
 using ModCore.Abstraction.Services.Access;
+using ModCore.Models.Plugins;
 
 namespace ModCore.Www.Areas.Admin.Controllers
 {
@@ -43,6 +44,8 @@ namespace ModCore.Www.Areas.Admin.Controllers
 
             var m = new vPluginList();
             m.Plugins = availablePlugins;
+            m.PluginErrors = _pluginManager.Errors.Where(a => a.ErrorLevel == PluginErrorLevel.Error).ToList();
+            m.PluginWarnings = _pluginManager.Errors.Where(a => a.ErrorLevel == PluginErrorLevel.Warning).ToList();
 
             return View(m);
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using ModCore.Models.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace ModCore.Abstraction.Plugins
     public interface IPluginManager
     {
         int ActivePluginHash { get; }
+
+        List<PluginError> Errors { get; }
 
         IList<IPlugin> AvailablePlugins { get; }
 
