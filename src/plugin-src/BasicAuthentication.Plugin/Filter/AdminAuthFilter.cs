@@ -29,21 +29,15 @@ namespace BasicAuthentication.Plugin.Filters
             }
 
             _currentSession = _sessionService.GetCurrentOrDefault();
+
+            if (_currentSession == null)
+            {
+                throw new ArgumentNullException($"{nameof(_currentSession)} is null in Admin Auth Fitler");
+            }
         }
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            if (context.RouteData.Values["Area"] == null)
-            {
-                return;
-            }
-
-            var isAdminRoute = string.Compare(context.RouteData.Values["Area"].ToString(), "Admin", true) == 0;
-            if (!isAdminRoute)
-            {
-                return;
-            }
-
             if (context.RouteData.Values["Controller"].ToString().ToLower() == "account" && context.RouteData.Values["Action"].ToString().ToLower() == "login")
             {
                 return;

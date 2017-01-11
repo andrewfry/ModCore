@@ -2,7 +2,7 @@
 
 namespace ModCore.Models.Plugins
 {
-    public class PluginInstallResult
+    public class PluginResult
     {
         public bool WasSuccessful { get; set; }
 

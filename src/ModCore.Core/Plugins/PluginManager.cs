@@ -174,7 +174,7 @@ namespace ModCore.Core.Plugins
             }
 
         }
-        
+
         public FilterCollection ActivePluginGlobalFilters
         {
             get
@@ -252,19 +252,40 @@ namespace ModCore.Core.Plugins
 
         }
 
-        public void ActivatePlugin(IPlugin plugin)
+
+        private PluginResult InstallPlugin(IPlugin plugin) // returns successful if the plugin installed correctly.
+        {
+            var context = new PluginInstallContext();
+            var result = plugin.Install(context);
+            if (!result.WasSuccessful)
+            {
+                return result;
+            }
+
+            var installedPlugin = new InstalledPlugin();
+            installedPlugin.PluginAssemblyName = plugin.AssemblyName;
+            installedPlugin.PluginName = plugin.Name;
+            installedPlugin.PluginVersion = plugin.Version;
+            installedPlugin.DateInstalled = DateTime.UtcNow;
+            installedPlugin.Installed = true;
+
+            _repository.Insert(installedPlugin);
+
+
+            return new PluginResult
+            {
+                WasSuccessful = true
+            };
+        }
+
+        public PluginResult ActivatePlugin(IPlugin plugin)
         {
             var installedPlugin = _repository.Find(new InstalledPluginForPlugin(plugin));
             if (installedPlugin == null)
             {
-                installedPlugin = new InstalledPlugin();
-                installedPlugin.PluginAssemblyName = plugin.AssemblyName;
-                installedPlugin.PluginName = plugin.Name;
-                installedPlugin.PluginVersion = plugin.Version;
-                installedPlugin.DateInstalled = DateTime.UtcNow;
-                installedPlugin.Installed = true;
-
-                _repository.Insert(installedPlugin);
+                var result = InstallPlugin(plugin);
+                if (!result.WasSuccessful)
+                    return result;
             }
 
             if (installedPlugin.Active == false)
@@ -277,9 +298,14 @@ namespace ModCore.Core.Plugins
             RegisterAssemblyInPartManager(plugin);
 
             Refresh();
+
+            return new PluginResult
+            {
+                WasSuccessful = true
+            };
         }
 
-        public void DeactivatePlugin(IPlugin plugin)
+        public PluginResult DeactivatePlugin(IPlugin plugin)
         {
             var installedPlugin = _repository.Find(new InstalledPluginForPlugin(plugin));
             if (installedPlugin == null)
@@ -292,6 +318,11 @@ namespace ModCore.Core.Plugins
             RemoveFromAssemblyInPartManager(plugin);
 
             Refresh();
+
+            return new PluginResult
+            {
+                WasSuccessful = true
+            };
         }
 
         public void RemoveServices(IPlugin plugin, IMvcCoreBuilder coreBuilder)

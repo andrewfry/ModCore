@@ -29,9 +29,11 @@ namespace ModCore.Abstraction.Plugins
 
         FilterCollection Filters { get; }
 
-        PluginInstallResult Install();
+        PluginResult Install(PluginInstallContext context);
 
-        PluginInstallResult UnInstall();
+        PluginResult StartUp(PluginStartupContext context);
+
+        PluginResult UnInstall(PluginUninstallContext context);
 
     }
 }

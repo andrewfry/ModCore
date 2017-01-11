@@ -34,9 +34,9 @@ namespace ModCore.Abstraction.Plugins
 
         IList<ServiceDescriptor> ActivePluginServices { get; }
 
-        void ActivatePlugin(IPlugin plugin);
+        PluginResult ActivatePlugin(IPlugin plugin);
 
-        void DeactivatePlugin(IPlugin plugin);
+        PluginResult DeactivatePlugin(IPlugin plugin);
 
         void RegisterPluginList(IList<IPlugin> pluginList);
 

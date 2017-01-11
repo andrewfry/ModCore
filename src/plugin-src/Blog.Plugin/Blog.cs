@@ -83,14 +83,26 @@ namespace Blog.Plugin
             }
         }
 
-        public PluginInstallResult Install()
+
+        public PluginResult Install(PluginInstallContext context)
         {
-            return new PluginInstallResult();
+            var result = new PluginResult();
+            result.WasSuccessful = true;
+            return result;
         }
 
-        public PluginInstallResult UnInstall()
+        public PluginResult StartUp(PluginStartupContext context)
         {
-            return new PluginInstallResult();
+            var result = new PluginResult();
+            result.WasSuccessful = true;
+            return result;
+        }
+
+        public PluginResult UnInstall(PluginUninstallContext context)
+        {
+            var result = new PluginResult();
+            result.WasSuccessful = true;
+            return result;
         }
     }
 }

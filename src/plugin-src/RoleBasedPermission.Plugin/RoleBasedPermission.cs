@@ -4,6 +4,7 @@ using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
 using ModCore.Core.Plugins;
 using ModCore.DataAccess.MongoDb;
+using ModCore.Models.Core;
 using ModCore.Models.Plugins;
 using RoleBasedPermission.Plugin.Abstraction;
 using RoleBasedPermission.Plugin.Filters;
@@ -57,7 +58,7 @@ namespace RoleBasedPermission.Plugin
                 return routes;
             }
         }
-                
+
         public ICollection<ServiceDescriptor> Services
         {
             get
@@ -81,15 +82,36 @@ namespace RoleBasedPermission.Plugin
             }
         }
 
-        public PluginInstallResult Install()
+        public PluginResult Install(PluginInstallContext context)
         {
-            return new PluginInstallResult();
+            var result = new PluginResult();
+            result.WasSuccessful = true;
+            return result;
         }
 
-        public PluginInstallResult UnInstall()
+        public PluginResult StartUp(PluginStartupContext context)
         {
-            return new PluginInstallResult();
+            var settings = context.ServiceProvider.GetService<IPluginSettingsManager>();
+            settings.SetPlugin(this);
+
+            settings.EnsureDefaultSettingAsync(RoleBasedPermission.BuiltInSettings.AllowAnonymous, true);
+
+            var result = new PluginResult();
+            result.WasSuccessful = true;
+            return result;
         }
-               
+
+        public PluginResult UnInstall(PluginUninstallContext context)
+        {
+            var result = new PluginResult();
+            result.WasSuccessful = true;
+            return result;
+        }
+
+
+        public static class BuiltInSettings
+        {
+            public static SettingRegionPair AllowAnonymous => new SettingRegionPair("GENERAL", "ALLOW_ANONYMOUS");
+        }
     }
 }
