@@ -111,8 +111,13 @@ namespace ModCore.Core.HelperExtensions
         }
         public static IApplicationBuilder RegisterActivePlugins(this IApplicationBuilder app)
         {
-            var pluginManager = app.ApplicationServices.GetService<IPluginManager>();            
-            pluginManager.RegisterPluginList(pluginManager.ActivePlugins);
+            var pluginManager = app.ApplicationServices.GetService<IPluginManager>();
+            var startUpContext = new PluginStartupContext
+            {
+                 ServiceProvider = app.ApplicationServices
+            };
+                  
+            pluginManager.RegisterPluginList(startUpContext); //this is where the start up activities will be run
        
             return app;
 
@@ -149,8 +154,9 @@ namespace ModCore.Core.HelperExtensions
                 var assbly = srcProvider.GetRequiredService<IAssemblyManager>();
                 var repos = srcProvider.GetRequiredService<IDataRepository<InstalledPlugin>>();
                 var appMgr = srcProvider.GetRequiredService<ApplicationPartManager>();
+                var logger = srcProvider.GetRequiredService<ILogger>();
 
-                return new PluginManager(assbly, configRoot, env, repos, appMgr);
+                return new PluginManager(assbly, configRoot, env, repos, appMgr, logger);
             });
 
 

@@ -9,6 +9,8 @@ using ModCore.Abstraction.Services.Access;
 using ModCore.Models.Sessions;
 using System;
 using Microsoft.AspNetCore.Mvc;
+using ModCore.Abstraction.Plugins;
+using BasicAuthentication.Plugin;
 
 namespace BasicAuthentication.Plugin.Filters
 {
@@ -23,7 +25,7 @@ namespace BasicAuthentication.Plugin.Filters
             _siteSettings = siteSettings;
             _sessionService = sessionService;
 
-            if(_sessionService == null)
+            if (_sessionService == null)
             {
                 throw new ArgumentNullException($"{nameof(_sessionService)} is null in Admin Auth Fitler");
             }
@@ -38,6 +40,13 @@ namespace BasicAuthentication.Plugin.Filters
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
+            var settings = context.HttpContext.RequestServices.GetService(typeof(IPluginSettingsManager)) as IPluginSettingsManager;
+            settings.SetPlugin(new BasicAuthentication());
+
+            var isEnabled = await settings.GetSettingAsync<bool>(BasicAuthentication.BuiltInSettings.Enabled);
+            if (isEnabled == false)
+                return;
+
             if (context.RouteData.Values["Controller"].ToString().ToLower() == "account" && context.RouteData.Values["Action"].ToString().ToLower() == "login")
             {
                 return;
@@ -45,7 +54,7 @@ namespace BasicAuthentication.Plugin.Filters
 
             if (_currentSession.IsLoggedIn)
             {
-               return;
+                return;
             }
 
             context.Result = new RedirectResult($"/Admin/Account/Login?ReturnUrl={context.HttpContext.Request.Path}");

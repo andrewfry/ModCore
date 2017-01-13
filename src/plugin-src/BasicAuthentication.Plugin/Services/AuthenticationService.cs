@@ -71,7 +71,7 @@ namespace BasicAuthentication.Plugin.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError<AuthenticationService>(ex, "User Id {0}, failed to reset password", authUser.Id);
+                await _logger.LogError<AuthenticationService>(ex, "User Id {0}, failed to reset password", authUser.Id);
                 return new BasicAuthenticationResult(false, "An error occurred");
             }
         }
@@ -81,9 +81,9 @@ namespace BasicAuthentication.Plugin.Services
             try
             {
                 var result = new BasicAuthenticationResult(true);
-                var baseController =  controller as BaseController;
+                var baseController = controller as BaseController;
 
-                if(baseController == null)
+                if (baseController == null)
                 {
                     throw new InvalidCastException("The IBaseController is NOT a base controller");
                 }
@@ -99,7 +99,7 @@ namespace BasicAuthentication.Plugin.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError<AuthenticationService>(ex, "User Id {0}, failed to SignIn", authUser.Id);
+                await _logger.LogError<AuthenticationService>(ex, "User Id {0}, failed to SignIn", authUser.Id);
                 return new BasicAuthenticationResult(false, "An error occurred");
             }
         }
@@ -127,7 +127,7 @@ namespace BasicAuthentication.Plugin.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError<AuthenticationService>(ex, "User Id {0}, failed to SignIn", authUser.Id);
+                await _logger.LogError<AuthenticationService>(ex, "User Id {0}, failed to SignIn", authUser.Id);
                 return new BasicAuthenticationResult(false, "An error occurred");
             }
         }

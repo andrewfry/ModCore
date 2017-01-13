@@ -8,29 +8,29 @@ namespace ModCore.Abstraction.Site
 {
     public interface ILog
     {
-        void LogError<T>(Exception exception, string message, params string[] messageVariables);
+        Task LogError<T>(Exception exception, string message, params string[] messageVariables);
 
-        void LogError(string className, Exception exception, string message, params string[] messageVariables);
+        Task LogError(string className, Exception exception, string message, params string[] messageVariables);
 
-        void LogError(string className, SessionData sessionData, Exception exception, string route, string message, params string[] messageVariables);
+        Task LogError(string className, SessionData sessionData, Exception exception, string route, string message, params string[] messageVariables);
 
-        void LogWarning<T>(Exception exception, string message, params string[] messageVariables);
+        Task LogWarning<T>(Exception exception, string message, params string[] messageVariables);
 
-        void LogWarning(string className, Exception exception, string message, params string[] messageVariables);
+        Task LogWarning(string className, Exception exception, string message, params string[] messageVariables);
 
-        void LogWarning(string className, SessionData sessionData,  Exception exception, string route, string message, params string[] messageVariables);
+        Task LogWarning(string className, SessionData sessionData,  Exception exception, string route, string message, params string[] messageVariables);
 
-        void LogDebug<T>(string message, params string[] messageVariables);
+        Task LogDebug<T>(string message, params string[] messageVariables);
 
-        void LogDebug(string className, string message, params string[] messageVariables);
+        Task LogDebug(string className, string message, params string[] messageVariables);
 
-        void LogDebug(string className, SessionData sessionData, string route, string message, params string[] messageVariables);
+        Task LogDebug(string className, SessionData sessionData, string route, string message, params string[] messageVariables);
 
-        void LogInfo<T>(string message, params string[] messageVariables);
+        Task LogInfo<T>(string message, params string[] messageVariables);
 
-        void LogInfo(string className, string message, params string[] messageVariables);
+        Task LogInfo(string className, string message, params string[] messageVariables);
 
-        void LogInfo(string className, SessionData sessionData, string route, string message, params string[] messageVariables);
+        Task LogInfo(string className, SessionData sessionData, string route, string message, params string[] messageVariables);
 
     }
 }

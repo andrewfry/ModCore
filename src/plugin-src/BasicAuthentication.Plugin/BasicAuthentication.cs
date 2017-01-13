@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using ModCore.Abstraction.Site;
 using BasicAuthentication.Plugin.Services;
 using BasicAuthentication.Plugin.Filters;
+using ModCore.Models.Core;
 
 namespace BasicAuthentication.Plugin
 {
@@ -83,6 +84,11 @@ namespace BasicAuthentication.Plugin
 
         public PluginResult StartUp(PluginStartupContext context)
         {
+            var settings = context.ServiceProvider.GetService<IPluginSettingsManager>();
+            settings.SetPlugin(this);
+
+            settings.EnsureDefaultSettingAsync(BasicAuthentication.BuiltInSettings.Enabled, true);
+
             var result = new PluginResult();
             result.WasSuccessful = true;
             return result;
@@ -93,6 +99,11 @@ namespace BasicAuthentication.Plugin
             var result = new PluginResult();
             result.WasSuccessful = true;
             return result;
+        }
+
+        public static class BuiltInSettings
+        {
+            public static SettingRegionPair Enabled => new SettingRegionPair("GENERAL", "ENABLED");
         }
     }
 }

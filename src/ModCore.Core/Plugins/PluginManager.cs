@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
 using ModCore.Core.Plugins;
@@ -29,6 +30,7 @@ namespace ModCore.Core.Plugins
         private IDataRepository<InstalledPlugin> _repository;
         private ApplicationPartManager _appPartManager;
         private List<PluginError> _errors;
+        private ILogger _log;
 
         private IList<IPlugin> _availablePlugins;
         private IList<IPlugin> _installedPlugins;
@@ -232,13 +234,14 @@ namespace ModCore.Core.Plugins
 
         public PluginManager(IAssemblyManager assemblyManager, IConfigurationRoot configurationRoot,
             IHostingEnvironment hostingEnvironment, IDataRepository<InstalledPlugin> repository,
-            ApplicationPartManager appPartManager)
+            ApplicationPartManager appPartManager, ILogger log)
 
         {
             _assemblyManager = assemblyManager;
             _configurationRoot = configurationRoot;
             _hostingEnvironment = hostingEnvironment;
             _appPartManager = appPartManager;
+            _log = log;
 
             _repository = repository;
 
@@ -370,15 +373,38 @@ namespace ModCore.Core.Plugins
             return routes;
         }
 
-        public void RegisterPluginList(IList<IPlugin> pluginList)
+        public void RegisterPluginList(PluginStartupContext context)
         {
-            foreach (var plugin in pluginList)
+            foreach (var plugin in this.ActivePlugins)
             {
                 RegisterAssemblyInPartManager(plugin);
             }
 
-            if (pluginList.Count > 0) Refresh();
+            if (this.ActivePlugins.Count > 0) Refresh();
 
+            //execute start up tasks needed to run the plugin - this is different from installing the plugin
+            foreach (var plugin in this.ActivePlugins)
+            {
+                try
+                {
+                    var result = plugin.StartUp(context);
+                    if (result.WasSuccessful)
+                    {
+                        _log.LogDebug($"{plugin.Name} was registered successfully.");
+                    }
+                    else
+                    {
+                        _log.LogError($"{plugin.Name} failed to register. " + String.Join(" ", result.Errors));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    {
+                        _log.LogError(new EventId(), $"{plugin.Name} failed to register. ", ex);
+                    }
+                }
+
+            }
         }
 
         private void RegisterAssemblyInPartManager(IPlugin plugin)

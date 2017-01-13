@@ -25,79 +25,79 @@ namespace ModCore.Core.Site
             _siteSettingsManager = siteSettingsManager;
         }
 
-        public void LogError<T>(Exception exception, string message, params string[] messageVariables)
+        public async Task LogError<T>(Exception exception, string message, params string[] messageVariables)
         {
             var className = typeof(T).FullName;
-            LogError(className, exception, message, messageVariables);
+            await LogError(className, exception, message, messageVariables);
         }
 
-        public void LogError(string className, Exception exception, string message, params string[] messageVariables)
+        public async Task LogError(string className, Exception exception, string message, params string[] messageVariables)
         {
-            LogError(className, null, exception, "", message, messageVariables);
+            await LogError(className, null, exception, "", message, messageVariables);
         }
 
-        public void LogError(string className, SessionData sessionData, Exception exception, string route, string message, params string[] messageVariables)
+        public async Task LogError(string className, SessionData sessionData, Exception exception, string route, string message, params string[] messageVariables)
         {
             message = string.Format(message, messageVariables);
 
-            ExecuteLogging(LogLevel.Error, className, message, exception?.Message, exception?.InnerException?.ToString(), exception?.StackTrace, sessionData, route);
+            await ExecuteLogging(LogLevel.Error, className, message, exception?.Message, exception?.InnerException?.ToString(), exception?.StackTrace, sessionData, route);
         }
 
-        public void LogWarning<T>(Exception exception, string message, params string[] messageVariables)
+        public async Task LogWarning<T>(Exception exception, string message, params string[] messageVariables)
         {
             var className = typeof(T).FullName;
-            LogWarning(className, exception, message, messageVariables);
+            await LogWarning(className, exception, message, messageVariables);
         }
 
-        public void LogWarning(string className, Exception exception, string message, params string[] messageVariables)
+        public async Task LogWarning(string className, Exception exception, string message, params string[] messageVariables)
         {
-            LogWarning(className, null, exception, "", message, messageVariables);
+            await LogWarning(className, null, exception, "", message, messageVariables);
         }
 
-        public void LogWarning(string className, SessionData sessionData, Exception exception, string route, string message, params string[] messageVariables)
+        public async Task LogWarning(string className, SessionData sessionData, Exception exception, string route, string message, params string[] messageVariables)
         {
             message = string.Format(message, messageVariables);
 
-            ExecuteLogging(LogLevel.Warning, className, message, exception?.Message, exception?.InnerException?.ToString(), exception?.StackTrace, sessionData, route);
+            await ExecuteLogging(LogLevel.Warning, className, message, exception?.Message, exception?.InnerException?.ToString(), exception?.StackTrace, sessionData, route);
         }
 
-        public void LogDebug<T>(string message, params string[] messageVariables)
+        public async Task LogDebug<T>(string message, params string[] messageVariables)
         {
             var className = typeof(T).FullName;
-            LogDebug(className, message, messageVariables);
+            await LogDebug(className, message, messageVariables);
         }
 
-        public void LogDebug(string className, string message, params string[] messageVariables)
+        public async Task LogDebug(string className, string message, params string[] messageVariables)
         {
-            LogDebug(className, null, "", message, messageVariables);
+            await LogDebug(className, null, "", message, messageVariables);
         }
 
-        public void LogDebug(string className, SessionData sessionData, string route, string message, params string[] messageVariables)
+        public async Task LogDebug(string className, SessionData sessionData, string route, string message, params string[] messageVariables)
         {
             message = string.Format(message, messageVariables);
 
-            ExecuteLogging(LogLevel.Debug, className, message, "", "", "", sessionData, route);
+            await ExecuteLogging(LogLevel.Debug, className, message, "", "", "", sessionData, route);
         }
 
-        public void LogInfo<T>(string message, params string[] messageVariables)
+        public async Task LogInfo<T>(string message, params string[] messageVariables)
         {
             var className = typeof(T).FullName;
-            LogInfo(className, message, messageVariables);
+            await LogInfo(className, message, messageVariables);
         }
 
-        public void LogInfo(string className, string message, params string[] messageVariables)
+        public async Task LogInfo(string className, string message, params string[] messageVariables)
         {
-            LogInfo(className, null, "", message, messageVariables);
+            await LogInfo(className, null, "", message, messageVariables);
         }
 
-        public void LogInfo(string className, SessionData sessionData, string route, string message, params string[] messageVariables)
+        public async Task LogInfo(string className, SessionData sessionData, string route, string message, params string[] messageVariables)
         {
             message = string.Format(message, messageVariables);
 
-            ExecuteLogging(LogLevel.Information, className, message, "", "", "", sessionData, route);
+            await ExecuteLogging(LogLevel.Information, className, message, "", "", "", sessionData, route);
         }
 
-        protected virtual void ExecuteLogging(LogLevel errorLevel, string className, string message,
+        protected virtual async Task ExecuteLogging(LogLevel errorLevel, string className, string message,
             string errorMessage, string innerException, string stackTrace, SessionData sessionData, string route)
         {
             var log = new Log
@@ -111,11 +111,11 @@ namespace ModCore.Core.Site
                 Session = sessionData,
                 StackTrace = stackTrace,
                 Route = route,
-                InsertDate = DateTime.UtcNow
+                InsertDate = DateTime.UtcNow,
             };
 
 
-            _dbRepos.InsertAsync(log);
+           await _dbRepos.InsertAsync(log);
         }
 
         public bool IsEnabled(LogLevel logLevel)

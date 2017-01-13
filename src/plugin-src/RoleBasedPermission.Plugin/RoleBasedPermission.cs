@@ -112,6 +112,7 @@ namespace RoleBasedPermission.Plugin
         public static class BuiltInSettings
         {
             public static SettingRegionPair AllowAnonymous => new SettingRegionPair("GENERAL", "ALLOW_ANONYMOUS");
+
         }
     }
 }
