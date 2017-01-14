@@ -13,6 +13,7 @@ using ModCore.Abstraction.Site;
 using BasicAuthentication.Plugin.Services;
 using BasicAuthentication.Plugin.Filters;
 using ModCore.Models.Core;
+using ModCore.Abstraction.Plugins.Builtins;
 
 namespace BasicAuthentication.Plugin
 {
@@ -53,7 +54,7 @@ namespace BasicAuthentication.Plugin
             }
         }
 
-
+        public ICollection<IPluginDependency> Dependencies {get { return new List<IPluginDependency>(); } }
 
         public ICollection<ServiceDescriptor> Services
         {

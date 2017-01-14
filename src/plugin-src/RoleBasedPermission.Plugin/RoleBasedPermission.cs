@@ -2,7 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
+using ModCore.Abstraction.Plugins.Builtins;
 using ModCore.Core.Plugins;
+using ModCore.Core.Plugins.Descriptions;
 using ModCore.DataAccess.MongoDb;
 using ModCore.Models.Core;
 using ModCore.Models.Plugins;
@@ -82,6 +84,17 @@ namespace RoleBasedPermission.Plugin
             }
         }
 
+        public ICollection<IPluginDependency> Dependencies
+        {
+            get
+            {
+                return new List<IPluginDependency>()
+                    {
+                        new RequiredPlugin(new AuthenticationService())
+                    };
+            }
+        }
+
         public PluginResult Install(PluginInstallContext context)
         {
             var result = new PluginResult();
@@ -95,6 +108,8 @@ namespace RoleBasedPermission.Plugin
             settings.SetPlugin(this);
 
             settings.EnsureDefaultSettingAsync(RoleBasedPermission.BuiltInSettings.AllowAnonymous, true);
+            settings.EnsureDefaultSettingAsync(RoleBasedPermission.BuiltInSettings.AllowIfUndefined, true);
+            settings.EnsureDefaultSettingAsync(RoleBasedPermission.BuiltInSettings.AllowManageAnonymous, true);
 
             var result = new PluginResult();
             result.WasSuccessful = true;
@@ -112,7 +127,8 @@ namespace RoleBasedPermission.Plugin
         public static class BuiltInSettings
         {
             public static SettingRegionPair AllowAnonymous => new SettingRegionPair("GENERAL", "ALLOW_ANONYMOUS");
-
+            public static SettingRegionPair AllowManageAnonymous => new SettingRegionPair("GENERAL", "ALLOW_MANAGE_ANONYMOUS");
+            public static SettingRegionPair AllowIfUndefined => new SettingRegionPair("GENERAL", "ALLOW_UNDEFINED_ROUTES");
         }
     }
 }

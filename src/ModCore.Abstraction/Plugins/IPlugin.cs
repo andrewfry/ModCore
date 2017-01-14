@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using ModCore.Models.Plugins;
 using Microsoft.AspNetCore.Mvc.Filters;
+using ModCore.Abstraction.Plugins.Builtins;
 
 namespace ModCore.Abstraction.Plugins
 {
@@ -19,13 +20,11 @@ namespace ModCore.Abstraction.Plugins
 
         string Description { get; }
 
-        //IDictionary<int, Action<IRouteBuilder>> Routes { get; }
-
-        //IDictionary<int, Action<IPluginRoutes>> Routes { get; }
-
         ICollection<IPluginRoute> Routes { get; }
 
         ICollection<ServiceDescriptor> Services { get; }
+
+        ICollection<IPluginDependency> Dependencies { get; }
 
         FilterCollection Filters { get; }
 

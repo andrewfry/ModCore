@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using ModCore.Abstraction.Plugins;
 using ModCore.Models.Access;
 using ModCore.ViewModels.Access;
@@ -25,5 +26,7 @@ namespace ModCore.Abstraction.Site
         Task<IAuthenticationResult> SignOut(AuthenticationUser authUser, IBaseController controller);
 
         Task<bool> UserAllowedAdminAccess(AuthenticationUser authUser, RouteData route);
+
+        IActionResult GetLoginLocation();
     }
 }

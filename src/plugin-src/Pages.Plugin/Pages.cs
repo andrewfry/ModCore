@@ -15,6 +15,7 @@ using ModCore.DataAccess.MongoDb;
 using Pages.Plugin.Models;
 using Pages.Plugin.Routers;
 using Microsoft.AspNetCore.Mvc.Internal;
+using ModCore.Abstraction.Plugins.Builtins;
 
 namespace Pages.Plugin
 {
@@ -63,6 +64,9 @@ namespace Pages.Plugin
             }
         }
 
+
+        public ICollection<IPluginDependency> Dependencies { get { return new List<IPluginDependency>(); } }
+
         public ICollection<ServiceDescriptor> Services
         {
             get
@@ -84,7 +88,6 @@ namespace Pages.Plugin
                 return list;
             }
         }
-
 
         public PluginResult Install(PluginInstallContext context)
         {

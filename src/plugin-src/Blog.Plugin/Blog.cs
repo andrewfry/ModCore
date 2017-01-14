@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ModCore.Models.Plugins;
 using ModCore.Core.Plugins;
 using Microsoft.AspNetCore.Mvc.Filters;
+using ModCore.Abstraction.Plugins.Builtins;
 
 namespace Blog.Plugin
 {
@@ -72,6 +73,9 @@ namespace Blog.Plugin
                 return new List<IRouter>();
             }
         }
+
+
+        public ICollection<IPluginDependency> Dependencies { get { return new List<IPluginDependency>(); } }
 
         public FilterCollection Filters
         {

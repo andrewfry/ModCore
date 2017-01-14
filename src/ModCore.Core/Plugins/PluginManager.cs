@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Plugins;
+using ModCore.Abstraction.Plugins.Builtins;
+using ModCore.Core.Exceptions;
 using ModCore.Core.Plugins;
 using ModCore.Models.Plugins;
 using ModCore.Specifications.Plugins;
@@ -407,8 +409,58 @@ namespace ModCore.Core.Plugins
             }
         }
 
+        private bool EnsureAllDependenciesMet(IPlugin plugin)
+        {
+            var allDependenciesMet = true;
+            IPluginDescription notFound = null;
+
+            if (plugin.Dependencies != null && plugin.Dependencies.Any())
+            {
+                foreach (var dep in plugin.Dependencies)
+                {
+                    if (dep.Description == null)
+                    {
+                        _log.LogError($"{plugin.Name} had a dependency description that was null. Plugin was not loaded.");
+                        throw new PluginDependencyNotFound($"{plugin.Name} had a dependency description that was null. Plugin was not loaded.");
+                    }
+
+                    var found = false;
+                    foreach (var assembly in this.ActiveAssemblies)
+                    {
+                        if (dep.Description.IsValid(assembly))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (found == false && dep.Required == true)
+                    {
+                        notFound = dep.Description;
+                        allDependenciesMet = false;
+                        break;
+                    }
+                    else if (found == false && dep.Required == false)
+                    {
+                        _log.LogDebug($"{plugin.Name} had a dependency for {dep.Description.Name} that was not found in the Active Assemblies. The plugin was loaded anyway.");
+                    }
+                }
+
+                if (!allDependenciesMet)
+                {
+                    _log.LogError(new EventId(), $"{plugin.Name} had a required dependency for {notFound.Name} that was not found in the Active Assemblies.");
+                    throw new PluginDependencyNotFound($"{plugin.Name} had a required dependency for {notFound.Name} that was not found in the Active Assemblies.");
+                }
+            }
+
+            return true;
+        }
+
         private void RegisterAssemblyInPartManager(IPlugin plugin)
         {
+
+            EnsureAllDependenciesMet(plugin);
+
             var pluginAssemblies = AvailablePluginAssemblies.FirstOrDefault(a => a.Item1.AssemblyName == plugin.AssemblyName)?.Item2;
             if (pluginAssemblies == null)
                 throw new KeyNotFoundException($"Can not find assembles for plugin: {plugin.Name}");

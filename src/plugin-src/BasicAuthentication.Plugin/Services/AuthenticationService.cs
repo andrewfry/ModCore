@@ -16,6 +16,7 @@ using ModCore.Services.Base;
 using ModCore.Core.Controllers;
 using ModCore.Models.Sessions;
 using ModCore.Abstraction.Plugins;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BasicAuthentication.Plugin.Services
 {
@@ -136,6 +137,11 @@ namespace BasicAuthentication.Plugin.Services
         {
 
             return true;
+        }
+
+        public IActionResult GetLoginLocation()
+        {
+            return new RedirectToActionResult("Login", "Account", new { area = "Admin" });
         }
     }
 }
