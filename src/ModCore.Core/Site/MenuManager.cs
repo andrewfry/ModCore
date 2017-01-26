@@ -1,4 +1,5 @@
 ﻿using ModCore.Abstraction.DataAccess;
+using ModCore.Abstraction.Site;
 using ModCore.Models.Site;
 using ModCore.Specifications.Site;
 using System;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ModCore.Core.Site
 {
-    public class MenuManager
+    public class MenuManager : IMenuManager
     {
         private IDataRepositoryAsync<Menu> _repository;
         private List<Menu> _menus;

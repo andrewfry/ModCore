@@ -5,9 +5,11 @@ using ModCore.Models.Access;
 using ModCore.Models.Core;
 using ModCore.Models.Page;
 using ModCore.Models.Sessions;
+using ModCore.Models.Site;
 using ModCore.ViewModels.Access;
 using ModCore.ViewModels.Admin.Plugin;
 using ModCore.ViewModels.Core;
+using ModCore.ViewModels.Site;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +40,9 @@ namespace ModCore.Services.Mappings
                 .ForMember(dest => dest.ResultType, opts => opts.MapFrom(src => src.Result.ResultType.ToString()))
                 .ForMember(dest => dest.StatusCode, opts => opts.MapFrom(src => src.Result.StatusCode))
                 .ForMember(dest => dest.AdditionalInfo, opts => opts.MapFrom(src => src.Result.AdditionalInfo));
+
+
+            CreateMap<Menu, vMenu>();
         }
     }
 }

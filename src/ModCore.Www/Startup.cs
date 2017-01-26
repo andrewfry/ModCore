@@ -34,6 +34,7 @@ using ModCore.Services.Site;
 using ModCore.Core.Filters;
 using Microsoft.AspNetCore.Http.Features;
 using ModCore.Specifications.Access;
+using ModCore.Models.Site;
 
 namespace ModCore.Www
 {
@@ -68,6 +69,7 @@ namespace ModCore.Www
             services.AddTransient<ISessionManager, SessionManager>();
             services.AddSingleton<ISiteSettingsManagerAsync, SiteSettingsManager>();
             services.AddTransient<IBaseViewModelProvider, DefaultBaseViewModelProvider>();
+            services.AddTransient<IMenuManager, MenuManager>();
 
             //Persistent Data Repositories
             services.AddTransient<IDataRepository<InstalledPlugin>, MongoDbRepository<InstalledPlugin>>();
@@ -77,6 +79,7 @@ namespace ModCore.Www
             services.AddTransient<IDataRepositoryAsync<SiteSetting>, MongoDbRepository<SiteSetting>>();
             services.AddTransient<IDataRepositoryAsync<UserActivity>, MongoDbRepository<UserActivity>>();
             services.AddTransient<IDataRepositoryAsync<Role>, MongoDbRepository<Role>>();
+            services.AddTransient<IDataRepositoryAsync<Menu>, MongoDbRepository<Menu>>();
 
             //Adding the business logic Services
             services.AddTransient<IUserService, UserService>();
@@ -109,8 +112,8 @@ namespace ModCore.Www
             {
                 var srvProvider = services.BuildServiceProvider();
                 var siteSettings = srvProvider.GetRequiredService<ISiteSettingsManagerAsync>();
-                var sessionGuid = GetSettingOrDefault<string>(siteSettings, BuiltInSettings.SessionId, "defaultId").Result;
-                var sessionTimeOut = GetSettingOrDefault<int>(siteSettings, BuiltInSettings.SessionTimeOut, 20).Result;
+                var sessionGuid = siteSettings.GetSettingOrDefault<string>(BuiltInSettings.SessionId, "defaultId").Result;
+                var sessionTimeOut = siteSettings.GetSettingOrDefault<int>(BuiltInSettings.SessionTimeOut, 20).Result;
 
                 options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeOut);
                 options.CookieName = ".Modcore-" + sessionGuid;
@@ -227,6 +230,65 @@ namespace ModCore.Www
                 });
             }
 
+
+            var siteMenu = new Menu()
+            {
+                Name = MenuManager.BuiltInMenus.AdminMenu,
+                MenuItems = new List<MenuItem>()
+                  {
+                      new MenuItem()
+                      {
+                           Name = "Dashboard",
+                            IconClass = "menu-item-icon mdi mdi-gauge",
+                             Id = Guid.NewGuid().ToString(),
+                              Order = 10,
+                              Url = "/"
+                      },
+                      new MenuItem()
+                      {
+                           Name = "Settings",
+                            IconClass = "menu-item-icon mdi mdi-settings",
+                             Id = Guid.NewGuid().ToString(),
+                              Order = 20,
+                               Children = new List<MenuItem>()
+                               {
+                                    new MenuItem()
+                                    {
+                                        Name = "Plugins",
+                            IconClass = "menu-item-icon mdi mdi-power-socket",
+                             Id = Guid.NewGuid().ToString(),
+                              Order = 10,
+                              Url = "/Admin/Plugin",
+
+                                    },
+                                    new MenuItem()
+                                    {
+                                        Name = "Site Settings",
+                            IconClass = "menu-item-icon mdi mdi-settings",
+                             Id = Guid.NewGuid().ToString(),
+                              Order = 20,
+                              Url = "/Admin/SiteSettings",
+
+                                    },
+                                    new MenuItem()
+                                    {
+                                        Name = "Logs",
+                            IconClass = "menu-item-icon mdi mdi-file-multiple",
+                             Id = Guid.NewGuid().ToString(),
+                              Order = 30,
+                              Url = "/Admin/Logs",
+
+                                    }
+                               }
+
+                      },
+                  }
+            };
+
+
+            var menuRepos = srcProvider.GetService<IDataRepositoryAsync<Menu>>();
+            menuRepos.InsertAsync(siteMenu);
+
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -282,13 +344,7 @@ namespace ModCore.Www
 
         }
 
-        private async Task<T> GetSettingOrDefault<T>(ISiteSettingsManagerAsync manager, SettingRegionPair setting, T defaultVal)
-        {
-            var exists = await manager.ContainsSettingAsync(setting);
-            if (exists)
-                return await manager.GetSettingAsync<T>(setting);
-            return defaultVal;
-        }
+
 
     }
 }

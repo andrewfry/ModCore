@@ -30,6 +30,8 @@ namespace ModCore.Abstraction.Site
 
         Task<List<SettingDescriptor>> GetAllAsync();
 
+        Task<T> GetSettingOrDefault<T>(SettingRegionPair setting, T defaultVal);
+
         SettingRegionPair GetSettingRegionPair(string rawKey);
     }
 }

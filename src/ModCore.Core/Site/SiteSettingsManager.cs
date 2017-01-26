@@ -82,7 +82,13 @@ namespace ModCore.Core.Site
             return _settingManager.GetSettingRegionPair(rawKey);
         }
 
-
+        public async Task<T> GetSettingOrDefault<T>(SettingRegionPair setting, T defaultVal)
+        {
+            var exists = await _settingManager.ContainsSettingAsync(setting);
+            if (exists)
+                return await _settingManager.GetSettingAsync<T>(setting);
+            return defaultVal;
+        }
 
     }
 

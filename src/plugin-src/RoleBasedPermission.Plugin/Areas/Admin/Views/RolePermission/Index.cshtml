@@ -1,44 +1,8 @@
-﻿@model RoleBasedPermission.Plugin.ViewModels.vPermissionManager
-@{
-    Layout = "_permissionLayout";
-    ViewBag.Title = "Manage Permissions";
+﻿@{
+    ViewBag.Title = "Manage Email Templates";
 }
 
 
-<div class="row">
-    <div class="col-xs-12 col-md-4">
-        <select id="roleSelect" class="form-control">
-            <option value="" @(Model.SelectedRoleId == "" ? "selected" : "")></option>
-
-            @foreach (var role in Model.Roles)
-            {
-                <option value="@role.Id" @(role.Id == Model.SelectedRoleId ? "selected" : "")>@role.Name</option>
-            }
-        </select>
-    </div>
-    <div id="permissionContent" class="col-xs-12 col-md-8">
-
-    </div>
-</div>
 
 @section scripts{
-    <script>
-        $(document).ready(function () {
-            $("#roleSelect").change(function (e) {
-                e.preventDefault();
-                $.ajax({
-                    url: "/Admin/RolePermission/PermissionEdit",
-                    type: "POST",
-                    data: { selectedRoleId: $(this).val() },
-                    success: function (data, textStatus, jqXHR) {
-                        if(data.status=="success")
-                        {
-                            $("#permissionContent").html(data.html);
-                        }
-                    },
-                });
-            });
-        });
-
-    </script>
 }

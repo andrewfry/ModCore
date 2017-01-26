@@ -138,6 +138,16 @@ namespace ModCore.Core.Site
             return returnValue;
         }
 
+
+        public async Task<T> GetSettingOrDefault<T>(SettingRegionPair setting, T defaultVal)
+        {
+            var exists = await this.ContainsSettingAsync(setting);
+            if (exists)
+                return await this.GetSettingAsync<T>(setting);
+            return defaultVal;
+        }
+
+
         public SettingRegionPair GetSettingRegionPair(string rawKey)
         {
             var split = rawKey.Split('|');

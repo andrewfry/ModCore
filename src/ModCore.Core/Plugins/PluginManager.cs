@@ -387,27 +387,35 @@ namespace ModCore.Core.Plugins
             //execute start up tasks needed to run the plugin - this is different from installing the plugin
             foreach (var plugin in this.ActivePlugins)
             {
-                try
-                {
-                    var result = plugin.StartUp(context);
-                    if (result.WasSuccessful)
-                    {
-                        _log.LogDebug($"{plugin.Name} was registered successfully.");
-                    }
-                    else
-                    {
-                        _log.LogError($"{plugin.Name} failed to register. " + String.Join(" ", result.Errors));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    {
-                        _log.LogError(new EventId(), $"{plugin.Name} failed to register. ", ex);
-                    }
-                }
-
+                RunPluginStartUpTask(context, plugin);
             }
         }
+
+        private bool RunPluginStartUpTask(PluginStartupContext context, IPlugin plugin)
+        {
+            try
+            {
+                var result = plugin.StartUp(context);
+                if (result.WasSuccessful)
+                {
+                    _log.LogDebug($"{plugin.Name} was registered successfully.");
+                    return true;
+                }
+                else
+                {
+                    _log.LogError($"{plugin.Name} failed to register. " + String.Join(" ", result.Errors));
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                {
+                    _log.LogError(new EventId(), $"{plugin.Name} failed to register. ", ex);
+                    return false;
+                }
+            }
+        } 
+
 
         private bool EnsureAllDependenciesMet(IPlugin plugin)
         {

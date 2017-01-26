@@ -14,6 +14,12 @@ namespace ModCore.Models.Site
 
         public int Order { get; set; }
 
+        public string IconClass { get; set; }
+
+        public string CustomHtml { get; set; }
+
+        public string Url { get; set; }
+
         public bool isParent { get { return !Children.Any(); } }
 
         public List<MenuItem> Children { get; set; }
