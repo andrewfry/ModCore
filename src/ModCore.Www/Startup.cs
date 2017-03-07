@@ -35,6 +35,7 @@ using ModCore.Core.Filters;
 using Microsoft.AspNetCore.Http.Features;
 using ModCore.Specifications.Access;
 using ModCore.Models.Site;
+using ModCore.ViewModels.Access;
 
 namespace ModCore.Www
 {
@@ -190,7 +191,7 @@ namespace ModCore.Www
             var user = usrService.GetByEmail("test@test.com");
             if (user.Result == null)
             {
-                var testUser = usrService.CreateNewUser(new ViewModels.Access.RegisterViewModel
+                var testUser = usrService.CreateNewUser(new vRegister
                 {
                     EmailAddress = "test@test.com",
                     Password = "test",

@@ -7,7 +7,7 @@ using ModCore.ViewModels.Base;
 
 namespace ModCore.ViewModels.Access
 {
-    public class SendCodeViewModel : BaseViewModel
+    public class vSendCode : BaseViewModel
     {
         public string SelectedProvider { get; set; }
 

@@ -7,7 +7,7 @@ using ModCore.ViewModels.Base;
 
 namespace ModCore.ViewModels.Access
 {
-    public class LoginViewModel : BaseViewModel
+    public class vLogin : BaseViewModel
     {
         [Required]
         [EmailAddress]

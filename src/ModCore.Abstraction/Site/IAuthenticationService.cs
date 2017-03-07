@@ -15,7 +15,7 @@ namespace ModCore.Abstraction.Site
 
         IPlugin CurrentPlugin();
 
-        Task<User> CreateNewUser(RegisterViewModel registerModel);
+        Task<User> CreateNewUser(vRegister registerModel);
 
         Task<IAuthenticationResult> ValidatePassword(AuthenticationUser authUser, string password);
 

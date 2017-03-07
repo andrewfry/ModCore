@@ -13,13 +13,13 @@ namespace ModCore.Abstraction.Services.Access
     {
         //Task<bool> ValidateLastChanged(ClaimsPrincipal userPrincipal, DateTime lastChanged);
 
-        //Task<bool> ValidatePassword(User user, string emailAddress, string password);
+       // kTask<bool> ValidatePassword(User user, string emailAddress, string password);
 
-        //Task<bool> ValidatePassword(string emailAddress, string password);
+       //Task<bool> ValidatePassword(string emailAddress, string password);
 
         Task ResetPassword(string emailAddress, string password);
 
-        Task<User> CreateNewUser(RegisterViewModel registerModel);
+        Task<User> CreateNewUser(vRegister registerModel);
 
         Task<User> GetByEmail(string emailAddress);
 

@@ -32,41 +32,7 @@ namespace ModCore.Services.Access
             _siteSettings = siteSettings;
         }
 
-        //public async Task<bool> ValidateLastChanged(ClaimsPrincipal userPrincipal, DateTime lastChanged)
-        //{
-        //    var userId = userPrincipal.Identity.Name;
-        //    var user = await this.GetByIdAsync(userId);
-
-        //    if (lastChanged < user.LastUpdateDate)
-        //    {
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
-
-        //public async Task<bool> ValidatePassword(string emailAddress, string password)
-        //{
-        //    var user = await _repository.FindAsync(new GetByEmail(emailAddress));
-
-        //    return await ValidatePassword(user, emailAddress, password);
-        //}
-
-        //public async Task<bool> ValidatePassword(User user, string emailAddress, string password)
-        //{
-        //    if (user.LockedOut)
-        //        return false;
-
-        //    var sentHash = SecurityUtil.GetHash(password + user.PasswordSalt);
-        //    var result = string.Compare(user.PasswordHash, sentHash) == 0;
-
-        //    if (!result)
-        //    {
-        //        await IncrementFailedLogin(user);
-        //    }
-
-        //    return result;
-        //}
+        
 
         public async Task ResetPassword(string userId, string password)
         {
@@ -82,7 +48,7 @@ namespace ModCore.Services.Access
             //Send Password Reset Email
         }
 
-        public async Task<User> CreateNewUser(RegisterViewModel registerModel)
+        public async Task<User> CreateNewUser(vRegister registerModel)
         {
             var user = _mapper.Map<User>(registerModel);
 

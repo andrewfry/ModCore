@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ModCore.ViewModels.Access
 {
-    public class VerifyCodeViewModel : BaseViewModel
+    public class vVerifyCode : BaseViewModel
     {
         [Required]
         public string Provider { get; set; }
