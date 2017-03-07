@@ -1,0 +1,5 @@
+﻿@model ModCore.ViewModels.Site.vMenu
+@using ModCore.Www.Components
+
+
+ @await Component.InvokeAsync(nameof(MenuItemComponent), Model.MenuItems)

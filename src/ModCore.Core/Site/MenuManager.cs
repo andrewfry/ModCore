@@ -91,13 +91,13 @@ namespace ModCore.Core.Site
             _menus = null;
         }
 
-        public static class BuiltInMenus
-        {
-            public static string MainMenu => "MAIN_MENU";
-
-            public static string AdminMenu => "ADMIN_MENU";
-
-        }
+        
     }
+    public static class BuiltInMenus
+    {
+        public static string MainMenu => "MAIN_MENU";
 
+        public static string AdminMenu => "ADMIN_MENU";
+
+    }
 }

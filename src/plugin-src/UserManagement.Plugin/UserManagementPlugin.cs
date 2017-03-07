@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace UserManagement.Plugin
 {
-    public class UserManagement : BasePlugin, IPlugin
+    public class UserManagementPlugin : BasePlugin, IPlugin
     {
 
         public string Name
@@ -50,7 +50,7 @@ namespace UserManagement.Plugin
                 routes.MapPluginRoute(
                 name: "userManagementDefaultAdmin",
                 template: "{area=Admin}/{controller=UserManagement}/{action=Index}/{id?}",
-                plugin: new UserManagement());
+                plugin: new UserManagementPlugin());
 
 
                 return routes;

@@ -1,0 +1,21 @@
+﻿@model List<ModCore.Models.Site.MenuItem>
+@using ModCore.Www.Components
+
+    <div class="menu-group">
+        @foreach (var m in Model.OrderBy(a=>a.Order))
+        {
+            <div class="menu-item @(m.Children.Any() ? "has-sub" : "")">
+                <a href="@m.Url">
+                    @if (!string.IsNullOrEmpty(m.IconClass))
+                    {
+                        <i class="@m.IconClass"></i>
+                    }
+                    <span class="menu-item-text">@m.Name</span>
+                </a>
+                @if (m.Children.Any())
+                {
+                    @await Component.InvokeAsync(nameof(MenuItemComponent), m.Children)
+                }
+            </div>
+        }
+    </div>

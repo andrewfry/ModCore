@@ -1,4 +1,6 @@
 ﻿@model ModCore.ViewModels.Base.BaseViewModel
+@using ModCore.Core.Site
+@using ModCore.Www.Components
 
 <!DOCTYPE html>
 <html>
@@ -62,7 +64,9 @@
             @if (Model.IsLoggedIn)
             {
                 <div class="side-menu-container">
-                    @Html.Partial("_Menu")
+                    <nav class="side-menu">
+                        @await Component.InvokeAsync(nameof(MenuComponent), new { menuName = BuiltInMenus.AdminMenu })
+                    </nav>
                 </div>
             }
             <div class="body-wrapper">
@@ -79,7 +83,7 @@
             </div>
         </div>
     </div>
-  
+
 
     @RenderSection("scripts", required: false)
 </body>

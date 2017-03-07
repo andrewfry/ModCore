@@ -233,7 +233,7 @@ namespace ModCore.Www
 
             var siteMenu = new Menu()
             {
-                Name = MenuManager.BuiltInMenus.AdminMenu,
+                Name = BuiltInMenus.AdminMenu,
                 MenuItems = new List<MenuItem>()
                   {
                       new MenuItem()
@@ -285,9 +285,12 @@ namespace ModCore.Www
                   }
             };
 
-
+            var menuManager = srcProvider.GetService<IMenuManager>();
             var menuRepos = srcProvider.GetService<IDataRepositoryAsync<Menu>>();
-            menuRepos.InsertAsync(siteMenu);
+
+            var menuFromDb = menuManager.GetMenuByName(BuiltInMenus.AdminMenu);
+            if (menuFromDb == null)
+                menuRepos.InsertAsync(siteMenu);
 
         }
 
