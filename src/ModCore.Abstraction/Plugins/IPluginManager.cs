@@ -32,6 +32,8 @@ namespace ModCore.Abstraction.Plugins
 
         IList<Assembly> ActiveAssemblies { get; }
 
+        ICollection<IPluginRouteDescriptor> ActivePluginRoutes { get; }
+
         IList<ServiceDescriptor> ActivePluginServices { get; }
 
         PluginResult ActivatePlugin(IPlugin plugin);

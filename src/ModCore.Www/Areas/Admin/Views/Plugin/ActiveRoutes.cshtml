@@ -1,0 +1,48 @@
+﻿@model ModCore.ViewModels.Admin.Plugin.vPluginRoutes
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutWithMenu.cshtml";
+    ViewBag.Title = "Active Routes";
+}
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <colgroup>
+                    <col class="col-xs-2" />
+                    <col class="co-xs-6" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>
+                            Plugin
+                        </th>
+                        <th>
+                            Route  Template
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.Routes)
+                {
+                    <tr>
+                        <th scope="row">
+                            <code>
+                                @r.PluginName @r.PluginVersion
+                            </code>
+                        </th>
+                        <td>
+                            @r.RouteTemplate
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+</div>
+@section scripts{
+
+}

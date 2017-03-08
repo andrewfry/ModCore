@@ -43,6 +43,8 @@ namespace ModCore.Services.Mappings
 
 
             CreateMap<Menu, vMenu>();
+
+            CreateMap<IPluginRouteDescriptor, vRoute>();
         }
     }
 }

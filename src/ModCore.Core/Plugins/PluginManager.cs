@@ -346,6 +346,24 @@ namespace ModCore.Core.Plugins
             }
         }
 
+        public ICollection<IPluginRouteDescriptor> ActivePluginRoutes
+        {
+            get
+            {
+                var routeDescs = new List<IPluginRouteDescriptor>();
+
+                foreach (var actPlugin in this.ActivePlugins)
+                {
+                    foreach(var r in actPlugin.Routes)
+                    {
+                        routeDescs.Add(new PluginRouteDescriptor(actPlugin, r));
+                    }
+                }
+
+                return routeDescs;
+            }
+        }
+
         public ICollection<IRouter> GetActiveRoutesForPlugins(IRouter defaultHandler, IInlineConstraintResolver inlineConstraintResolver)
         {
             var routes = new List<IRouter>();

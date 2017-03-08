@@ -103,6 +103,14 @@ namespace ModCore.Www.Areas.Admin.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult ActiveRoutes()
+        {
+            var vm = new vPluginRoutes();
+            vm.Routes = _mapper.Map<List<vRoute>>(_pluginManager.ActivePluginRoutes);
+
+            return View(vm);
+        }
 
         public async Task<IActionResult> SaveSettingChanges(IFormCollection form)
         {
