@@ -17,6 +17,7 @@ using ModCore.Core.Controllers;
 using ModCore.Models.Sessions;
 using ModCore.Abstraction.Plugins;
 using Microsoft.AspNetCore.Mvc;
+using ModCore.Models.Core;
 
 namespace BasicAuthentication.Plugin.Services
 {
@@ -38,7 +39,7 @@ namespace BasicAuthentication.Plugin.Services
             return new BasicAuthentication();
         }
 
-        public async Task<User> CreateNewUser(RegisterViewModel registerModel)
+        public async Task<ResultPacket<User>> CreateNewUser(vRegister registerModel)
         {
             return await _userService.CreateNewUser(registerModel);
         }

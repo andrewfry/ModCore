@@ -18,6 +18,7 @@ using ModCore.Specifications.Access;
 using ModCore.Services.Exceptions;
 using Microsoft.AspNetCore.Routing;
 using ModCore.Core.Site;
+using ModCore.Models.Core;
 
 namespace ModCore.Services.Access
 {
@@ -48,29 +49,41 @@ namespace ModCore.Services.Access
             //Send Password Reset Email
         }
 
-        public async Task<User> CreateNewUser(vRegister registerModel)
+        public async Task<ResultPacket<User>> CreateNewUser(vRegister registerModel)
         {
-            var user = _mapper.Map<User>(registerModel);
+            try
+            {
+                var user = _mapper.Map<User>(registerModel);
 
-            var existingUser = await _repository.FindAsync(new GetByEmail(user.EmailAddress));
-            if (existingUser != null)
-                throw new DuplicateUserException($"A user with the email: {user.EmailAddress} already exists.");
+                var existingUser = await _repository.FindAsync(new GetByEmail(user.EmailAddress));
+                if (existingUser != null)
+                    throw new DuplicateUserException($"A user with the email: {user.EmailAddress} already exists.");
 
-            user.PasswordSalt = SecurityUtil.GetSalt();
-            user.PasswordHash = SecurityUtil.GetHash(registerModel.Password + user.PasswordSalt);
-            user.FailedLoginAttempts = 0;
-            user.DateCreated = DateTime.UtcNow;
+                user.PasswordSalt = SecurityUtil.GetSalt();
+                user.PasswordHash = SecurityUtil.GetHash(registerModel.Password + user.PasswordSalt);
+                user.FailedLoginAttempts = 0;
+                user.DateCreated = DateTime.UtcNow;
 
-            var randomBytes = SecurityUtil.GetRandomBytes(16);
-            var guid = Guid.NewGuid().ToString();
-            var emailHash = SecurityUtil.GetHash(randomBytes + guid);
+                var randomBytes = SecurityUtil.GetRandomBytes(16);
+                var guid = Guid.NewGuid().ToString();
+                var emailHash = SecurityUtil.GetHash(randomBytes + guid);
 
-            user.EmailHashVerification = emailHash;
-            user.EmailVerified = false;
+                user.EmailHashVerification = emailHash;
+                user.EmailVerified = false;
 
-            await _repository.InsertAsync(user);
+                await _repository.InsertAsync(user);
 
-            return user;
+                return new SuccessPacket<User>(user);
+            }
+            catch (DuplicateUserException ex)
+            {
+                return new FailurePacket<User>(ex, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return new FailurePacket<User>(ex);
+            }
+            
         }
 
         public async Task IncrementFailedLogin(User user)

@@ -50,11 +50,18 @@ namespace BasicAuthentication.Plugin
             {
                 var routes = new List<IPluginRoute>();
 
+                routes.MapPluginRoute(
+                 name: "basic_authentication_register",
+                 template: "Register",
+                 defaults: new { controller = "User", action = "Register" },
+                 plugin: new BasicAuthentication());
+
+
                 return routes;
             }
         }
 
-        public ICollection<IPluginDependency> Dependencies {get { return new List<IPluginDependency>(); } }
+        public ICollection<IPluginDependency> Dependencies { get { return new List<IPluginDependency>(); } }
 
         public ICollection<ServiceDescriptor> Services
         {
@@ -89,6 +96,9 @@ namespace BasicAuthentication.Plugin
             settings.SetPlugin(this);
 
             settings.EnsureDefaultSettingAsync(BasicAuthentication.BuiltInSettings.Enabled, true);
+            settings.EnsureDefaultSettingAsync(BasicAuthentication.BuiltInSettings.RegisterUserEnabled, true);
+            settings.EnsureDefaultSettingAsync(BasicAuthentication.BuiltInSettings.UserEmailValidationRequired, true);
+
 
             var result = new PluginResult();
             result.WasSuccessful = true;
@@ -105,6 +115,10 @@ namespace BasicAuthentication.Plugin
         public static class BuiltInSettings
         {
             public static SettingRegionPair Enabled => new SettingRegionPair("GENERAL", "ENABLED");
+
+            public static SettingRegionPair RegisterUserEnabled => new SettingRegionPair("GENERAL", "RegisterUserEnabled");
+
+            public static SettingRegionPair UserEmailValidationRequired => new SettingRegionPair("GENERAL", "UserEmailValidationRequired");
         }
     }
 }

@@ -1,10 +1,7 @@
-﻿@model ModCore.ViewModels.Access.RegisterViewModel
+﻿@model ModCore.ViewModels.Access.vRegister
 
-@{
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-}
 
-<form action="/Admin/Account/Register" method="post" class="form-horizontal">
+<form action="/Register" method="post" class="form-horizontal">
     @Html.AntiForgeryToken()
     <div class="panel panel-default">
         <div class="panel-title">
@@ -43,8 +40,4 @@
             </div>
         </div>
     </div>
-
-
-
-
 </form>

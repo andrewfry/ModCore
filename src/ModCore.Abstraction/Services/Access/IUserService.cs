@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using ModCore.Models.Access;
-using System.Security.Claims;
+using ModCore.Models.Core;
 using ModCore.ViewModels.Access;
 using Microsoft.AspNetCore.Routing;
 
@@ -19,7 +19,7 @@ namespace ModCore.Abstraction.Services.Access
 
         Task ResetPassword(string emailAddress, string password);
 
-        Task<User> CreateNewUser(vRegister registerModel);
+        Task<ResultPacket<User>> CreateNewUser(vRegister registerModel);
 
         Task<User> GetByEmail(string emailAddress);
 

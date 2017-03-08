@@ -21,6 +21,7 @@ using ModCore.Abstraction.Services.Access;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using ModCore.Core.Site;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace ModCore.Core.Controllers
 {
@@ -70,6 +71,12 @@ namespace ModCore.Core.Controllers
             _baseClassProvider = baseClassProvider;
             _mapper = mapper;
             _sessionService = sessionService;
+        }
+
+
+        public IActionResult ReturnError(HttpStatusCode code)
+        {
+                return RedirectToAction("Error", new { code = code });
         }
 
         [NonAction]
@@ -156,40 +163,6 @@ namespace ModCore.Core.Controllers
             return Json(new JsonFailResult(null));
         }
 
-        //[NonAction]
-        //public string RenderViewAsString<TModel>(string viewPath, TModel model)
-        //{
-        //    var baseVm = model as BaseViewModel;
-        //    if (baseVm == null)
-        //        throw new ArgumentNullException(nameof(model), "You must provide a model to every view that inherits from BaseViewModel");
-
-        //    var engine = ControllerContext.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
-        //    var viewEngineResult = engine.GetView("~/", viewPath, false);
-
-        //    if (!viewEngineResult.Success)
-        //    {
-        //        throw new InvalidOperationException($"Could not find view {viewPath}");
-        //    }
-
-        //    var view = viewEngineResult.View;
-        //    var result = "";
-        //    using (var output = new StringWriter())
-        //    {
-        //        var viewContext = new ViewContext();
-        //        viewContext.HttpContext = ControllerContext.HttpContext; // _httpContextAccessor.HttpContext;
-        //        viewContext.ViewData = new ViewDataDictionary<TModel>(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-        //        { Model = model };
-        //        viewContext.Writer = output;
-
-        //        view.RenderAsync(viewContext).GetAwaiter().GetResult();
-
-        //        result = output.GetStringBuilder().Replace("\"", "'").ToString();
-
-        //    }
-
-        //    return result;
-        //}
-
         [NonAction]
         public async Task<string> RenderViewAsString(string viewName, object model)
         {
@@ -224,5 +197,6 @@ namespace ModCore.Core.Controllers
                 return sw.ToString();
             }
         }
+
     }
 }

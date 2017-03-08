@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Routing;
 using ModCore.Abstraction.Plugins;
 using ModCore.Models.Access;
+using ModCore.Models.Core;
 using ModCore.ViewModels.Access;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace ModCore.Abstraction.Site
 
         IPlugin CurrentPlugin();
 
-        Task<User> CreateNewUser(vRegister registerModel);
+        Task<ResultPacket<User>> CreateNewUser(vRegister registerModel);
 
         Task<IAuthenticationResult> ValidatePassword(AuthenticationUser authUser, string password);
 

@@ -23,8 +23,8 @@ namespace ModCore.Services.Mappings
         {
             CreateMap<SessionUserData, AuthenticationUser>().ReverseMap();
             CreateMap<User, AuthenticationUser>().ReverseMap();
-            CreateMap<User, RegisterViewModel>().ReverseMap();
-            CreateMap<LoginViewModel, User>();
+            CreateMap<User, vRegister>().ReverseMap();
+            CreateMap<vLogin, User>();
             CreateMap<IPlugin, vPlugin>();
             CreateMap<Role, vRole>();
             CreateMap<SettingDescriptor, vSettingValue>();

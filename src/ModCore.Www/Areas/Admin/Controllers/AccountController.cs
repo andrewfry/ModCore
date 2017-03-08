@@ -30,7 +30,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Login(string ReturnUrl)
         {
-            var m = new LoginViewModel();
+            var m = new vLogin();
             m.ReturnUrl = ReturnUrl;
 
             return View(m);
@@ -38,7 +38,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel loginModel)
+        public async Task<IActionResult> Login(vLogin loginModel)
         {
             var result = false;
             User user = null;
@@ -90,7 +90,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Register()
         {
-            var m = new RegisterViewModel();
+            var m = new vRegister();
 
 
             return View(m);
@@ -98,7 +98,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel loginModel)
+        public async Task<IActionResult> Register(vRegister loginModel)
         {
             if (ModelState.IsValid)
             {

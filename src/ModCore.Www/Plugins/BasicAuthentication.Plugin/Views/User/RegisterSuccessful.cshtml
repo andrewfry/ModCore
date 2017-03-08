@@ -1,0 +1,16 @@
+﻿@model ModCore.ViewModels.Access.vRegister
+
+<form action="/Register" method="post" class="form-horizontal">
+    @Html.AntiForgeryToken()
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="alert alert-success">
+                        Your user account has been created successfully.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
