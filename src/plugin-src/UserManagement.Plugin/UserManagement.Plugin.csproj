@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <AssemblyName>UserManagement.Plugin</AssemblyName>
+    <PackageId>UserManagement.Plugin</PackageId>
+    <NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ModCore.Core\ModCore.Core.csproj" />
+    <ProjectReference Include="..\..\ModCore.DataAccess\ModCore.DataAccess.csproj" />
+    <ProjectReference Include="..\..\ModCore.DataAccess.MongoDb\ModCore.DataAccess.MongoDb.csproj" />
+    <ProjectReference Include="..\..\ModCore.Models\ModCore.Models.csproj" />
+    <ProjectReference Include="..\..\ModCore.Services\ModCore.Services.csproj" />
+    <ProjectReference Include="..\..\ModCore.ViewModels\ModCore.ViewModels.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostcompileScript" AfterTargets="Build">
+    <Exec Command="cmd /c $(MSBuildProjectDirectory)\..\..\cmds\plugin-publish.cmd &quot;$(AssemblyName)&quot; &quot;$(AssemblyName)&quot;" />
+  </Target>
+
+</Project>

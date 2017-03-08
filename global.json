@@ -1,6 +1,0 @@
-{
-  "projects": [ "src", "test", "../../../Documents/Visual Studio 2015/Projects/EmailFluentCore/src" ],
-  "sdk": {
-    "version": "1.0.0-preview2-003121"
-  }
-}

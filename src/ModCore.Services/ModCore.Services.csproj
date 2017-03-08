@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <AssemblyName>ModCore.Services</AssemblyName>
+    <PackageId>ModCore.Services</PackageId>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ModCore.Abstraction\ModCore.Abstraction.csproj" />
+    <ProjectReference Include="..\ModCore.Core\ModCore.Core.csproj" />
+    <ProjectReference Include="..\ModCore.DataAccess\ModCore.DataAccess.csproj" />
+    <ProjectReference Include="..\ModCore.DataAccess.MongoDb\ModCore.DataAccess.MongoDb.csproj" />
+    <ProjectReference Include="..\ModCore.Models\ModCore.Models.csproj" />
+    <ProjectReference Include="..\ModCore.Utilities\ModCore.Utilities.csproj" />
+    <ProjectReference Include="..\ModCore.ViewModels\ModCore.ViewModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="5.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="1.1.1" />
+    <PackageReference Include="NETCore.MailKit" Version="1.0.1" />
+    <PackageReference Include="System.Linq" Version="4.3.0" />
+    <PackageReference Include="System.Linq.Parallel" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>
