@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace BasicAuthentication.Plugin.Controllers
 {
-    public class UserManagementController : BasePluginController
+    public class UserController : BasePluginController
     {
 
         public override IPlugin Plugin
@@ -29,7 +29,7 @@ namespace BasicAuthentication.Plugin.Controllers
         private bool _requireEmailValidation;
         private IAuthenticationService _authService;
 
-        public UserManagementController(IAuthenticationService authService, IPluginLog log, ISiteSettingsManagerAsync siteSettingsManager, IPluginSettingsManager pluginSettingsManager, IBaseViewModelProvider baseViewModelProvider, IMapper mapper, ISessionService sessionService)
+        public UserController(IAuthenticationService authService, IPluginLog log, ISiteSettingsManagerAsync siteSettingsManager, IPluginSettingsManager pluginSettingsManager, IBaseViewModelProvider baseViewModelProvider, IMapper mapper, ISessionService sessionService)
           : base(log, siteSettingsManager, pluginSettingsManager, baseViewModelProvider, mapper, sessionService)
         {
             _allowedToRegister = PluginSettingsManager.GetSettingAsync<bool>(BasicAuthentication.BuiltInSettings.RegisterUserEnabled).Result;
@@ -45,9 +45,9 @@ namespace BasicAuthentication.Plugin.Controllers
             if (!_allowedToRegister)
                 return ReturnError(HttpStatusCode.NotFound);
 
-            var bm = new BaseViewModel();
+            var vm = new vRegister();
 
-            return View(bm);
+            return View(vm);
         }
 
         [HttpPost]
