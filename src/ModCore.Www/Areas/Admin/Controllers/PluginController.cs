@@ -47,11 +47,12 @@ namespace ModCore.Www.Areas.Admin.Controllers
                 avail.Active = activePlugins.Any(a => a.AssemblyName == avail.AssemblyName && avail.Version == a.Version);
             }
 
-            var m = new vPluginList();
-            m.Plugins = availablePlugins;
-            m.PluginErrors = _pluginManager.Errors.Where(a => a.ErrorLevel == PluginErrorLevel.Error).ToList();
-            m.PluginWarnings = _pluginManager.Errors.Where(a => a.ErrorLevel == PluginErrorLevel.Warning).ToList();
-
+            var m = new vPluginList()
+            {
+                Plugins = availablePlugins,
+                PluginErrors = _pluginManager.Errors.Where(a => a.ErrorLevel == PluginErrorLevel.Error).ToList(),
+                PluginWarnings = _pluginManager.Errors.Where(a => a.ErrorLevel == PluginErrorLevel.Warning).ToList()
+            };
             return View(m);
         }
 
@@ -93,22 +94,24 @@ namespace ModCore.Www.Areas.Admin.Controllers
             var plugin = _pluginManager.InstalledPlugins.FirstOrDefault(a => a.AssemblyName == pluginAssembly);
             _pluginSettingsManager.SetPlugin(plugin);
 
-            var model = new vSettings();
-            model.AssemblyName = plugin.AssemblyName;
-            model.Name = plugin.Name;
-            model.Settings = _pluginSettingsManager.GetAllAsync()
+            var model = new vSettings()
+            {
+                AssemblyName = plugin.AssemblyName,
+                Name = plugin.Name,
+                Settings = _pluginSettingsManager.GetAllAsync()
                 .Result
-                .Select(a => _mapper.Map<vSettingValue>(a)).ToList();
-
+                .Select(a => _mapper.Map<vSettingValue>(a)).ToList()
+            };
             return View(model);
         }
 
         [HttpGet]
         public IActionResult ActiveRoutes()
         {
-            var vm = new vPluginRoutes();
-            vm.Routes = _mapper.Map<List<vRoute>>(_pluginManager.ActivePluginRoutes);
-
+            var vm = new vPluginRoutes()
+            {
+                Routes = _mapper.Map<List<vRoute>>(_pluginManager.ActivePluginRoutes)
+            };
             return View(vm);
         }
 
