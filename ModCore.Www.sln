@@ -58,6 +58,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement.Plugin", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailFluentCore", "..\..\..\Documents\Visual Studio 2015\Projects\EmailFluentCore\src\EmailFluentCore\EmailFluentCore.csproj", "{2764539B-3036-41E9-8FFA-15D5FD47FB92}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModCore.Services.Tests", "ModCore.Services\ModCore.Services.Tests.csproj", "{D219A31F-701D-48EF-9E68-D796F9716689}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -226,6 +228,14 @@ Global
 		{2764539B-3036-41E9-8FFA-15D5FD47FB92}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2764539B-3036-41E9-8FFA-15D5FD47FB92}.Release|x86.ActiveCfg = Release|Any CPU
 		{2764539B-3036-41E9-8FFA-15D5FD47FB92}.Release|x86.Build.0 = Release|Any CPU
+		{D219A31F-701D-48EF-9E68-D796F9716689}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D219A31F-701D-48EF-9E68-D796F9716689}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D219A31F-701D-48EF-9E68-D796F9716689}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D219A31F-701D-48EF-9E68-D796F9716689}.Debug|x86.Build.0 = Debug|Any CPU
+		{D219A31F-701D-48EF-9E68-D796F9716689}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D219A31F-701D-48EF-9E68-D796F9716689}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D219A31F-701D-48EF-9E68-D796F9716689}.Release|x86.ActiveCfg = Release|Any CPU
+		{D219A31F-701D-48EF-9E68-D796F9716689}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -254,5 +264,6 @@ Global
 		{60F12275-654D-4B31-9176-48ADB7769C90} = {E95848E4-1302-43CF-AB1C-59B32943873D}
 		{B3E24882-719C-4036-8CBE-48567661EFDB} = {E95848E4-1302-43CF-AB1C-59B32943873D}
 		{2764539B-3036-41E9-8FFA-15D5FD47FB92} = {4E5E6900-53DC-43FF-889D-590DDD3F2AD3}
+		{D219A31F-701D-48EF-9E68-D796F9716689} = {1EA92745-3787-43DD-8C1C-AEA46770A876}
 	EndGlobalSection
 EndGlobal
