@@ -10,14 +10,14 @@ using Moq;
 namespace ModCore.Services.Tests
 {
     [TestFixture]
-    public abstract class BaseTest<T> where T : BaseEntity
+    public abstract class BaseServiceTest<T> where T : BaseEntity
     {
         protected Mock<IDataRepositoryAsync<T>> _mockRepos;
         protected Mock<IMapper> _mockMapper;
         protected Mock<ILog> _mockLogger;
         protected Mock<ISiteSettingsManagerAsync> _mockSiteSettings;
 
-        public BaseTest()
+        public BaseServiceTest()
         {
             _mockRepos = new Mock<IDataRepositoryAsync<T>>();
             _mockMapper = new Mock<IMapper>();
