@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\Documents\Visual Studio 2015\Projects\EmailFluentCore\src\EmailFluentCore\EmailFluentCore.csproj" />
     <ProjectReference Include="..\..\ModCore.Abstraction\ModCore.Abstraction.csproj" />
     <ProjectReference Include="..\..\ModCore.Core\ModCore.Core.csproj" />
     <ProjectReference Include="..\..\ModCore.DataAccess.MongoDb\ModCore.DataAccess.MongoDb.csproj" />
