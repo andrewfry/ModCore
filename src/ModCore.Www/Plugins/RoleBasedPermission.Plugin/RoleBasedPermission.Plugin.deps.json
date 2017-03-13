@@ -9,6 +9,7 @@
     ".NETStandard,Version=v1.6/": {
       "rolebasedpermission.plugin/1.0.0": {
         "dependencies": {
+          "Microsoft.AspNetCore.Mvc.Razor": "1.1.2",
           "ModCore.Abstraction": "1.0.0",
           "ModCore.Core": "1.0.0",
           "ModCore.Services": "1.0.0",

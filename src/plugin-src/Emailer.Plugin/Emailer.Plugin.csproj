@@ -12,6 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="1.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\ModCore.Abstraction\ModCore.Abstraction.csproj" />
     <ProjectReference Include="..\..\ModCore.Core\ModCore.Core.csproj" />
     <ProjectReference Include="..\..\ModCore.DataAccess.MongoDb\ModCore.DataAccess.MongoDb.csproj" />

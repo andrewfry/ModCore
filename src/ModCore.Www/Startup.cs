@@ -68,6 +68,7 @@ namespace ModCore.Www
             services.AddTransient<ILogger, SiteLogger>();
             services.AddTransient<ILog, SiteLogger>();
             services.AddTransient<ISessionManager, SessionManager>();
+            services.AddTransient<ILayoutManager, LayoutManager>();
             services.AddSingleton<ISiteSettingsManagerAsync, SiteSettingsManager>();
             services.AddTransient<IBaseViewModelProvider, DefaultBaseViewModelProvider>();
             services.AddTransient<IMenuManager, MenuManager>();

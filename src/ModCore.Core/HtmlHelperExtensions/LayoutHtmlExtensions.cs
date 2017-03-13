@@ -9,14 +9,11 @@ namespace ModCore.Core.HtmlHelperExtensions
 {
     public static class LayoutHtmlExtensions
     {
-        public static IHtmlContent DefaultLayout(this IHtmlHelper html)
+        public static string DefaultLayout(this IHtmlHelper html)
         {
             var layoutService = html.ViewContext.HttpContext.RequestServices.GetService(typeof(ILayoutManager)) as ILayoutManager;
-            var htmlContentBuilder = new HtmlContentBuilder();
 
-            htmlContentBuilder.Append(layoutService.DefaultLayoutPath);
-
-            return htmlContentBuilder;
+            return layoutService.DefaultLayoutPath;
         }
     }
 }
