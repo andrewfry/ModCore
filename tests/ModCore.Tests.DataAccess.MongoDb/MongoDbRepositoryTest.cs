@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,10 +8,12 @@ using ModCore.Abstraction.DataAccess;
 using ModCore.Specifications.BuiltIns;
 using System.Linq.Expressions;
 using ModCore.Core.DataAccess;
+using Xunit;
+using ModCore.DataAccess.MongoDb;
+using ModCore.DataAccess.MongoDb.Test;
 
-namespace ModCore.DataAccess.MongoDb.Test
+namespace ModCore.Tests.DataAccess.MongoDb
 {
-    [TestFixture]
     public class MongoDbRepositoryTest
     {
         private MongoDbRepository<TestObject> _repos;
@@ -29,7 +30,7 @@ namespace ModCore.DataAccess.MongoDb.Test
             _repos = new MongoDbRepository<TestObject>("mongodb://localhost:27017/ModCoreDBTest");
         }
 
-        [Test]
+        [Fact]
         public void InsertTest()
         {
             var testObject = GenerateTestObject();
@@ -41,7 +42,7 @@ namespace ModCore.DataAccess.MongoDb.Test
             PerformBasicAssert(testObject, fromDb);
         }
 
-        [Test]
+        [Fact]
         public void UpdateTest()
         {
             var testObject = GenerateTestObject();
@@ -57,7 +58,7 @@ namespace ModCore.DataAccess.MongoDb.Test
             PerformBasicAssert(testObject, fromDb);
         }
 
-        [Test]
+        [Fact]
         public void DeleteTest()
         {
             var testObject = GenerateTestObject();
@@ -72,11 +73,11 @@ namespace ModCore.DataAccess.MongoDb.Test
 
             fromDb = _repos.FindById(testObject.Id);
 
-            Assert.IsNull(fromDb);
+            Assert.Null(fromDb);
 
         }
 
-        [Test]
+        [Fact]
         public void UpdateAllTest()
         {
             var testList = new List<TestObject>();
@@ -104,7 +105,7 @@ namespace ModCore.DataAccess.MongoDb.Test
             }
         }
 
-        [Test]
+        [Fact]
         public void DeleteAllTest()
         {
             var testList = new List<TestObject>();
@@ -123,11 +124,11 @@ namespace ModCore.DataAccess.MongoDb.Test
             foreach (var testItem in testList)
             {
                 var fromDb = _repos.FindById(testItem.Id);
-                Assert.IsNull(fromDb);
+                Assert.Null(fromDb);
             }
         }
 
-        [Test]
+        [Fact]
         public void InsertManyTest()
         {
             var testList = new List<TestObject>();
@@ -159,7 +160,7 @@ namespace ModCore.DataAccess.MongoDb.Test
             }
         }
 
-        [Test]
+        [Fact]
         public async Task InsertAsyncTest()
         {
             var testObject =  GenerateTestObject();
@@ -171,7 +172,7 @@ namespace ModCore.DataAccess.MongoDb.Test
             PerformBasicAssert(testObject, fromDb);
         }
 
-        [Test]
+        [Fact]
         public async Task UpdateAsyncTest()
         {
             var testObject = GenerateTestObject();
@@ -187,7 +188,7 @@ namespace ModCore.DataAccess.MongoDb.Test
             PerformBasicAssert(testObject, fromDb);
         }
 
-        [Test]
+        [Fact]
         public async Task DeleteAsyncTest()
         {
             var testObject = GenerateTestObject();
@@ -202,11 +203,11 @@ namespace ModCore.DataAccess.MongoDb.Test
 
             fromDb = await _repos.FindByIdAsync(testObject.Id);
 
-            Assert.IsNull(fromDb);
+            Assert.Null(fromDb);
 
         }
 
-        [Test]
+        [Fact]
         public async Task UpdateAllAsyncTest()
         {
             var testList = new List<TestObject>();
@@ -234,7 +235,7 @@ namespace ModCore.DataAccess.MongoDb.Test
             }
         }
 
-        [Test]
+        [Fact]
         public async Task InsertManyAsyncTest()
         {
             var testList = new List<TestObject>();
@@ -266,7 +267,7 @@ namespace ModCore.DataAccess.MongoDb.Test
             }
         }
 
-        [Test]
+        [Fact]
         public async Task DeleteAllAsyncTest()
         {
             var testList = new List<TestObject>();
@@ -285,11 +286,11 @@ namespace ModCore.DataAccess.MongoDb.Test
             foreach (var testItem in testList)
             {
                 var fromDb = await _repos.FindByIdAsync(testItem.Id);
-                Assert.IsNull(fromDb);
+                Assert.Null(fromDb);
             }
         }
 
-        [Test]
+        [Fact]
         public async Task FilterAsyncTest()
         {
             var testList = new List<TestObject>();
@@ -308,19 +309,19 @@ namespace ModCore.DataAccess.MongoDb.Test
             var specification = new NotBlankName();
             var result = await _repos.FindAllByPageAsync(specification, filterRequest);
 
-            Assert.IsTrue(result.PageSize == 5);
-            Assert.IsTrue(result.CurrentPage == 1);
-            Assert.IsTrue(result.TotalPages == 2);
-            Assert.IsTrue(result.TotalResults == 10);
-            Assert.IsTrue(result.CurrentPageResults.Count == 5);
+            Assert.True(result.PageSize == 5);
+            Assert.True(result.CurrentPage == 1);
+            Assert.True(result.TotalPages == 2);
+            Assert.True(result.TotalResults == 10);
+            Assert.True(result.CurrentPageResults.Count == 5);
 
         }
 
         private void PerformBasicAssert(TestObject testObject, TestObject fromDb)
         {
-            Assert.IsTrue(testObject != fromDb);
-            Assert.IsTrue(testObject.Name == fromDb.Name);
-            Assert.IsTrue(testObject.Price == fromDb.Price);
+            Assert.True(testObject != fromDb);
+            Assert.True(testObject.Name == fromDb.Name);
+            Assert.True(testObject.Price == fromDb.Price);
         }
 
         private TestObject GenerateTestObject()

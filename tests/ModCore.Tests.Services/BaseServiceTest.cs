@@ -1,15 +1,12 @@
 ﻿using System;
-using NUnit.Framework;
-using NUnit.Framework.Internal;
 using ModCore.Abstraction.DataAccess;
 using ModCore.Abstraction.Site;
 using ModCore.Models.BaseEntities;
 using AutoMapper;
 using Moq;
 
-namespace ModCore.Services.Tests
+namespace ModCore.Tests.Services
 {
-    [TestFixture]
     public abstract class BaseServiceTest<T> where T : BaseEntity
     {
         protected Mock<IDataRepositoryAsync<T>> _mockRepos;

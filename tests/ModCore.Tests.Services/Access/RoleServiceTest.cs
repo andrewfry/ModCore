@@ -1,5 +1,4 @@
 ﻿using ModCore.Models.Access;
-using NUnit.Framework;
 using System;
 using ModCore.Services.Access;
 using Moq;
@@ -8,12 +7,13 @@ using ModCore.Abstraction.DataAccess;
 using ModCore.Specifications.BuiltIns;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Xunit;
 
-namespace ModCore.Services.Tests
+namespace ModCore.Tests.Services
 {
     public class RoleServiceTest : BaseServiceTest<Role>
     {
-        [Test]
+        [Fact]
         public async Task GetAllRolesAsync_Test()
         {
             var mapper = _mockMapper.Object;
@@ -32,7 +32,7 @@ namespace ModCore.Services.Tests
             var roleService = new RoleService(repos, mapper, logger, siteSettings);
             var result = await roleService.GetAllRolesAsync();
 
-            Assert.IsTrue(result.Count == 2);
+            Assert.True(result.Count == 2);
         }
 
 
