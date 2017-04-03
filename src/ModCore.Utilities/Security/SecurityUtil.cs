@@ -36,5 +36,12 @@ namespace ModCore.Utilities.Security
                 return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
             }
         }
+
+        public static string GetRandomHash(int size)
+        {
+            var randomBytes = SecurityUtil.GetRandomBytes(16);
+            var guid = Guid.NewGuid().ToString();
+            return SecurityUtil.GetHash(randomBytes + guid);
+        }
     }
 }

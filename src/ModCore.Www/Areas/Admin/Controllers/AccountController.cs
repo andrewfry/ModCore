@@ -56,7 +56,7 @@ namespace ModCore.Www.Areas.Admin.Controllers
             if (authService == null)
                 throw new Exception("An IAuthenticationService is not registered");
 
-            user = await _userService.GetByEmail(loginModel.EmailAddress);
+            user = await _userService.GetByEmailAsync(loginModel.EmailAddress);
             var authuser = _mapper.Map<AuthenticationUser>(user);
             var validationResult = await authService.ValidatePassword(authuser, loginModel.Password);
             result = validationResult.Successful;

@@ -57,7 +57,7 @@ namespace ModCore.Services.Communication
 
             if (emailTemplate.HasLayout())
             {
-                var layout = await _emailLayoutRepository.FindByIdAsync(emailTemplate.EmailLayoutId);
+                var layout = await _emailLayoutRepository.FindByIdAsync(emailTemplate.LayoutId);
                 emailMessage.Body = ReplaceBody(emailMessage.Body, layout.Html);
             }
 

@@ -49,26 +49,20 @@ namespace ModCore.Services.Access
             //Send Password Reset Email
         }
 
-        public async Task<ResultPacket<User>> CreateNewUser(vRegister registerModel)
+        public async Task<ResultPacket<User>> CreateNewUser(vRegister model)
         {
             try
             {
-                var user = _mapper.Map<User>(registerModel);
-
-                var existingUser = await _repository.FindAsync(new GetByEmail(user.EmailAddress));
+                var existingUser = await _repository.FindAsync(new GetByEmail(model.EmailAddress));
                 if (existingUser != null)
-                    throw new DuplicateUserException($"A user with the email: {user.EmailAddress} already exists.");
+                    throw new DuplicateUserException($"A user with the email: {model.EmailAddress} already exists.");
 
+                var user = _mapper.Map<User>(model);
                 user.PasswordSalt = SecurityUtil.GetSalt();
-                user.PasswordHash = SecurityUtil.GetHash(registerModel.Password + user.PasswordSalt);
+                user.PasswordHash = SecurityUtil.GetHash(model.Password + user.PasswordSalt);
                 user.FailedLoginAttempts = 0;
                 user.DateCreated = DateTime.UtcNow;
-
-                var randomBytes = SecurityUtil.GetRandomBytes(16);
-                var guid = Guid.NewGuid().ToString();
-                var emailHash = SecurityUtil.GetHash(randomBytes + guid);
-
-                user.EmailHashVerification = emailHash;
+                user.EmailHashVerification = SecurityUtil.GetRandomHash(16);
                 user.EmailVerified = false;
 
                 await _repository.InsertAsync(user);
@@ -97,7 +91,7 @@ namespace ModCore.Services.Access
             await _repository.UpdateAsync(user);
         }
 
-        public async Task<User> GetByEmail(string emailAddress)
+        public async Task<User> GetByEmailAsync(string emailAddress)
         {
             return await _repository.FindAsync(new GetByEmail(emailAddress));
         }

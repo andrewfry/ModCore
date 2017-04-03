@@ -21,7 +21,7 @@ namespace ModCore.Abstraction.Services.Access
 
         Task<ResultPacket<User>> CreateNewUser(vRegister registerModel);
 
-        Task<User> GetByEmail(string emailAddress);
+        Task<User> GetByEmailAsync(string emailAddress);
 
         //Task<bool> UserAllowedAdminAccess(string userId, RouteData route);
 

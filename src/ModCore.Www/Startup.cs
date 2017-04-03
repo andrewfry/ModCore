@@ -189,7 +189,7 @@ namespace ModCore.Www
 
 
             var usrService = srcProvider.GetService<IUserService>();
-            var user = usrService.GetByEmail("test@test.com");
+            var user = usrService.GetByEmailAsync("test@test.com");
             if (user.Result == null)
             {
                 var testUser = usrService.CreateNewUser(new vRegister

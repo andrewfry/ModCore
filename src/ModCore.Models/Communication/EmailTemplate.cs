@@ -18,7 +18,7 @@ namespace ModCore.Models.Communication
 
         public List<EmailContact> Bcc { get; set; }
 
-        public string EmailLayoutId { get; set; }
+        public string LayoutId { get; set; }
 
         public string Subject { get; set; }
 
@@ -30,7 +30,7 @@ namespace ModCore.Models.Communication
 
         public bool HasLayout()
         {
-            return string.IsNullOrEmpty(this.EmailLayoutId) || string.IsNullOrWhiteSpace(this.EmailLayoutId);
+            return string.IsNullOrEmpty(this.LayoutId) || string.IsNullOrWhiteSpace(this.LayoutId);
         }
 
     }
