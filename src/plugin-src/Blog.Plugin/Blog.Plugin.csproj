@@ -22,8 +22,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
 
-  <Target Name="PostcompileScript" AfterTargets="Build">
-    <Exec Command="cmd /c $(MSBuildProjectDirectory)\..\..\cmds\plugin-publish.cmd &quot;$(AssemblyName)&quot; &quot;$(AssemblyName)&quot;" />
+   <Target Name="PostcompileScript" AfterTargets="Build">
+    <Exec Command="cmd /c (&quot;$(MSBuildProjectDirectory)\..\..\cmds\plugin-publish.cmd&quot; a &quot;$(AssemblyName)&quot; &quot;$(AssemblyName)&quot;)" />
   </Target>
 
 </Project>
