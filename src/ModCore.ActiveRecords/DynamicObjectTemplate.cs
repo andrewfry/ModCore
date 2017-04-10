@@ -6,9 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ModCore.ActiveRecords
+namespace ModCore.DynamicObjects
+
 {
-    public class ObjectTemplate
+    public class DynamicObjectTemplate
     {
 
         private List<ObjectDefinition> _definitions;
@@ -18,7 +19,7 @@ namespace ModCore.ActiveRecords
 
         public List<ObjectProperty> Properties { get { return _properties.ToList(); } }
 
-        public ObjectTemplate(ObjectDefinition definition, IDataRepositoryAsync<ObjectDefinition> objTemprepos)
+        public DynamicObjectTemplate(ObjectDefinition definition, IDataRepositoryAsync<ObjectDefinition> objTemprepos)
         {
             if (definition == null)
                 throw new NullReferenceException("object definition");

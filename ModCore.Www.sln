@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.12
+VisualStudioVersion = 15.0.26403.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CBA41F16-7012-4B6B-923C-406C9603B52C}"
 EndProject
@@ -40,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModCore.DataAccess.MongoDb"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModCore.Utilities", "src\ModCore.Utilities\ModCore.Utilities.csproj", "{FB08635A-CAAD-4501-9FAC-20FC61B094FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModCore.ActiveRecords", "src\ModCore.ActiveRecords\ModCore.ActiveRecords.csproj", "{C008EB0E-378B-4CD2-B835-906950FA4320}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModCore.DynamicObjects", "src\ModCore.ActiveRecords\ModCore.DynamicObjects.csproj", "{C008EB0E-378B-4CD2-B835-906950FA4320}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicAuthentication.Plugin", "src\plugin-src\BasicAuthentication.Plugin\BasicAuthentication.Plugin.csproj", "{2FA49D78-0DF3-48B5-91F3-C0758C4736E3}"
 EndProject

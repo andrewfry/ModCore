@@ -2,6 +2,7 @@
 using ModCore.Core.PluginApi;
 using ModCore.Models.PluginApi;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -28,13 +29,13 @@ namespace ModCore.Core.Tests
             };
 
 
-            apiManager.RegisterApiHander("exAmplerHandler", null, handler);
+            apiManager.RegisterApiRequestHander("exAmplerHandler", null, handler);
 
-            var response = await apiManager.FullfilEventApiRequest("examplerhandler", null);
+            var response = await apiManager.FullfilApiRequest("examplerhandler", null);
 
             Assert.True(response.Success == true);
             Assert.True(response.Value is ExampleReturnObj);
-
+            Assert.True(response.HandledBy.Count == 1);
 
         }
 
@@ -56,19 +57,21 @@ namespace ModCore.Core.Tests
             };
 
 
-            Task.Run(() => {
+            Task.Run(() =>
+            {
                 IPluginApiManager apiManager2 = new PluginApiManager();
 
-                var response =  apiManager2.FullfilEventApiRequest("examplerhandler", null).Result;
+                var response = apiManager2.FullfilApiRequest("examplerhandler", null).Result;
 
                 Assert.True(response.Success == true);
                 Assert.True(response.Value is ExampleReturnObj);
             });
 
-            Task.Run(() => {
+            Task.Run(() =>
+            {
 
                 IPluginApiManager apiManager2 = new PluginApiManager();
-                var response =  apiManager2.FullfilEventApiRequest("examplerhandler", null).Result;
+                var response = apiManager2.FullfilApiRequest("examplerhandler", null).Result;
 
                 Assert.True(response.Success == true);
                 Assert.True(response.Value is ExampleReturnObj);
@@ -76,6 +79,126 @@ namespace ModCore.Core.Tests
 
         }
 
+        [Fact]
+        public async Task BasicApiTwoHandler()
+        {
+
+            IPluginApiManager apiManager = new PluginApiManager();
+            Func<ApiArgument, Task<ApiHandlerResponse>> handler = async (arg) =>
+            {
+                return new ApiHandlerResponse()
+                {
+                    Success = true,
+                    Value = new ExampleReturnObj
+                    {
+                        Message = "test"
+                    }
+                };
+            };
+            Func<ApiArgument, Task<ApiHandlerResponse>> handler2 = async (arg) =>
+            {
+                return new ApiHandlerResponse()
+                {
+                    Success = true,
+                    Value = new ExampleReturnObj
+                    {
+                        Message = "test_handler_two"
+                    }
+                };
+            };
+
+            apiManager.RegisterApiRequestHander("exAmplerHandler", null, handler);
+            apiManager.RegisterApiRequestHander("examplerhandler", null, handler2);
+
+
+            var response = await apiManager.FullfilApiRequest("examplerhandler", null);
+
+            Assert.True(response.Success == true);
+            Assert.True(response.Value is IEnumerable<object>);
+            foreach (var v in (response.Value as IEnumerable<object>))
+            {
+                Assert.True(v is ExampleReturnObj);
+            }
+            Assert.True(response.HandledBy.Count == 2);
+
+        }
+
+        [Fact]
+        public async Task BasicApiTwoHandlerSingleExecution()
+        {
+
+            IPluginApiManager apiManager = new PluginApiManager();
+            Func<ApiArgument, Task<ApiHandlerResponse>> handler = async (arg) =>
+            {
+                return new ApiHandlerResponse()
+                {
+                    Success = true,
+                    Value = new ExampleReturnObj
+                    {
+                        Message = "test"
+                    }
+                };
+            };
+            Func<ApiArgument, Task<ApiHandlerResponse>> handler2 = async (arg) =>
+            {
+                return new ApiHandlerResponse()
+                {
+                    Success = true,
+                    Value = new ExampleReturnObj
+                    {
+                        Message = "test_handler_two"
+                    }
+                };
+            };
+
+            apiManager.RegisterApiRequestHander("exAmplerHandler", null, handler);
+            apiManager.RegisterApiRequestHander("examplerhandler", null, handler2);
+
+
+            var response = await apiManager.FullfilApiRequest("examplerhandler", null, ApiExecutionType.Single);
+
+            Assert.True(response.Success == false);
+            Assert.True(response.Exception != null);
+        }
+
+        [Fact]
+        public async Task BasicApiTwoHandlerFirstExecution()
+        {
+
+            IPluginApiManager apiManager = new PluginApiManager();
+            Func<ApiArgument, Task<ApiHandlerResponse>> handler = async (arg) =>
+            {
+                return new ApiHandlerResponse()
+                {
+                    Success = true,
+                    Value = new ExampleReturnObj
+                    {
+                        Message = "test"
+                    }
+                };
+            };
+            Func<ApiArgument, Task<ApiHandlerResponse>> handler2 = async (arg) =>
+            {
+                return new ApiHandlerResponse()
+                {
+                    Success = true,
+                    Value = new ExampleReturnObj
+                    {
+                        Message = "test_handler_two"
+                    }
+                };
+            };
+
+            apiManager.RegisterApiRequestHander("exAmplerHandler", null, handler);
+            apiManager.RegisterApiRequestHander("examplerhandler", null, handler2);
+
+
+            var response = await apiManager.FullfilApiRequest("examplerhandler", null, ApiExecutionType.First);
+
+            Assert.True(response.Success == true);
+            Assert.True(response.Value is ExampleReturnObj);
+            Assert.True(response.HandledBy.Count == 1);
+        }
     }
 
     public class ExampleReturnObj
@@ -83,4 +206,3 @@ namespace ModCore.Core.Tests
         public string Message { get; set; }
     }
 }
-

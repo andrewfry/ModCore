@@ -23,7 +23,7 @@ namespace ModCore.Core.PluginApi
             var timer = new Timer(timerCallback, null, 0, 1000);
         }
 
-        public void RegisterApiHander(string apiRequestName, IPlugin plugin, Func<ApiArgument, Task<ApiHandlerResponse>> handler)
+        public void RegisterApiRequestHander(string apiRequestName, IPlugin plugin, Func<ApiArgument, Task<ApiHandlerResponse>> handler)
         {
             var registeredHandler = new ApiHandlerDescription
             {
@@ -43,13 +43,13 @@ namespace ModCore.Core.PluginApi
                 Argument = argument,
                 OnSuccess = onSuccess,
                 OnFailure = onFailure,
-                 Type = executionType
+                Type = executionType
             };
 
             ApiRequests.Enqueue(addToQueue);
         }
 
-        public async Task<ApiResponse> FullfilEventApiRequest(string apiRequestName, ApiArgument argument, ApiExecutionType executionType = ApiExecutionType.All)
+        public async Task<ApiResponse> FullfilApiRequest(string apiRequestName, ApiArgument argument, ApiExecutionType executionType = ApiExecutionType.All)
         {
             var addToQueue = new ApiRequest
             {
@@ -86,6 +86,7 @@ namespace ModCore.Core.PluginApi
                     throw new Exception($"No handlers configured for {request.EventName}");
 
                 object returnObj = null;
+                List<string> handledBy = new List<string>();
 
                 if (handlers.Count == 1 || request.Type == ApiExecutionType.First
                     || request.Type == ApiExecutionType.Single)
@@ -98,6 +99,11 @@ namespace ModCore.Core.PluginApi
                     if (!r.Success)
                         throw new Exception("Failed to process correctly");
                     returnObj = r.Value;
+
+                    if (h.Plugin != null)
+                        handledBy.Add(string.Concat(h.Plugin.Name, "_", h.Plugin.Version));
+                    else
+                        handledBy.Add("Internal");
                 }
                 else
                 {
@@ -108,6 +114,11 @@ namespace ModCore.Core.PluginApi
                         if (!r.Success)
                             throw new Exception("Failed to process correctly");
                         values.Add(r.Value);
+
+                        if (h.Plugin != null)
+                            handledBy.Add(string.Concat(h.Plugin.Name, "_", h.Plugin.Version));
+                        else
+                            handledBy.Add("Internal");
                     }
                     returnObj = values;
                 }
@@ -116,6 +127,7 @@ namespace ModCore.Core.PluginApi
                 {
                     Value = returnObj,
                     Success = true,
+                    HandledBy = handledBy
                 };
 
             }
@@ -141,10 +153,10 @@ namespace ModCore.Core.PluginApi
 
                 object returnObj = null;
 
-                if (handlers.Count == 1 || request.Type == ApiExecutionType.First 
+                if (handlers.Count == 1 || request.Type == ApiExecutionType.First
                     || request.Type == ApiExecutionType.Single)
                 {
-                    if(request.Type == ApiExecutionType.Single && handlers.Count > 1)
+                    if (request.Type == ApiExecutionType.Single && handlers.Count > 1)
                         throw new Exception("Failed to process because EventExecutionType was Single and multiple event handlers were found");
 
                     var h = handlers.First();
@@ -218,8 +230,8 @@ namespace ModCore.Core.PluginApi
     //            return _internalCache;
     //        }
     //    }
-       
+
     //}
 
-   
+
 }

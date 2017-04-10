@@ -13,5 +13,7 @@ namespace ModCore.Models.Objects
         public PropertyType Type { get; set; }
 
         public List<ObjectPropertyValidation> Validation { get; set; }
+
+        public object DefaultValue { get; set; }
     }
 }
