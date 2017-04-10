@@ -17,4 +17,10 @@
     <PackageReference Include="System.ComponentModel" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ModCore.Abstraction">
+      <HintPath>..\ModCore.Abstraction\bin\Debug\netstandard1.6\ModCore.Abstraction.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

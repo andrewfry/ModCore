@@ -29,7 +29,7 @@ namespace ModCore.ActiveRecords
 
             _definitions.Add(definition);
 
-            LoadBaseTypes(definition).Wait(); //async constructors are no possible? nor a good idea
+            LoadBaseTypes(definition).Wait(); //async constructors are not possible? nor a good idea?
 
         }
 

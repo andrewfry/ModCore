@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ModCore.Core.Events
+namespace ModCore.Models.PluginApi
 {
-    public class EventHandlerResponse
+    public class ApiHandlerResponse
     {
         public bool Success { get; set; }
         public object Value { get; set; }

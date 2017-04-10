@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ModCore.Core.Events
+namespace ModCore.Models.PluginApi
 {
-    public class EventArgument
+    public class ApiArgument
     {
         public object Argument { get; set; }
 
