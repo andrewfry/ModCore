@@ -1,32 +1,26 @@
-﻿using Microsoft.AspNetCore.Routing;
-using ModCore.Abstraction.Plugins;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using ModCore.Models.Plugins;
+using ModCore.Abstraction.Plugins;
 using ModCore.Core.Plugins;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Pages.Plugin.Services;
+using ModCore.Models.Plugins;
+using Themes.Plugin.Models;
 using ModCore.Abstraction.DataAccess;
 using ModCore.DataAccess.MongoDb;
-using Pages.Plugin.Models;
-using Pages.Plugin.Routers;
-using Microsoft.AspNetCore.Mvc.Internal;
 using ModCore.Abstraction.Plugins.Builtins;
-using ModCore.Core.Plugins.Descriptions;
 
-namespace Pages.Plugin
+namespace Themes.Plugin
 {
-    public class Pages : BasePlugin, IPlugin
+    public class Themes : BasePlugin, IPlugin
     {
         public string Name
         {
             get
             {
-                return "Pages";
+                return "Themes";
             }
         }
 
@@ -42,7 +36,7 @@ namespace Pages.Plugin
         {
             get
             {
-                return "This plugin provides the ability to create and edit HTML pages to display for user interaction.";
+                return "This plugin provides the ability to edit and select the layout and 'look' of each page.";
             }
         }
 
@@ -53,23 +47,11 @@ namespace Pages.Plugin
                 var routes = new List<IPluginRoute>();
                 routes.MapPluginRoute(
                 name: "pageDefaultAdmin",
-                template: "{area=Admin}/{controller=Page}/{action=Index}/{id?}",
-                plugin: new Pages());
-
-                routes.MapPluginRoute(
-                name: "pageDefault",
-                template: "{controller=Page}/{action=Index}/{id?}",
-                plugin: new Pages());
+                template: "{area=Admin}/{controller=Theme}/{action=Index}/{id?}",
+                plugin: new Themes());
 
                 return routes;
             }
-        }
-
-
-        public ICollection<IPluginDependency> Dependencies
-        {
-            get
-            { return new List<IPluginDependency>() { new RequiredPlugin( new )}; }
         }
 
         public ICollection<ServiceDescriptor> Services
@@ -77,10 +59,19 @@ namespace Pages.Plugin
             get
             {
                 var list = new List<ServiceDescriptor>();
-                list.Add(ServiceDescriptor.Transient<IDataRepositoryAsync<Page>, MongoDbRepository<Page>>());
-                list.Add(ServiceDescriptor.Transient<IPageService, PageService>());
-                list.Add(ServiceDescriptor.Transient<IPluginRouter, CmsPageRouter>());
+                list.Add(ServiceDescriptor.Transient<IDataRepositoryAsync<Theme>, MongoDbRepository<Theme>>());
+                //list.Add(ServiceDescriptor.Transient<IThemeService, ThemeService>());
                 return list;
+            }
+        }
+        public ICollection<IPluginDependency> Dependencies
+        {
+            get
+            {
+                return new List<IPluginDependency>()
+                {
+                    // new RequiredPlugin(new AuthenticationService())
+                };
             }
         }
 

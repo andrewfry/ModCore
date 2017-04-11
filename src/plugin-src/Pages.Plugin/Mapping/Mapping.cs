@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Pages.Plugin.Models;
 using Pages.Plugin.ViewModels;
+using MongoDB.Bson.Serialization;
+using ModHtml.Dependency.HtmlComponentTypes;
 
 namespace Pages.Plugin.Mapping
 {
@@ -13,6 +15,15 @@ namespace Pages.Plugin.Mapping
         public PageMapping()
         {
             CreateMap<PageViewModel, Page>().ReverseMap();
+
+            if (!BsonClassMap.IsClassMapRegistered(typeof(NavigationMenu)))
+            {
+                BsonClassMap.RegisterClassMap<NavigationMenu>();
+            }
+            if (!BsonClassMap.IsClassMapRegistered(typeof(TextArea)))
+            {
+                BsonClassMap.RegisterClassMap<TextArea>();
+            }
         }
     }
 }

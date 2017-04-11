@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+VisualStudioVersion = 15.0.26228.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CBA41F16-7012-4B6B-923C-406C9603B52C}"
 EndProject
@@ -61,6 +61,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModCore.Tests.DataAccess.MongoDb", "tests\ModCore.Tests.DataAccess.MongoDb\ModCore.Tests.DataAccess.MongoDb.csproj", "{77040DED-CB71-42E7-BF9F-E049D4B05E02}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModCore.Tests.Services", "tests\ModCore.Tests.Services\ModCore.Tests.Services.csproj", "{D0B31005-1CC2-431C-B607-0CDC1DA613D7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Html.Dependency", "..\..\..\Visual Studio 2015\Projects\ModCoreCMS\ModCore\src\plugin-src\Html.Dependency\Html.Dependency.csproj", "{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Themes.Plugin", "src\plugin-src\Themes.Plugin\Themes.Plugin.csproj", "{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -336,6 +340,30 @@ Global
 		{D0B31005-1CC2-431C-B607-0CDC1DA613D7}.Release|x64.Build.0 = Release|Any CPU
 		{D0B31005-1CC2-431C-B607-0CDC1DA613D7}.Release|x86.ActiveCfg = Release|Any CPU
 		{D0B31005-1CC2-431C-B607-0CDC1DA613D7}.Release|x86.Build.0 = Release|Any CPU
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}.Debug|x64.Build.0 = Debug|Any CPU
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}.Debug|x86.Build.0 = Debug|Any CPU
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}.Release|x64.ActiveCfg = Release|Any CPU
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}.Release|x64.Build.0 = Release|Any CPU
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}.Release|x86.ActiveCfg = Release|Any CPU
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D}.Release|x86.Build.0 = Release|Any CPU
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}.Debug|x64.Build.0 = Debug|Any CPU
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}.Debug|x86.Build.0 = Debug|Any CPU
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}.Release|x64.ActiveCfg = Release|Any CPU
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}.Release|x64.Build.0 = Release|Any CPU
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}.Release|x86.ActiveCfg = Release|Any CPU
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -366,5 +394,7 @@ Global
 		{CBBF1DCA-98AC-476E-915B-9AD209B16EC7} = {4E5E6900-53DC-43FF-889D-590DDD3F2AD3}
 		{77040DED-CB71-42E7-BF9F-E049D4B05E02} = {1EA92745-3787-43DD-8C1C-AEA46770A876}
 		{D0B31005-1CC2-431C-B607-0CDC1DA613D7} = {1EA92745-3787-43DD-8C1C-AEA46770A876}
+		{F94583BE-DDAF-48BC-BEDA-608B7EF03E0D} = {4E5E6900-53DC-43FF-889D-590DDD3F2AD3}
+		{579A51CA-8CF5-41D7-B62F-CBF31A5DE84A} = {E95848E4-1302-43CF-AB1C-59B32943873D}
 	EndGlobalSection
 EndGlobal

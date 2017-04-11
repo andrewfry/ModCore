@@ -46,6 +46,9 @@ namespace Pages.Plugin.Areas.Admin
         {
             var m = new PageViewModel();
             m.PageStatus = PageStatus.Draft;
+            //m.AvailableTemplates = _
+            m.AvailableHtmlComponents = _pageService.AvailableHTMLComponents();
+            
             return View(m);
         }
 
@@ -55,10 +58,23 @@ namespace Pages.Plugin.Areas.Admin
             var message = "Please correct errors on page.";
             if (ModelState.IsValid)
             {
+                //var navMenu = new ModHtml.Dependency.HtmlComponentTypes.NavigationMenu();
+                //navMenu.DisplayTypeName = "Navigation Menu";
+                //navMenu.Name = "navMenuTest";
+                //navMenu.Position = 1;
+                //navMenu.BaseClass = "nav-menu";
+                //navMenu.NavigationMenuItems.Add(new ModHtml.Dependency.HtmlComponentTypes.NavigationMenuItem()
+                //{
+                //    DisplayName = "Test Link 1",
+                //    Href = "/TestLink",
+                //    Position = 1
+                //});
+
+                //model.HtmlComponents.Add(navMenu);
                 await _pageService.CreatePage(model);
                 message = "Page successfully saved";
             }
-
+            model.AvailableHtmlComponents = _pageService.AvailableHTMLComponents();
             ViewBag.Message = message;
             return View(model);
         }

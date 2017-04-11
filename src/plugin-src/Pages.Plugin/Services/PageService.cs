@@ -18,6 +18,9 @@ using Pages.Plugin.ViewModels;
 using ModCore.Abstraction.DataAccess;
 using Pages.Plugin.Specifications;
 using Pages.Plugin.Mapping;
+using ModCore.Specifications.BuiltIns;
+using ModHtml.Dependency;
+using System.Reflection;
 
 namespace Pages.Plugin.Services
 {
@@ -28,11 +31,11 @@ namespace Pages.Plugin.Services
         {
 
         }
-       
+
         public async Task<Page> GetPageByURL(string requestUrl)
         {
             var page = await _repository.FindAsync(new PageByUrl(requestUrl));
-           
+
             return page;
         }
 
@@ -71,5 +74,43 @@ namespace Pages.Plugin.Services
         {
             await _repository.DeleteAsync(new GetById<Page>(page.Id));
         }
+
+        public async Task<IPagedResult<Page>> Filter(List<ISpecification<Page>> queries, IPagedRequest request)
+        {
+            ISpecification<Page> finalSpecification;
+
+            if (queries.Count == 0)
+            {
+                throw new ArgumentException($"{nameof(queries)} must have at least one specification");
+            }
+
+            finalSpecification = queries[0];
+
+            if (queries.Count > 1)
+            {
+                for (int i = 1; i < queries.Count; i++)
+                {
+                    finalSpecification = finalSpecification.And<Page>(queries[i]);
+                }
+            }
+
+            var result = await _repository.FindAllByPageAsync(finalSpecification, request);
+
+            return result;
+        }
+
+        public IList<IHtmlComponent> AvailableHTMLComponents()
+        {
+            List<IHtmlComponent> _availableComponents = new List<IHtmlComponent>();
+            var navMenu = new ModHtml.Dependency.HtmlComponentTypes.NavigationMenu();
+            navMenu.DisplayTypeName = "Navigation Menu";
+            _availableComponents.Add(navMenu);
+
+            var textArea = new ModHtml.Dependency.HtmlComponentTypes.TextArea();
+            textArea.DisplayTypeName = "Text Area";
+            _availableComponents.Add(textArea);
+            return _availableComponents;
+        }
+
     }
 }

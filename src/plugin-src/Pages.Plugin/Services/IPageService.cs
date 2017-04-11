@@ -1,4 +1,6 @@
-﻿using ModCore.Abstraction.Services;
+﻿using ModCore.Abstraction.DataAccess;
+using ModCore.Abstraction.Services;
+using ModHtml.Dependency;
 using Pages.Plugin.Models;
 using Pages.Plugin.ViewModels;
 using System;
@@ -21,5 +23,10 @@ namespace Pages.Plugin.Services
         Task Delete(string Id);
 
         Task Delete(Page page);
+
+        Task<IPagedResult<Page>> Filter(List<ISpecification<Page>> queries, IPagedRequest request);
+
+        IList<IHtmlComponent> AvailableHTMLComponents();
+
     }
 }

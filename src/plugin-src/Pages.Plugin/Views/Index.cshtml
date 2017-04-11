@@ -1,8 +1,34 @@
 ﻿@model Pages.Plugin.ViewModels.PageViewModel
+@using ModHtml.Dependency.HtmlComponentTypes;
 @{ 
     
 }
 <h2>@Model.PageName</h2>
 @{
-    <div>@Html.Raw(Model.HTMLContent)</div>
+    @*<div>@Html.Raw(Model.HTMLContent)</div>*@
+
+    @if (Model.HtmlComponents.Count > 0)
+    {
+        foreach (var comp in Model.HtmlComponents)
+        {
+            //render display for component
+            <h4>@comp.Name</h4>
+            @if (comp is NavigationMenu)
+            {
+                <ul>
+                    @foreach (var menuItem in (comp as NavigationMenu).NavigationMenuItems)
+                    { 
+                        <li><a href="@menuItem.Href">@menuItem.DisplayName</a></li>
+
+                    }
+                </ul>
+
+            }
+            else if (comp is TextArea)
+            { 
+                <p>@((comp as TextArea).Text)</p>
+
+            }
+        }
+    }
 }
