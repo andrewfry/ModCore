@@ -23,7 +23,9 @@
     <ProjectReference Include="..\..\ModCore.Services\ModCore.Services.csproj" />
   </ItemGroup>
 
-  <Target Name="PostcompileScript" AfterTargets="Build">
+   <Target Name="PostcompileScript" AfterTargets="Build">
     <Exec Command="cmd /c (&quot;$(MSBuildProjectDirectory)\..\..\cmds\plugin-publish.cmd&quot; a &quot;$(AssemblyName)&quot; &quot;$(AssemblyName)&quot;)" />
   </Target>
+
+
 </Project>

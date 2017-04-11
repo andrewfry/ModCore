@@ -12,18 +12,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ModCore.Abstraction\ModCore.Abstraction.csproj" />
+    <ProjectReference Include="..\..\ModCore.Core\ModCore.Core.csproj" />
+    <ProjectReference Include="..\..\ModCore.Services\ModCore.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="1.1.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\Visual Studio 2015\Projects\ModCoreCMS\ModCore\src\plugin-src\Html.Dependency\Html.Dependency.csproj" />
-    <ProjectReference Include="..\..\ModCore.DataAccess.MongoDb\ModCore.DataAccess.MongoDb.csproj" />
-    <ProjectReference Include="..\..\ModCore.Services\ModCore.Services.csproj" />
-  </ItemGroup>
-
-  <Target Name="PostcompileScript" AfterTargets="Build">
+   <Target Name="PostcompileScript" AfterTargets="Build">
     <Exec Command="cmd /c (&quot;$(MSBuildProjectDirectory)\..\..\cmds\plugin-publish.cmd&quot; a &quot;$(AssemblyName)&quot; &quot;$(AssemblyName)&quot;)" />
   </Target>
+
 
 </Project>

@@ -25,4 +25,5 @@
     <Exec Command="cmd /c (&quot;$(MSBuildProjectDirectory)\..\..\cmds\plugin-publish.cmd&quot; a &quot;$(AssemblyName)&quot; &quot;$(AssemblyName)&quot;)" />
   </Target>
 
+
 </Project>
