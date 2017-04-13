@@ -36,7 +36,7 @@ namespace ModCore.DynamicObjects
             return UpdateProperty(prop, value);
         }
 
-        public ValidationResult UpdateProperty(ObjectProperty property, object value)
+        public ValidationResult UpdateProperty(ObjectProperty property, object value, Dictionary<string, string> Attributes = null)
         {
             var result = new ValidationResult();
             var context = new PropertyValidationContext();
@@ -58,17 +58,34 @@ namespace ModCore.DynamicObjects
             return result;
         }
 
-        private void RecordPropertyHistory(ObjectProperty property, object newValue, object oldValid)
+        private void RecordPropertyHistory(ObjectProperty property, object newValue, object oldValue, Dictionary<string, string> Attributes)
         {
-            var propHist = new PropertyHistory
+            var prevProperty = this.PropertyHistory.SingleOrDefault(a => a.Key.Name == property.Name);
+
+            PropertyHistory propHist = null;
+
+            if (prevProperty.Value != null)
+                propHist = new PropertyHistory(prevProperty.Value.First().HashHistoryChain);
+            else
             {
-                ChangedDate = DateTime.Now,
-                NewValue = newValue,
-                OldValue = oldValid,
-            };
+                propHist = new PropertyHistory();
+            }
 
 
+            propHist.ChangedDate = DateTime.Now;
+            propHist.NewValue = newValue;
+            propHist.OldValue = oldValue;
+            propHist.PropertyName = property.Name;
+            propHist.Attributes = Attributes;
 
+            if (prevProperty.Value != null)
+            {
+
+            }
+            else
+            {
+                //_propertyHistory.Add(property, new Stack<PropertyHistory>(propHist));
+            }
         }
 
         /// <summary>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ModCore.Models.PluginApi;
 using ModCore.Abstraction.Plugins;
 using System.Threading.Tasks;
 
@@ -9,10 +8,10 @@ namespace ModCore.Abstraction.PluginApi
 {
     public interface IPluginApiManager
     {
-        void RegisterApiRequestHander(string apiRequestName, IPlugin plugin, Func<ApiArgument, Task<ApiHandlerResponse>> handler);
+        void RegisterApiRequestHander(string apiRequestName, IPlugin plugin, Func<IApiArgument, IApiRequestContext, Task<IApiHandlerResponse>> handler);
 
-        void QueueApiRequest(string apiRequestName, ApiArgument argument, Action<ApiResponse> onSuccess, Action<ApiResponse> onFailure, ApiExecutionType executionType = ApiExecutionType.All);
+        void QueueApiRequest(string apiRequestName, IApiArgument argument, Action<IApiResponse> onSuccess, Action<IApiResponse> onFailure, ApiExecutionType executionType = ApiExecutionType.All);
 
-        Task<ApiResponse> FullfilApiRequest(string apiRequestName, ApiArgument argument, ApiExecutionType executionType = ApiExecutionType.All);
+        Task<IApiResponse> FullfilApiRequest(string apiRequestName, IApiArgument argument, IApiRequestContext context, ApiExecutionType executionType = ApiExecutionType.All);
     }
 }

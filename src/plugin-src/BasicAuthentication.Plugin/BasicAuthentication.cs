@@ -20,7 +20,7 @@ namespace BasicAuthentication.Plugin
     public class BasicAuthentication : BasePlugin, IPlugin
     {
 
-        public string Name
+        public override string Name
         {
             get
             {
@@ -28,7 +28,7 @@ namespace BasicAuthentication.Plugin
             }
         }
 
-        public string Version
+        public override string Version
         {
             get
             {

@@ -21,6 +21,9 @@
     <Reference Include="ModCore.Abstraction">
       <HintPath>..\ModCore.Abstraction\bin\Debug\netstandard1.6\ModCore.Abstraction.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web.Services">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Web.Services.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -18,7 +18,7 @@ namespace UserManagement.Plugin
     public class UserManagementPlugin : BasePlugin, IPlugin
     {
 
-        public string Name
+        public override string Name
         {
             get
             {
@@ -26,7 +26,7 @@ namespace UserManagement.Plugin
             }
         }
 
-        public string Version
+        public override string Version
         {
             get
             {

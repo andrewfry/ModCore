@@ -16,7 +16,7 @@ namespace Themes.Plugin
 {
     public class Themes : BasePlugin, IPlugin
     {
-        public string Name
+        public override string Name
         {
             get
             {
@@ -24,7 +24,7 @@ namespace Themes.Plugin
             }
         }
 
-        public string Version
+        public override string Version
         {
             get
             {
@@ -85,21 +85,21 @@ namespace Themes.Plugin
             }
         }
 
-        public PluginResult Install(PluginInstallContext context)
+        public override PluginResult Install(PluginInstallContext context)
         {
             var result = new PluginResult();
             result.WasSuccessful = true;
             return result;
         }
 
-        public PluginResult StartUp(PluginStartupContext context)
+        public override PluginResult StartUp(PluginStartupContext context)
         {
             var result = new PluginResult();
             result.WasSuccessful = true;
             return result;
         }
 
-        public PluginResult UnInstall(PluginUninstallContext context)
+        public override PluginResult UnInstall(PluginUninstallContext context)
         {
             var result = new PluginResult();
             result.WasSuccessful = true;

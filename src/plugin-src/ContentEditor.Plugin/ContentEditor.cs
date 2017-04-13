@@ -11,16 +11,16 @@ using ModCore.Core.Plugins;
 using Microsoft.AspNetCore.Mvc.Filters;
 using ModCore.Abstraction.Plugins.Builtins;
 
-namespace Blog.Plugin
+namespace ContentEditor.Plugin
 {
-    public class Blog : BasePlugin, IPlugin
+    public class ContentEditor : BasePlugin, IPlugin
     {
 
         public override string Name
         {
             get
             {
-                return "ModBlog";
+                return "ContentEditor";
             }
         }
 
@@ -36,7 +36,7 @@ namespace Blog.Plugin
         {
             get
             {
-                return "This plugin is used to post blogs and read them.";
+                return "Used to create and manage CSS, CSHTML and CSHTML Layout";
             }
         }
 
@@ -46,9 +46,9 @@ namespace Blog.Plugin
             {
                 var routes = new List<IPluginRoute>();
                 routes.MapPluginRoute(
-                   name: "blogDefault",
-                    template: "Blog/{controller=Plugin}/{action=Index}/{id?}",
-                    plugin: new Blog());
+                   name: "contentEditorDefault",
+                    template: "ContentEditor/{controller=ContentEditor}/{action=Index}/{id?}",
+                    plugin: new ContentEditor());
 
 
                 return routes;
@@ -88,25 +88,6 @@ namespace Blog.Plugin
         }
 
 
-        public PluginResult Install(PluginInstallContext context)
-        {
-            var result = new PluginResult();
-            result.WasSuccessful = true;
-            return result;
-        }
-
-        public PluginResult StartUp(PluginStartupContext context)
-        {
-            var result = new PluginResult();
-            result.WasSuccessful = true;
-            return result;
-        }
-
-        public PluginResult UnInstall(PluginUninstallContext context)
-        {
-            var result = new PluginResult();
-            result.WasSuccessful = true;
-            return result;
-        }
+       
     }
 }

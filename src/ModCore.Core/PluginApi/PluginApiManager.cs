@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
-using ModCore.Models.PluginApi;
 using ModCore.Abstraction.PluginApi;
 
 namespace ModCore.Core.PluginApi
@@ -16,14 +15,16 @@ namespace ModCore.Core.PluginApi
     {
         private static BlockingCollection<ApiHandlerDescription> ApiHandlers = new BlockingCollection<ApiHandlerDescription>();
         private static ConcurrentQueue<ApiRequest> ApiRequests = new ConcurrentQueue<ApiRequest>();
+        private IApiRequestContext _defaultContext;
 
-        public PluginApiManager()
+        public PluginApiManager(IApiRequestContext defaultContext)
         {
-            var timerCallback = new TimerCallback(async (e) => await FulFillQueue());
+            _defaultContext = defaultContext;
+            var timerCallback = new TimerCallback(async (e) => await FulFillQueue(_defaultContext));
             var timer = new Timer(timerCallback, null, 0, 1000);
         }
 
-        public void RegisterApiRequestHander(string apiRequestName, IPlugin plugin, Func<ApiArgument, Task<ApiHandlerResponse>> handler)
+        public void RegisterApiRequestHander(string apiRequestName, IPlugin plugin, Func<IApiArgument, IApiRequestContext, Task<IApiHandlerResponse>> handler)
         {
             var registeredHandler = new ApiHandlerDescription
             {
@@ -35,7 +36,7 @@ namespace ModCore.Core.PluginApi
             ApiHandlers.Add(registeredHandler);
         }
 
-        public void QueueApiRequest(string apiRequestName, ApiArgument argument, Action<ApiResponse> onSuccess, Action<ApiResponse> onFailure, ApiExecutionType executionType = ApiExecutionType.All)
+        public void QueueApiRequest(string apiRequestName, IApiArgument argument, Action<IApiResponse> onSuccess, Action<IApiResponse> onFailure, ApiExecutionType executionType = ApiExecutionType.All)
         {
             var addToQueue = new ApiRequest
             {
@@ -49,7 +50,7 @@ namespace ModCore.Core.PluginApi
             ApiRequests.Enqueue(addToQueue);
         }
 
-        public async Task<ApiResponse> FullfilApiRequest(string apiRequestName, ApiArgument argument, ApiExecutionType executionType = ApiExecutionType.All)
+        public async Task<IApiResponse> FullfilApiRequest(string apiRequestName, IApiArgument argument, IApiRequestContext context, ApiExecutionType executionType = ApiExecutionType.All)
         {
             var addToQueue = new ApiRequest
             {
@@ -58,10 +59,10 @@ namespace ModCore.Core.PluginApi
                 Type = executionType
             };
 
-            return await HandleApiRequestWithResponse(addToQueue);
+            return await HandleApiRequestWithResponse(addToQueue, context);
         }
 
-        private static async Task FulFillQueue()
+        private static async Task FulFillQueue(IApiRequestContext context)
         {
             do
             {
@@ -71,13 +72,13 @@ namespace ModCore.Core.PluginApi
 
                 if (req != null)
                 {
-                    await HandleApiRequest(req);
+                    await HandleApiRequest(req, context);
                 }
             }
             while (ApiRequests.Count > 0);
         }
 
-        private static async Task<ApiResponse> HandleApiRequestWithResponse(ApiRequest request)
+        private static async Task<IApiResponse> HandleApiRequestWithResponse(IApiRequest request, IApiRequestContext context)
         {
             try
             {
@@ -95,7 +96,7 @@ namespace ModCore.Core.PluginApi
                         throw new Exception("Failed to process because EventExecutionType was Single and multiple event handlers were found");
 
                     var h = handlers.First();
-                    var r = await h.Handler(request.Argument);
+                    var r = await h.Handler(request.Argument, context);
                     if (!r.Success)
                         throw new Exception("Failed to process correctly");
                     returnObj = r.Value;
@@ -110,7 +111,7 @@ namespace ModCore.Core.PluginApi
                     var values = new List<object>();
                     foreach (var h in handlers)
                     {
-                        var r = await h.Handler(request.Argument);
+                        var r = await h.Handler(request.Argument, context);
                         if (!r.Success)
                             throw new Exception("Failed to process correctly");
                         values.Add(r.Value);
@@ -143,7 +144,7 @@ namespace ModCore.Core.PluginApi
             }
         }
 
-        private static async Task HandleApiRequest(ApiRequest request)
+        private static async Task HandleApiRequest(IApiRequest request, IApiRequestContext context)
         {
             try
             {
@@ -160,7 +161,7 @@ namespace ModCore.Core.PluginApi
                         throw new Exception("Failed to process because EventExecutionType was Single and multiple event handlers were found");
 
                     var h = handlers.First();
-                    var r = await h.Handler(request.Argument);
+                    var r = await h.Handler(request.Argument, context);
                     if (!r.Success)
                         throw new Exception("Failed to process correctly");
                     returnObj = r.Value;
@@ -170,7 +171,7 @@ namespace ModCore.Core.PluginApi
                     var values = new List<object>();
                     foreach (var h in handlers)
                     {
-                        var r = await h.Handler(request.Argument);
+                        var r = await h.Handler(request.Argument, context);
                         if (!r.Success)
                             throw new Exception("Failed to process correctly");
                         values.Add(r.Value);

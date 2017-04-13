@@ -18,7 +18,7 @@ namespace Emailer.Plugin
     public class Emailer : BasePlugin, IPlugin
     {
 
-        public string Name
+        public override string Name
         {
             get
             {
@@ -26,7 +26,7 @@ namespace Emailer.Plugin
             }
         }
 
-        public string Version
+        public override string Version
         {
             get
             {
