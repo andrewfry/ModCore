@@ -7,18 +7,18 @@
   "targets": {
     ".NETStandard,Version=v1.6": {},
     ".NETStandard,Version=v1.6/": {
-      "pages.plugin/1.0.0": {
+      "themes.plugin/1.0.0": {
         "dependencies": {
-          "Html.Dependency": "1.0.0",
-          "Microsoft.AspNetCore.Mvc.Core": "1.1.2",
-          "Microsoft.AspNetCore.Mvc.Razor": "1.1.2",
           "ModCore.Abstraction": "1.0.0",
           "ModCore.Core": "1.0.0",
+          "ModCore.DataAccess.MongoDb": "1.0.0",
+          "ModCore.Models": "1.0.0",
           "ModCore.Services": "1.0.0",
+          "ModCore.ViewModels": "1.0.0",
           "NETStandard.Library": "1.6.1"
         },
         "runtime": {
-          "Pages.Plugin.dll": {}
+          "Themes.Plugin.dll": {}
         }
       },
       "automapper/5.2.0": {
@@ -2302,14 +2302,6 @@
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "html.dependency/1.0.0": {
-        "dependencies": {
-          "NETStandard.Library": "1.6.1"
-        },
-        "runtime": {
-          "Html.Dependency.dll": {}
-        }
-      },
       "modcore.abstraction/1.0.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Routing": "1.1.1",
@@ -2428,7 +2420,7 @@
     }
   },
   "libraries": {
-    "pages.plugin/1.0.0": {
+    "themes.plugin/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -3762,11 +3754,6 @@
       "sha512": "sha512-FLhdYJx4331oGovQypQ8JIw2kEmNzCsjVOVYY/16kZTUoquZG85oVn7yUhBE2OZt1yGPSXAL0HTEfzjlbNpM7Q==",
       "path": "system.xml.xpath.xdocument/4.0.1",
       "hashPath": "system.xml.xpath.xdocument.4.0.1.nupkg.sha512"
-    },
-    "html.dependency/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
     },
     "modcore.abstraction/1.0.0": {
       "type": "project",

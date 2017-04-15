@@ -12,18 +12,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ModCore.Abstraction\ModCore.Abstraction.csproj" />
-    <ProjectReference Include="..\..\ModCore.Core\ModCore.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="1.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
 
-   <Target Name="PostcompileScript" AfterTargets="Build">
-    <Exec Command="cmd /c (&quot;$(MSBuildProjectDirectory)\..\..\cmds\plugin-publish.cmd&quot; a &quot;$(AssemblyName)&quot; &quot;$(AssemblyName)&quot;)" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\ModCore.Abstraction\ModCore.Abstraction.csproj" />
+    <ProjectReference Include="..\..\ModCore.Core\ModCore.Core.csproj" />
+    <ProjectReference Include="..\..\ModCore.Models\ModCore.Models.csproj" />
+    <ProjectReference Include="..\..\ModCore.Utilities\ModCore.Utilities.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostcompileScript" AfterTargets="Build">
+    <Exec Command="cmd /c (&quot;$(MSBuildProjectDirectory)\..\..\cmds\plugin-publish.cmd&quot; &quot;$(AssemblyName)&quot; &quot;$(AssemblyName)&quot;)" />
   </Target>
 
 </Project>

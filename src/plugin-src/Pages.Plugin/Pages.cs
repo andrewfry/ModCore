@@ -22,7 +22,7 @@ namespace Pages.Plugin
 {
     public class Pages : BasePlugin, IPlugin
     {
-        public string Name
+        public override string Name
         {
             get
             {
@@ -30,7 +30,7 @@ namespace Pages.Plugin
             }
         }
 
-        public string Version
+        public override string Version
         {
             get
             {
@@ -69,7 +69,7 @@ namespace Pages.Plugin
         public ICollection<IPluginDependency> Dependencies
         {
             get
-            { return new List<IPluginDependency>() { new RequiredPlugin( new )}; }
+            { return new List<IPluginDependency>() { }; }
         }
 
         public ICollection<ServiceDescriptor> Services

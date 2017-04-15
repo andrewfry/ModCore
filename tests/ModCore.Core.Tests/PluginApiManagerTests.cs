@@ -1,6 +1,5 @@
 ﻿using ModCore.Abstraction.PluginApi;
 using ModCore.Core.PluginApi;
-using ModCore.Models.PluginApi;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,8 +14,9 @@ namespace ModCore.Core.Tests
         public async Task BasicApiHandler()
         {
 
-            IPluginApiManager apiManager = new PluginApiManager();
-            Func<ApiArgument, Task<ApiHandlerResponse>> handler = async (arg) =>
+            IApiRequestContext reqContext = new ApiRequestContext();
+            IPluginApiManager apiManager = new PluginApiManager(reqContext);
+            Func<IApiArgument, IApiRequestContext, Task<IApiHandlerResponse>> handler = async (arg, context) =>
             {
                 return new ApiHandlerResponse()
                 {
@@ -31,7 +31,7 @@ namespace ModCore.Core.Tests
 
             apiManager.RegisterApiRequestHander("exAmplerHandler", null, handler);
 
-            var response = await apiManager.FullfilApiRequest("examplerhandler", null);
+            var response = await apiManager.FullfilApiRequest("examplerhandler", null, reqContext);
 
             Assert.True(response.Success == true);
             Assert.True(response.Value is ExampleReturnObj);
@@ -84,7 +84,7 @@ namespace ModCore.Core.Tests
         {
             IApiRequestContext reqContext = new ApiRequestContext();
             IPluginApiManager apiManager = new PluginApiManager(reqContext);
-            Func<ApiArgument, Task<ApiHandlerResponse>> handler = async (arg) =>
+            Func<IApiArgument, IApiRequestContext, Task<IApiHandlerResponse>> handler = async (arg, context) =>
             {
                 return new ApiHandlerResponse()
                 {
@@ -95,7 +95,7 @@ namespace ModCore.Core.Tests
                     }
                 };
             };
-            Func<IApiArgument,IApiRequestContext Task<IApiHandlerResponse>> handler2 = async (arg, context) =>
+            Func<IApiArgument,IApiRequestContext, Task<IApiHandlerResponse>> handler2 = async (arg, context) =>
             {
                 return new ApiHandlerResponse()
                 {
@@ -111,7 +111,7 @@ namespace ModCore.Core.Tests
             apiManager.RegisterApiRequestHander("examplerhandler", null, handler2);
 
 
-            var response = await apiManager.FullfilApiRequest("examplerhandler", null);
+            var response = await apiManager.FullfilApiRequest("examplerhandler", null, reqContext);
 
             Assert.True(response.Success == true);
             Assert.True(response.Value is IEnumerable<object>);
@@ -128,7 +128,7 @@ namespace ModCore.Core.Tests
         {
             IApiRequestContext reqContext = new ApiRequestContext();
             IPluginApiManager apiManager = new PluginApiManager(reqContext);
-            Func<ApiArgument, Task<ApiHandlerResponse>> handler = async (arg) =>
+            Func<IApiArgument, IApiRequestContext, Task<IApiHandlerResponse>> handler = async (arg, context) =>
             {
                 return new ApiHandlerResponse()
                 {
@@ -139,7 +139,7 @@ namespace ModCore.Core.Tests
                     }
                 };
             };
-            Func<ApiArgument, Task<ApiHandlerResponse>> handler2 = async (arg) =>
+            Func<IApiArgument, IApiRequestContext, Task<IApiHandlerResponse>> handler2 = async (arg, context) =>
             {
                 return new ApiHandlerResponse()
                 {
@@ -155,7 +155,7 @@ namespace ModCore.Core.Tests
             apiManager.RegisterApiRequestHander("examplerhandler", null, handler2);
 
 
-            var response = await apiManager.FullfilApiRequest("examplerhandler", null, ApiExecutionType.Single);
+            var response = await apiManager.FullfilApiRequest("examplerhandler", null,reqContext, ApiExecutionType.Single);
 
             Assert.True(response.Success == false);
             Assert.True(response.Exception != null);
@@ -166,7 +166,7 @@ namespace ModCore.Core.Tests
         {
             IApiRequestContext reqContext = new ApiRequestContext();
             IPluginApiManager apiManager = new PluginApiManager(reqContext);
-            Func<ApiArgument, Task<ApiHandlerResponse>> handler = async (arg) =>
+            Func<IApiArgument, IApiRequestContext, Task<IApiHandlerResponse>> handler = async (arg, context) =>
             {
                 return new ApiHandlerResponse()
                 {
@@ -177,7 +177,7 @@ namespace ModCore.Core.Tests
                     }
                 };
             };
-            Func<ApiArgument, Task<ApiHandlerResponse>> handler2 = async (arg) =>
+            Func<IApiArgument, IApiRequestContext, Task<IApiHandlerResponse>> handler2 = async (arg, context) =>
             {
                 return new ApiHandlerResponse()
                 {
@@ -193,7 +193,7 @@ namespace ModCore.Core.Tests
             apiManager.RegisterApiRequestHander("examplerhandler", null, handler2);
 
 
-            var response = await apiManager.FullfilApiRequest("examplerhandler", null, ApiExecutionType.First);
+            var response = await apiManager.FullfilApiRequest("examplerhandler", null,reqContext, ApiExecutionType.First);
 
             Assert.True(response.Success == true);
             Assert.True(response.Value is ExampleReturnObj);

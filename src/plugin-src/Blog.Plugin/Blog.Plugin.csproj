@@ -23,7 +23,7 @@
   </ItemGroup>
 
    <Target Name="PostcompileScript" AfterTargets="Build">
-    <Exec Command="cmd /c (&quot;$(MSBuildProjectDirectory)\..\..\cmds\plugin-publish.cmd&quot; a &quot;$(AssemblyName)&quot; &quot;$(AssemblyName)&quot;)" />
+    <Exec Command="cmd /c (&quot;$(MSBuildProjectDirectory)\..\..\cmds\plugin-publish.cmd&quot;  &quot;$(AssemblyName)&quot; &quot;$(AssemblyName)&quot;)" />
   </Target>
 
 </Project>
